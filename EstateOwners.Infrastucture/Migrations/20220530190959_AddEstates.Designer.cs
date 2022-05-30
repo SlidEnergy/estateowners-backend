@@ -3,15 +3,17 @@ using System;
 using EstateOwners.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace EstateOwners.Infrastucture.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220530190959_AddEstates")]
+    partial class AddEstates
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -201,21 +203,6 @@ namespace EstateOwners.Infrastucture.Migrations
                     b.ToTable("Trustee");
                 });
 
-            modelBuilder.Entity("EstateOwners.Domain.TrusteeEstate", b =>
-                {
-                    b.Property<int>("EstateId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("TrusteeId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("EstateId", "TrusteeId");
-
-                    b.HasIndex("TrusteeId");
-
-                    b.ToTable("TrusteeEstates");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -360,21 +347,6 @@ namespace EstateOwners.Infrastucture.Migrations
                     b.HasOne("EstateOwners.Domain.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("EstateOwners.Domain.TrusteeEstate", b =>
-                {
-                    b.HasOne("EstateOwners.Domain.Estate", "Estate")
-                        .WithMany()
-                        .HasForeignKey("EstateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EstateOwners.Domain.Trustee", "Trustee")
-                        .WithMany()
-                        .HasForeignKey("TrusteeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

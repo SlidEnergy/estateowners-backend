@@ -5,7 +5,7 @@ using EstateOwners.Domain;
 using System.Collections.Generic;
 using System.Security.Claims;
 
-namespace EstateOwners.WebApi.UnitTests
+namespace EstateOwners.UnitTests
 {
     public static class ControllerExtensions
     {

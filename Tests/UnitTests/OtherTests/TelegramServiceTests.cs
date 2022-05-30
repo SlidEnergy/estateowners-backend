@@ -3,8 +3,9 @@ using NUnit.Framework;
 using EstateOwners.App;
 using EstateOwners.Domain;
 using System.Threading.Tasks;
+using EstateOwners.WebApi;
 
-namespace EstateOwners.WebApi.UnitTests
+namespace EstateOwners.UnitTests
 {
 	public class TelegramServiceTests : TestsBase
 	{

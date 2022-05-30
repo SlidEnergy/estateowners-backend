@@ -11,7 +11,7 @@ namespace EstateOwners.WebApi.IntegrationTests
 	{
 		public static async Task<ApplicationUser> CreateUser(this ApplicationDbContext db)
 		{
-			var user = new ApplicationUser() { Email = Guid.NewGuid().ToString() };
+			var user = new ApplicationUser(new Trustee(), Guid.NewGuid().ToString());
 			db.Users.Add(user);
 			await db.SaveChangesAsync();
 

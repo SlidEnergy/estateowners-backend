@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EstateOwners.WebApi.UnitTests
+namespace EstateOwners.UnitTests
 {
 	public static class EntityFactoryExtensions
 	{
@@ -14,7 +14,7 @@ namespace EstateOwners.WebApi.UnitTests
 			var trustee = new Trustee();
 			db.Trustee.Add(trustee);
 			await db.SaveChangesAsync();
-			var user = new ApplicationUser() { Email = Guid.NewGuid().ToString(), TrusteeId = trustee.Id};
+			var user = new ApplicationUser(trustee, Guid.NewGuid().ToString());
 			db.Users.Add(user);
 			await db.SaveChangesAsync();
 

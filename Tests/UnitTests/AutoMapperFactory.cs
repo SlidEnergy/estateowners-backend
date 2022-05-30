@@ -2,7 +2,7 @@
 using EstateOwners.WebApi;
 using EstateOwners.Infrastructure;
 
-namespace EstateOwners.WebApi.UnitTests
+namespace EstateOwners.UnitTests
 {
     public class AutoMapperFactory
     {

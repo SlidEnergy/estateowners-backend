@@ -50,7 +50,7 @@ namespace EstateOwners.TelegramBot
                         new KeyboardButton[]
                         {
                             new KeyboardButton("Сайт"),
-                            new KeyboardButton("Профиль")
+                            new KeyboardButton("Добавить объект недвижимости")
                         }
                     },
                 ResizeKeyboard = true

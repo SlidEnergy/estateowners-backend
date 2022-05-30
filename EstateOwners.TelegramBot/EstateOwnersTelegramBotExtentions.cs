@@ -12,36 +12,37 @@ namespace EstateOwners.TelegramBot
     {
         public static void AddTelegramBot(this IServiceCollection services, IConfiguration configuration, bool isDevelopment)
         {
-			BotOptions<EstateOwnersBot> botOptions;
+            BotOptions<EstateOwnersBot> botOptions;
 
-			if (isDevelopment)
-			{
-				botOptions = configuration
-					.GetSection("Telegram")
-					.GetSection("SlidTestBot")
-					.Get<BotOptions<EstateOwnersBot>>();
-			}
-			else
-			{
-				botOptions = new BotOptions<EstateOwnersBot>()
-				{
-					ApiToken = Environment.GetEnvironmentVariable("BOT_KEY"),
-					BotUserName = Environment.GetEnvironmentVariable("BOT_NAME"),
-				};
-			}
+            if (isDevelopment)
+            {
+                botOptions = configuration
+                    .GetSection("Telegram")
+                    .GetSection("SlidTestBot")
+                    .Get<BotOptions<EstateOwnersBot>>();
+            }
+            else
+            {
+                botOptions = new BotOptions<EstateOwnersBot>()
+                {
+                    ApiToken = Environment.GetEnvironmentVariable("BOT_KEY"),
+                    BotUserName = Environment.GetEnvironmentVariable("BOT_NAME"),
+                };
+            }
 
-			services.AddTelegramBot<EstateOwnersBot>(botOptions)
+            services.AddTelegramBot<EstateOwnersBot>(botOptions)
                 .AddUpdateHandler<StartCommand>()
-                .AddUpdateHandler<CallbackQueryHandler>()
-                .AddUpdateHandler<NewUserDialog>()
                 .AddUpdateHandler<MainDialog>()
                 .AddUpdateHandler<MenuDialog>()
+                .AddUpdateHandler<CallbackQueryHandler>()
+                .AddUpdateHandler<NewUserDialog>()
+                .AddUpdateHandler<NewEstateDialog>()
                 .Configure();
 
-           // services.AddScoped<IBotManager<EstateOwnersBot>, BotManager<EstateOwnersBot>>();
+            // services.AddScoped<IBotManager<EstateOwnersBot>, BotManager<EstateOwnersBot>>();
         }
 
-		public static void UseTelegramBot(this IApplicationBuilder app, bool isDevelopment)
+        public static void UseTelegramBot(this IApplicationBuilder app, bool isDevelopment)
         {
             if (isDevelopment)
             {
@@ -61,7 +62,7 @@ namespace EstateOwners.TelegramBot
 
                         while (true)
                         {
-                            await Task.Delay(3_000);
+                            await Task.Delay(1_000);
                             await botManager.GetAndHandleNewUpdatesAsync();
                         }
                     }
@@ -70,7 +71,7 @@ namespace EstateOwners.TelegramBot
                     if (t.IsFaulted) throw t.Exception;
                 });
             }
-			else
+            else
             {
                 // get bot updates from Telegram via long-polling approach during development
                 // this will disable Telegram webhooks

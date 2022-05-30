@@ -73,12 +73,7 @@ namespace EstateOwners.Infrastucture
 		private static async Task<ApplicationUser> CreateDefaultUser(UserManager<ApplicationUser> userManager, ILogger<DbInitializer> logger, string email)
 		{
 			logger.LogInformation($"Create default user with email `{email}` for application");
-			var user = new ApplicationUser()
-			{
-				Email = email,
-				UserName = email,
-				Trustee = new Trustee()
-			};
+			var user = new ApplicationUser(new Trustee(), email);
 
 			var result = await userManager.CreateAsync(user);
 			if (result.Succeeded)

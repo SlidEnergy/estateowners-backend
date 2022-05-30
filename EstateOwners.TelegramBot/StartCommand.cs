@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using EstateOwners.App;
+using System.Threading.Tasks;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types;
@@ -14,19 +15,28 @@ namespace EstateOwners.TelegramBot
     }
     public class StartCommand : CommandBase<StartCommandArgs>
     {
-        public static bool authorized = false;
+        private readonly IUsersService _usersService;
 
-        public StartCommand() : base(name: "start") { }
+        public StartCommand(IUsersService usersService) : base(name: "start")
+        {
+            _usersService = usersService;
+        }
 
         public override async Task<UpdateHandlingResult> HandleCommand(Update update, StartCommandArgs args)
         {
+            MainDialog.activate = false;
+            NewEstateDialog.activate = false;
+            NewUserDialog.activate = false;
+
+            var chatId = update.Message.Chat.Id;
+
             await Bot.Client.SendTextMessageAsync(
-                update.Message.Chat.Id,
+                chatId,
                 "Приветствую. Описание бота.");
 
-            //var authorized = update.Message.Chat.Id == 123;
+            var user = await _usersService.GetByAuthTokenAsync(chatId.ToString(), Domain.AuthTokenType.TelegramChatId);
 
-            if (!authorized)
+            if (user == null)
             {
                 NewUserDialog.activate = true;
                 return UpdateHandlingResult.Continue;
@@ -36,8 +46,6 @@ namespace EstateOwners.TelegramBot
                 MainDialog.activate = true;
                 return UpdateHandlingResult.Continue;
             }
-
-            return UpdateHandlingResult.Handled;
         }
     }
 }

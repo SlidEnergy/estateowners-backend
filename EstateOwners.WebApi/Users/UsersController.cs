@@ -30,7 +30,7 @@ namespace EstateOwners.WebApi
 		[Authorize(Policy = Policy.MustBeAdmin)]
 		public async Task<ActionResult<IEnumerable<Dto.User>>> GetList()
 		{
-			var users = await _usersService.GetListAsync();
+			var users = await _usersService.GetListAsyncAsync();
 
 			return _mapper.Map<Dto.User[]>(users);
 		}
@@ -43,14 +43,14 @@ namespace EstateOwners.WebApi
 		{
 			var userId = User.GetUserId();
 			
-			var user = await _usersService.GetById(userId);
+			var user = await _usersService.GetByIdAsync(userId);
 
 			if (user == null)
 			{
 				return NotFound();
 			}
 
-			bool isAdmin = await _usersService.IsAdmin(user);
+			bool isAdmin = await _usersService.IsAdminAsync(user);
 
 			return _mapper.Map<Dto.User>(user, opt => opt.AfterMap((src, dest) => ((Dto.User)dest).IsAdmin = isAdmin));
 		}
@@ -63,7 +63,7 @@ namespace EstateOwners.WebApi
 
 			var user = _mapper.Map<ApplicationUser>(model);
 
-			var result = await _usersService.CreateAccount(user, model.Password);
+			var result = await _usersService.CreateUserAsync(model.Email, model.Password);
 
 			if (!result.Succeeded) {
 				foreach (var e in result.Errors)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EstateOwners.App;
+using System;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types;
@@ -10,16 +11,19 @@ namespace EstateOwners.TelegramBot
     internal class MenuDialog : IUpdateHandler
     {
         int step = 1;
-        public static bool activate = false;
+        public static bool activate = true;
 
         string fio;
         int liter;
         int apartament;
 
-        public MenuDialog()
+        private readonly IUsersService _usersService;
+
+        public MenuDialog(IUsersService usersService)
         {
             step = 1;
             activate = false;
+            _usersService = usersService;
         }
 
         public bool CanHandleUpdate(IBot bot, Update update)
@@ -32,29 +36,31 @@ namespace EstateOwners.TelegramBot
 
         public async Task<UpdateHandlingResult> HandleUpdateAsync(IBot bot, Update update)
         {
-            if (!activate)
+            var user = await _usersService.GetByAuthTokenAsync(update.Message.Chat.Id.ToString(), Domain.AuthTokenType.TelegramChatId);
+
+            if (user == null)
+            {
+                activate = true;
                 return UpdateHandlingResult.Continue;
+            }
 
             switch (step)
             {
                 case 1:
-                    await Step1(bot, update);
-                    break;
+                    return await Step1(bot, update);
 
                 default:
                     throw new System.Exception("Step not supported");
             }
-
-            return UpdateHandlingResult.Handled;
         }
 
-        public async Task Step1(IBot bot, Update update)
+        public async Task<UpdateHandlingResult> Step1(IBot bot, Update update)
         {
-            if (update.Message.Text == "Профиль")
+            if (update.Message.Text == "Добавить объект недвижимости")
             {
-                await bot.Client.SendTextMessageAsync(
-                    update.Message.Chat.Id,
-                    "Вы выбрали Профиль");
+                step = 1;
+                NewEstateDialog.activate = true;
+                return UpdateHandlingResult.Continue;
             }
 
             if (update.Message.Text == "Сайт")
@@ -66,6 +72,7 @@ namespace EstateOwners.TelegramBot
 
 
             step = 1;
+            return UpdateHandlingResult.Continue;
         }
     }
 }

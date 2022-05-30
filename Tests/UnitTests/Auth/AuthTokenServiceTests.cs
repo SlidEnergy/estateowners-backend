@@ -5,8 +5,9 @@ using EstateOwners.App;
 using EstateOwners.Domain;
 using System;
 using System.Threading.Tasks;
+using EstateOwners.WebApi;
 
-namespace EstateOwners.WebApi.UnitTests
+namespace EstateOwners.UnitTests
 {
 	public class AuthTokenServiceTests : TestsBase
 	{

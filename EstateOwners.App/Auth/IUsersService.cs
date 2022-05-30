@@ -7,13 +7,16 @@ namespace EstateOwners.App
 {
 	public interface IUsersService
 	{
-		Task<IdentityResult> CreateAccount(ApplicationUser user, string password);
-		Task<ApplicationUser> GetById(string userId);
+		Task<IdentityResult> CreateUserAsync(string email, string password);
 
-		Task<bool> IsAdmin(ApplicationUser user);
+		Task<IdentityResult> CreateUserAsync(string email, string token, AuthTokenType tokenType);
 
-		Task<List<ApplicationUser>> GetListAsync();
+		Task<ApplicationUser> GetByIdAsync(string userId);
 
-		Task<ApplicationUser> GetByTelegramChatIdAsync(long chatId);
+		Task<bool> IsAdminAsync(ApplicationUser user);
+
+		Task<List<ApplicationUser>> GetListAsyncAsync();
+
+		Task<ApplicationUser> GetByAuthTokenAsync(string token, AuthTokenType type);
 	}
 }

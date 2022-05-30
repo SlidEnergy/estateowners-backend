@@ -1,4 +1,6 @@
-﻿using System;
+﻿using EstateOwners.App;
+using EstateOwners.Domain;
+using System;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types;
@@ -12,14 +14,18 @@ namespace EstateOwners.TelegramBot
         int step = 1;
         public static bool activate = false;
 
-        string fio;
-        int liter;
-        int apartament;
+        string _email;
+        string _firstName;
+        string _middleName;
+        string _lastName;
 
-        public NewUserDialog()
+        private readonly IUsersService _usersService;
+
+        public NewUserDialog(IUsersService usersService)
         {
             step = 1;
             activate = false;
+            _usersService = usersService;
         }
 
         public bool CanHandleUpdate(IBot bot, Update update)
@@ -44,6 +50,8 @@ namespace EstateOwners.TelegramBot
                     return await Step4(bot, update);
                 case 5:
                     return await Step5(bot, update);
+                case 6:
+                    return await Step6(bot, update);
 
                 default:
                     throw new System.Exception("Step not supported");
@@ -60,12 +68,12 @@ namespace EstateOwners.TelegramBot
             var myInlineKeyboard = new InlineKeyboardMarkup()
             {
                 InlineKeyboard = new InlineKeyboardButton[][]
-                 {
-                         new InlineKeyboardButton[]
-                         {
-                             InlineKeyboardButton.WithCallbackData("Зарегистрироваться","register"),
-                         }
-                 }
+                {
+                    new InlineKeyboardButton[]
+                    {
+                        InlineKeyboardButton.WithCallbackData("Зарегистрироваться","register"),
+                    }
+                }
             };
 
             await bot.Client.SendTextMessageAsync(
@@ -83,7 +91,7 @@ namespace EstateOwners.TelegramBot
 
             await bot.Client.SendTextMessageAsync(
                 cq.Message.Chat.Id,
-                "Введите ваше ФИО");
+                "Введите ваш email");
 
             step++;
             return UpdateHandlingResult.Handled;
@@ -91,28 +99,11 @@ namespace EstateOwners.TelegramBot
 
         public async Task<UpdateHandlingResult> Step3(IBot bot, Update update)
         {
-            fio = update.Message.Text;
-
-            var myInlineKeyboard = new InlineKeyboardMarkup()
-            {
-                InlineKeyboard = new InlineKeyboardButton[][]
-                 {
-                    new InlineKeyboardButton[]
-                    {
-                        InlineKeyboardButton.WithCallbackData("1"),
-                        InlineKeyboardButton.WithCallbackData("2"),
-                        InlineKeyboardButton.WithCallbackData("3"),
-                        InlineKeyboardButton.WithCallbackData("4"),
-                        InlineKeyboardButton.WithCallbackData("5"),
-                        InlineKeyboardButton.WithCallbackData("6"),
-                    }
-                 }
-            };
+            _email = update.Message.Text;
 
             await bot.Client.SendTextMessageAsync(
-                    update.Message.Chat.Id,
-                    "В каком литере у вас недвижимость. Если у вас несколько объектов, добавьте их по очереди",
-                    replyMarkup: myInlineKeyboard);
+                update.Message.Chat.Id,
+                "Введите вашу фамилию");
 
             step++;
             return UpdateHandlingResult.Handled;
@@ -120,32 +111,57 @@ namespace EstateOwners.TelegramBot
 
         public async Task<UpdateHandlingResult> Step4(IBot bot, Update update)
         {
-            CallbackQuery cq = update.CallbackQuery;
-
-            liter = Convert.ToInt32(cq.Data);
+            _lastName = update.Message.Text;
 
             await bot.Client.SendTextMessageAsync(
-                    cq.Message.Chat.Id,
-                    "Введите номер апартамента");
+                update.Message.Chat.Id,
+                "Введите ваше имя");
 
             step++;
-
             return UpdateHandlingResult.Handled;
         }
 
         public async Task<UpdateHandlingResult> Step5(IBot bot, Update update)
         {
-            apartament = Convert.ToInt32(update.Message.Text);
+            _firstName = update.Message.Text;
 
             await bot.Client.SendTextMessageAsync(
                 update.Message.Chat.Id,
-                "Ваши данные: " + fio + " " + liter + "-" + apartament);
+                "Введите ваше отчество");
+
+            step++;
+            return UpdateHandlingResult.Handled;
+        }
+
+        public async Task<UpdateHandlingResult> Step6(IBot bot, Update update)
+        {
+            _middleName = update.Message.Text;
+
+            var result = await _usersService.CreateUserAsync(_email, update.Message.Chat.Id.ToString(), AuthTokenType.TelegramChatId);
+            if (!result.Succeeded)
+            {
+                await bot.Client.SendTextMessageAsync(
+                    update.Message.Chat.Id,
+                    "Не удалось вас зарегестрировать, попробуйте позже или свяжитесь с администратором.");
+
+                activate = false;
+                step = 1;
+
+                return UpdateHandlingResult.Handled;
+            }
+
+            await bot.Client.SendTextMessageAsync(
+                update.Message.Chat.Id,
+                "Мы вас зарегестрировали");
+
+            await bot.Client.SendTextMessageAsync(
+                update.Message.Chat.Id,
+                "Добавьте свой объект недвижимости. Если у вас несколько объектов, добавьте их по очереди");
 
             activate = false;
             step = 1;
-            StartCommand.authorized = true;
 
-            MainDialog.activate = true;
+            NewEstateDialog.activate = true;
 
             return UpdateHandlingResult.Continue;
         }

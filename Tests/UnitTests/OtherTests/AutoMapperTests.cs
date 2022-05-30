@@ -4,7 +4,7 @@ using EstateOwners.WebApi;
 using EstateOwners.Infrastructure;
 using NUnit.Framework;
 
-namespace EstateOwners.WebApi.UnitTests
+namespace EstateOwners.UnitTests
 {
     public class AutoMapperTests
     {

@@ -1,52 +1,70 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using EstateOwners.Domain;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using EstateOwners.Domain;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Authentication;
 using System.Threading.Tasks;
 
 namespace EstateOwners.App
 {
-	public class UsersService : IUsersService
+    public class UsersService : IUsersService
 	{
 		private readonly UserManager<ApplicationUser> _userManager;
-		private readonly DataAccessLayer _dal;
+		private readonly IAuthTokenService _authTokenService;
+		private readonly IApplicationDbContext _context;
 
-		public UsersService(UserManager<ApplicationUser> userManager, DataAccessLayer dal)
-		{
-			_userManager = userManager;
-			_dal = dal;
-		}
+		public UsersService(UserManager<ApplicationUser> userManager, IAuthTokenService authTokenService, IApplicationDbContext context)
+        {
+            _userManager = userManager;
+            _authTokenService = authTokenService;
+            _context = context;
+        }
 
-		public async Task<List<ApplicationUser>> GetListAsync()
+        public async Task<List<ApplicationUser>> GetListAsyncAsync()
 		{
 			return await _userManager.Users.ToListAsync();
 		}
 
-		public async Task<ApplicationUser> GetById(string userId)
+		public async Task<ApplicationUser> GetByIdAsync(string userId)
 		{
 			return await _userManager.FindByIdAsync(userId);
 		}
 
-		public async Task<bool> IsAdmin(ApplicationUser user)
+		public async Task<bool> IsAdminAsync(ApplicationUser user)
 		{
 			return await _userManager.IsInRoleAsync(user, Role.Admin);
 		}
 
-		public async Task<ApplicationUser> GetByTelegramChatIdAsync(long chatId)
+		public async Task<ApplicationUser> GetByAuthTokenAsync(string token, AuthTokenType type)
 		{
-			var token = await _dal.AuthTokens.FindAnyToken(chatId.ToString());
+			var authToken = await _context.AuthTokens.FirstOrDefaultAsync(x => x.Token == token && x.Type == type);
 
-			if (token != null && token.Type == AuthTokenType.TelegramChatId)
-				return token.User;
+			if (authToken != null)
+				return authToken.User;
 
 			return null;
 		}
 
-		public async Task<IdentityResult> CreateAccount(ApplicationUser user, string password)
+		public async Task<IdentityResult> CreateUserAsync(string email, string password)
 		{
+			var user = new ApplicationUser(new Trustee(), email);
+			await _context.SaveChangesAsync();
+
 			return await _userManager.CreateAsync(user, password);
+		}
+
+		public async Task<IdentityResult> CreateUserAsync(string email, string token, AuthTokenType tokenType)
+		{
+			var user = new ApplicationUser(new Trustee(), email);
+			await _context.SaveChangesAsync();
+
+			var identity = await _userManager.CreateAsync(user);
+
+			if (identity.Succeeded)
+			{
+				await _authTokenService.AddToken(user.Id, token, tokenType);
+			}
+
+			return identity;
 		}
 	}
 }

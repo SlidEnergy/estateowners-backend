@@ -1,6 +1,7 @@
 ﻿using EstateOwners.App;
+using EstateOwners.WebApi;
 
-namespace EstateOwners.WebApi.UnitTests
+namespace EstateOwners.UnitTests
 {
 	/// <summary>
 	/// Создает объекты с настройками приложения.

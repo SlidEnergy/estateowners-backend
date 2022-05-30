@@ -8,7 +8,7 @@ using EstateOwners.Domain;
 using Microsoft.AspNetCore.Identity;
 using System;
 
-namespace EstateOwners.WebApi.UnitTests
+namespace EstateOwners.UnitTests
 {
 	public class TestsBase
 	{
@@ -39,7 +39,7 @@ namespace EstateOwners.WebApi.UnitTests
 			_db.Trustee.Add(trustee);
 
 			var userName = Guid.NewGuid() + "@mail.com";
-			_user = new ApplicationUser() { Email = userName, UserName = userName, TrusteeId = trustee.Id, Trustee = trustee };
+			_user = new ApplicationUser(trustee, userName);
 			_db.Users.Add(_user);
 			
 			_db.UserRoles.Add(new IdentityUserRole<string>() { RoleId = role.Id, UserId = _user.Id });
