@@ -40,7 +40,7 @@ namespace EstateOwners.TelegramBot
 
             if (user == null)
             {
-                context.ReplaceDialog<NewUserDialog>();
+                await context.ReplaceDialogAsync<NewUserDialog>();
                 return;
             }
 

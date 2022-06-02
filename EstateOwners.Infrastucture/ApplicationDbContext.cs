@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using EstateOwners.App;
 using EstateOwners.Domain;
+using EstateOwners.Domain.Signing;
 
 namespace EstateOwners.Infrastructure
 {
@@ -33,5 +34,9 @@ namespace EstateOwners.Infrastructure
         public DbSet<Building> Buildings { get; set; }
 
         public DbSet<ResidentialComplex> ResidentialComplexes { get; set; }
+
+        public DbSet<MessageToSign> MessagesToSign { get; set; }
+
+        public DbSet<UserSignature> UserSignatures { get; set; }
     }
 }

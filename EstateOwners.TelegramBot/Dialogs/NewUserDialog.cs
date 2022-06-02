@@ -137,7 +137,7 @@ namespace EstateOwners.TelegramBot
                 msg.Chat.Id,
                 "Добавьте свой объект недвижимости. Если у вас несколько объектов, добавьте их по очереди");
 
-            context.ReplaceDialog<NewEstateDialog>();
+            await context.ReplaceDialogAsync<NewEstateDialog>();
         }
     }
 }

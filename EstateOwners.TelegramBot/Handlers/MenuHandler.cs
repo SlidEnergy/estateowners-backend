@@ -50,6 +50,11 @@ namespace EstateOwners.TelegramBot
                 await context.SendEstateListAsync(context.GetChatId().Value);
             }
 
+            if (msg.Text == "Документы на подпись")
+            {
+                _dialogManager.SetActiveDialog<MessagesToSignDialog>(context.GetChatId().Value);
+            }
+
             await next(context);
         }
     }

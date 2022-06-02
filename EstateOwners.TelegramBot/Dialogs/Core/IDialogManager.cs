@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstractions;
 
 namespace EstateOwners.TelegramBot.Dialogs.Core
 {
@@ -6,12 +8,12 @@ namespace EstateOwners.TelegramBot.Dialogs.Core
     {
         DialogState GetUserState(long userId);
 
-        void SetUserState(long userId, DialogState userState);
+        DialogState SetActiveDialog(long userId, Type dialog);
 
-        void SetActiveDialog(long userId, Type dialog);
-
-        void SetActiveDialog<T>(long userId) where T : DialogBase;
+        DialogState SetActiveDialog<T>(long userId) where T : DialogBase;
 
         void ClearActiveDialog(long userId);
+
+        Task RunDialogAsync(Type dialog, DialogState state, IUpdateContext context);
     }
 }

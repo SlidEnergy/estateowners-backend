@@ -10,6 +10,7 @@ namespace EstateOwners.App
 			services.AddScoped<IAuthTokenService, AuthTokenService>();
 			services.AddScoped<IEstatesService, EstatesService>();
 			services.AddScoped<IBuildingsService, BuildingsService>();
+			services.AddScoped<ISigningService, SigningService>();
 
 			return services;
 		}

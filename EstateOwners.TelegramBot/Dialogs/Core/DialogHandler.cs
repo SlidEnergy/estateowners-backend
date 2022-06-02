@@ -34,11 +34,7 @@ namespace EstateOwners.TelegramBot.Dialogs.Core
                 return;
             }
 
-            var dialog = (DialogBase)context.Services.GetService(state.ActiveDialog);
-
-            var dialogContext = new DialogContext(dialog, _dialogManager, context, state);
-
-            await dialog.HandleAsync(dialogContext);
+            await _dialogManager.RunDialogAsync(state.ActiveDialog, state, context);
 
             await next(context);
         }
@@ -62,12 +58,12 @@ namespace EstateOwners.TelegramBot.Dialogs.Core
     {
         private Dictionary<long, DialogState> _states = new Dictionary<long, DialogState>();
 
-        public void SetActiveDialog<T>(long userId) where T : DialogBase
+        public DialogState SetActiveDialog<T>(long userId) where T : DialogBase
         {
-            SetActiveDialog(userId, typeof(T));
+            return SetActiveDialog(userId, typeof(T));
         }
 
-        public void SetActiveDialog(long userId, Type dialog)
+        public DialogState SetActiveDialog(long userId, Type dialog)
         {
             if (userId <= 0)
                 throw new ArgumentException("User is not defined", nameof(userId));
@@ -75,7 +71,11 @@ namespace EstateOwners.TelegramBot.Dialogs.Core
             if (!typeof(DialogBase).IsAssignableFrom(dialog))
                 throw new ArgumentException("Dialog type must be child of DialogBase", nameof(dialog));
 
-            _states[userId] = new DialogState(dialog);
+            var state = new DialogState(dialog);
+
+            _states[userId] = state;
+
+            return state;
         }
 
         public void ClearActiveDialog(long userId)
@@ -94,9 +94,13 @@ namespace EstateOwners.TelegramBot.Dialogs.Core
             return null;
         }
 
-        public void SetUserState(long userId, DialogState state)
+        public async Task RunDialogAsync(Type dialog, DialogState state, IUpdateContext context)
         {
-            _states[userId] = state;
+            var instance = (DialogBase)context.Services.GetService(dialog);
+
+            var dialogContext = new DialogContext(instance, this, context, state);
+
+            await instance.HandleAsync(dialogContext);
         }
     }
 
@@ -119,14 +123,16 @@ namespace EstateOwners.TelegramBot.Dialogs.Core
             State = state;
         }
 
-        public void ReplaceDialog(Type dialog)
+        public async Task ReplaceDialogAsync(Type dialog)
         {
-            _dialogManager.SetActiveDialog(ChatId, dialog);
+            var state = _dialogManager.SetActiveDialog(ChatId, dialog);
+
+            await _dialogManager.RunDialogAsync(dialog, state, this);
         }
 
-        public void ReplaceDialog<T>() where T : DialogBase
+        public async Task ReplaceDialogAsync<T>() where T : DialogBase
         {
-            _dialogManager.SetActiveDialog(ChatId, typeof(T));
+            await ReplaceDialogAsync(typeof(T));
         }
 
         public void EndDialog()

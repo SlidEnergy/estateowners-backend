@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using EstateOwners.Domain;
 using System.Threading;
 using System.Threading.Tasks;
+using EstateOwners.Domain.Signing;
 
 namespace EstateOwners.App
 {
@@ -23,6 +24,10 @@ namespace EstateOwners.App
 		DbSet<Building> Buildings{ get; set; }
 
 		DbSet<ResidentialComplex> ResidentialComplexes { get; set; }
+
+		DbSet<MessageToSign> MessagesToSign { get; set; }
+
+		DbSet<UserSignature> UserSignatures { get; set; }
 
 		Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
 	}

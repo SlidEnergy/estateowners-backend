@@ -35,6 +35,8 @@ namespace EstateOwners.TelegramBot
             services.AddSingleton<IDialogManager, DialogManager>();
             services.AddScoped<NewUserDialog>();
             services.AddScoped<NewEstateDialog>();
+            services.AddScoped<MessagesToSignDialog>();
+            services.AddScoped<AddMessageToSignDialog>();
 
             services.AddTelegramBot<EstateOwnersBot>(botOptions);
                 //.AddUpdateHandler<StartCommand>()
