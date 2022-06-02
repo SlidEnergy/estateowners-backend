@@ -1,17 +1,22 @@
 ﻿using EstateOwners.App;
+using EstateOwners.TelegramBot.Dialogs.Core;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstractions;
 
 namespace EstateOwners.TelegramBot
 {
-    internal class MenuDialog : DialogBase
+    internal class MenuHandler : UpdateHandlerBase
     {
         private readonly IUsersService _usersService;
+        private readonly IDialogManager _dialogManager;
+        private readonly IMenuRenderer _menuRenderer;
 
-        public MenuDialog(IUsersService usersService)
+        public MenuHandler(IUsersService usersService, IDialogManager dialogManager, IMenuRenderer menuRenderer)
         {
             _usersService = usersService;
+            _dialogManager = dialogManager;
+            _menuRenderer = menuRenderer;
         }
 
         public override bool CanHandle(IUpdateContext context)
@@ -30,31 +35,14 @@ namespace EstateOwners.TelegramBot
 
             if (user == null)
             {
-                activate = true;
+                await _menuRenderer.ClearMenu(context);
                 await next(context);
                 return;
             }
 
-            switch (step)
-            {
-                case 1:
-                    await Step1(context, next);
-                    break;
-
-                default:
-                    throw new System.Exception("Step is not supported");
-            }
-        }
-
-        public async Task Step1(IUpdateContext context, UpdateDelegate next)
-        {
-            var msg = context.GetMessage();
-
             if (msg.Text == "Добавить объект недвижимости")
             {
-                step = 1;
-                await next.ReplaceDialogAsync<NewEstateDialog>(context);
-                return;
+                _dialogManager.SetActiveDialog<NewEstateDialog>(context.GetChatId().Value);
             }
 
             if (msg.Text == "Сайт")
@@ -64,7 +52,6 @@ namespace EstateOwners.TelegramBot
                     "Вы выбрали сайт");
             }
 
-            step = 1;
             await next(context);
         }
     }

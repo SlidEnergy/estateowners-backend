@@ -1,8 +1,9 @@
 ﻿using EstateOwners.App;
 using EstateOwners.Domain;
+using EstateOwners.TelegramBot.Dialogs.Core;
+using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework;
-using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 
@@ -10,65 +11,29 @@ namespace EstateOwners.TelegramBot
 {
     internal class NewUserDialog : DialogBase
     {
-        string _email;
-        string _firstName;
-        string _middleName;
-        string _lastName;
-
         private readonly IUsersService _usersService;
+        private readonly IMenuRenderer _menuRenderer;
+        private readonly IDialogManager _dialogManager;
 
-        public NewUserDialog(IUsersService usersService)
+        public NewUserDialog(IUsersService usersService, IMenuRenderer menuRenderer, IDialogManager dialogManager)
         {
             _usersService = usersService;
+            _menuRenderer = menuRenderer;
+            _dialogManager = dialogManager;
+
+            AddStep(Step1);
+            AddStep(Step2);
+            AddStep(Step3);
+            AddStep(Step4);
+            AddStep(Step5);
+            AddStep(Step6);
         }
 
-        public override bool CanHandle(IUpdateContext context)
-        {
-            return true;
-        }
-
-        public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next)
-        {
-            if (!activate)
-            {
-                await next(context);
-                return;
-            }
-
-            switch (step)
-            {
-                case 1:
-                    await Step1(context, next);
-                    break;
-                case 2:
-                    await Step2(context, next);
-                    break;
-                case 3:
-                    await Step3(context, next);
-                    break;
-                case 4:
-                    await Step4(context, next);
-                    break;
-                case 5:
-                    await Step5(context, next);
-                    break;
-                case 6:
-                    await Step6(context, next);
-                    break;
-
-                default:
-                    throw new System.Exception("Step not supported");
-            }
-        }
-
-        public async Task Step1(IUpdateContext context, UpdateDelegate next)
+        public async Task Step1(DialogContext context, CancellationToken cancellationToken)
         {
             var msg = context.GetMessage();
 
-            await context.Bot.Client.SendTextMessageAsync(
-                    msg.Chat.Id,
-                    "Мы вас не знаем",
-                    replyMarkup: new ReplyKeyboardRemove());
+            await _menuRenderer.ClearMenu(context);
 
             var myInlineKeyboard = new InlineKeyboardMarkup(new InlineKeyboardButton[][]
                 {
@@ -84,10 +49,10 @@ namespace EstateOwners.TelegramBot
                 "Чтобы продолжить пользоваться, вы должны зарегестрироваться",
                 replyMarkup: myInlineKeyboard);
 
-            step++;
+            context.NextStep();
         }
 
-        public async Task Step2(IUpdateContext context, UpdateDelegate next)
+        public async Task Step2(DialogContext context, CancellationToken cancellationToken)
         {
             CallbackQuery cq = context.Update.CallbackQuery;
 
@@ -95,71 +60,72 @@ namespace EstateOwners.TelegramBot
                 cq.Message.Chat.Id,
                 "Введите ваш email");
 
-            step++;
+            context.NextStep();
         }
 
-        public async Task Step3(IUpdateContext context, UpdateDelegate next)
+        public async Task Step3(DialogContext context, CancellationToken cancellationToken)
         {
             var msg = context.GetMessage();
 
-            _email = msg.Text;
+            context.Values["email"] = msg.Text;
 
             await context.Bot.Client.SendTextMessageAsync(
                 msg.Chat.Id,
                 "Введите вашу фамилию");
 
-            step++;
+            context.NextStep();
         }
 
-        public async Task Step4(IUpdateContext context, UpdateDelegate next)
+        public async Task Step4(DialogContext context, CancellationToken cancellationToken)
         {
             var msg = context.GetMessage();
 
-            _lastName = msg.Text;
+            context.Values["lastName"] = msg.Text;
 
             await context.Bot.Client.SendTextMessageAsync(
                 msg.Chat.Id,
                 "Введите ваше имя");
 
-            step++;
+            context.NextStep();
         }
 
-        public async Task Step5(IUpdateContext context, UpdateDelegate next)
+        public async Task Step5(DialogContext context, CancellationToken cancellationToken)
         {
             var msg = context.GetMessage();
 
-            _firstName = msg.Text;
+            context.Values["firstName"] = msg.Text;
 
             await context.Bot.Client.SendTextMessageAsync(
                 msg.Chat.Id,
                 "Введите ваше отчество");
 
-            step++;
+            context.NextStep();
         }
 
-        public async Task Step6(IUpdateContext context, UpdateDelegate next)
+        public async Task Step6(DialogContext context, CancellationToken cancellationToken)
         {
             var msg = context.GetMessage();
 
-            _middleName = msg.Text;
+            var middleName = msg.Text;
+            var email = (string)context.Values["email"];
+            var firstName = (string)context.Values["firstName"];
+            var lastName = (string)context.Values["lastName"];
 
-            var user = new ApplicationUser(new Trustee(), _email)
+            var user = new ApplicationUser(new Trustee(), email)
             {
-                FirstName = _firstName,
-                MiddleName = _middleName,
-                LastName = _lastName
+                FirstName = firstName,
+                MiddleName = middleName,
+                LastName = lastName
             };
 
-            var result = await _usersService.CreateUserAsync(_email, msg.Chat.Id.ToString(), AuthTokenType.TelegramChatId);
+            var result = await _usersService.CreateUserAsync(email, msg.Chat.Id.ToString(), AuthTokenType.TelegramChatId);
             if (!result.Succeeded)
             {
                 await context.Bot.Client.SendTextMessageAsync(
                     msg.Chat.Id,
                     "Не удалось вас зарегестрировать, попробуйте позже или свяжитесь с администратором.");
 
-                activate = false;
-                step = 1;
-
+                context.EndDialog();
                 return;
             }
 
@@ -171,10 +137,7 @@ namespace EstateOwners.TelegramBot
                 msg.Chat.Id,
                 "Добавьте свой объект недвижимости. Если у вас несколько объектов, добавьте их по очереди");
 
-            activate = false;
-            step = 1;
-
-            await next.ReplaceDialogAsync<NewEstateDialog>(context);
+            context.ReplaceDialog<NewEstateDialog>();
         }
     }
 }

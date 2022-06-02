@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using EstateOwners.TelegramBot.Dialogs.Core;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -29,6 +30,11 @@ namespace EstateOwners.TelegramBot
                     Username = Environment.GetEnvironmentVariable("BOT_NAME"),
                 };
             }
+
+            services.AddTransient<IMenuRenderer, MenuRenderer>();
+            services.AddSingleton<IDialogManager, DialogManager>();
+            services.AddScoped<NewUserDialog>();
+            services.AddScoped<NewEstateDialog>();
 
             services.AddTelegramBot<EstateOwnersBot>(botOptions);
                 //.AddUpdateHandler<StartCommand>()
@@ -74,10 +80,8 @@ namespace EstateOwners.TelegramBot
                 var botBuilder = new BotBuilder()
                     .Use<ExceptionHandler>()
                     .Use<StartCommand>()
-                    .Use<MainDialog>()
-                    .Use<MenuDialog>()
-                    .Use<NewUserDialog>()
-                    .Use<NewEstateDialog>()
+                    .Use<MenuHandler>()
+                    .Use<DialogHandler>()
                     .Build();
 
                 // get bot updates from Telegram via long-polling approach during development

@@ -1,37 +1,16 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace EstateOwners.TelegramBot
 {
-    internal class MainDialog : DialogBase
+    public class MenuRenderer : IMenuRenderer
     {
-        public override bool CanHandle(IUpdateContext context)
-        {
-            return true;
-        }
-
-        public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next)
-        {
-            if (!activate)
-            {
-                await next(context);
-                return;
-            }
-
-            switch (step)
-            {
-                case 1:
-                    await Step1(context, next);
-                    break;
-
-                default:
-                    throw new System.Exception("Step not supported");
-            }
-        }
-
-        public async Task Step1(IUpdateContext context, UpdateDelegate next)
+        public async Task RenderMenu(IUpdateContext context)
         {
             var msg = context.GetMessage();
 
@@ -51,11 +30,16 @@ namespace EstateOwners.TelegramBot
                 msg.Chat.Id,
                 "Добро пожаловать " + msg.Chat.FirstName,
                 replyMarkup: myReplyKeyboard);
+        }
 
-            step = 1;
-            activate = false;
+        public async Task ClearMenu(IUpdateContext context)
+        {
+            var msg = context.GetMessage();
 
-            await next.ReplaceDialogAsync<MenuDialog>(context);
+            await context.Bot.Client.SendTextMessageAsync(
+                msg.Chat.Id,
+                "Мы вас не знаем",
+                replyMarkup: new ReplyKeyboardRemove());
         }
     }
 }
