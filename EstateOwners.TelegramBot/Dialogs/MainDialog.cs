@@ -1,48 +1,40 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstractions;
-using Telegram.Bot.Types;
-using Telegram.Bot.Types.InlineKeyboardButtons;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace EstateOwners.TelegramBot
 {
-    internal class MainDialog : IUpdateHandler
+    internal class MainDialog : DialogBase
     {
-        int step = 1;
-        public static bool activate = false;
-
-        public MainDialog()
-        {
-            step = 1;
-            activate = false;
-        }
-
-        public bool CanHandleUpdate(IBot bot, Update update)
+        public override bool CanHandle(IUpdateContext context)
         {
             return true;
         }
 
-        public async Task<UpdateHandlingResult> HandleUpdateAsync(IBot bot, Update update)
+        public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next)
         {
             if (!activate)
-                return UpdateHandlingResult.Continue;
+            {
+                await next(context);
+                return;
+            }
 
             switch (step)
             {
                 case 1:
-                    await Step1(bot, update);
+                    await Step1(context, next);
                     break;
 
                 default:
                     throw new System.Exception("Step not supported");
             }
-
-            return UpdateHandlingResult.Handled;
         }
 
-        public async Task Step1(IBot bot, Update update)
+        public async Task Step1(IUpdateContext context, UpdateDelegate next)
         {
+            var msg = context.GetMessage();
+
             var myReplyKeyboard = new ReplyKeyboardMarkup()
             {
                 Keyboard = new KeyboardButton[][]
@@ -55,14 +47,15 @@ namespace EstateOwners.TelegramBot
                     },
                 ResizeKeyboard = true
             };
-            await bot.Client.SendTextMessageAsync(
-                update.Message.Chat.Id,
-                "Добро пожаловать " + update.Message.Chat.FirstName,
+            await context.Bot.Client.SendTextMessageAsync(
+                msg.Chat.Id,
+                "Добро пожаловать " + msg.Chat.FirstName,
                 replyMarkup: myReplyKeyboard);
 
             step = 1;
             activate = false;
-            MenuDialog.activate = true;
+
+            await next.ReplaceDialogAsync<MenuDialog>(context);
         }
     }
 }

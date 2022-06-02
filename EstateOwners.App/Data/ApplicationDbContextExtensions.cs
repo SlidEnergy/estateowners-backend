@@ -1,15 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Org.BouncyCastle.Math.EC.Rfc7748;
-using EstateOwners.Domain;
+﻿using EstateOwners.Domain;
+using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace EstateOwners.App
 {
-	public static class ApplicationDbContextExtensions
+    public static class ApplicationDbContextExtensions
 	{
 		public static async Task<bool> IsAdmin(this IApplicationDbContext context, string userId)
 		{

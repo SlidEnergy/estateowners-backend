@@ -22,7 +22,7 @@ namespace EstateOwners.UnitTests
 		{
 			return new TelegramBotSettings()
 			{
-				BotUserName = "SlidTestBot",
+				Username = "SlidTestBot",
 				ApiToken = "1062716492:AAE74DajBXwMfMkquCyoFG1PcFJcUgQ4zW0"
 			};
 		}

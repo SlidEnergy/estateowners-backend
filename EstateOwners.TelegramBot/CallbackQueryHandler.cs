@@ -1,40 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstractions;
-using Telegram.Bot.Types;
 
 namespace EstateOwners.TelegramBot
 {
-    public class CallbackQueryHandler : IUpdateHandler
+    public class CallbackQueryHandler : UpdateHandlerBase
     {
-        public bool CanHandleUpdate(IBot bot, Update update)
+        public override bool CanHandle(IUpdateContext context)
         {
-            if (update.Message != null)
+            if (context.IsMessageUpdate())
                 return true;
 
             return false;
         }
 
-        public async Task<UpdateHandlingResult> HandleUpdateAsync(IBot bot, Update update)
+        public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next)
         {
-            //if (update.Message.Text == "/start")
-            //{
-            //    await bot.Client.SendTextMessageAsync(
-            //                    update.Message.Chat.Id,
-            //                    "Приветствую. Описание бота.");
 
-            //    var authorized = update.Message.Chat.Id == 123;
 
-            //    if (!authorized)
-            //    {
-            //        NewUserDialog.activate = true;
-            //        return UpdateHandlingResult.Continue;
-            //    }
-            //}
-
-            return UpdateHandlingResult.Continue;
+            await next(context);
         }
     }
 }

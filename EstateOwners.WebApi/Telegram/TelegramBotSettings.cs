@@ -2,7 +2,7 @@
 {
 	public class TelegramBotSettings
 	{
-		public string BotUserName { get; set; }
+		public string Username { get; set; }
 		public string ApiToken { get; set; }
 	}
 }

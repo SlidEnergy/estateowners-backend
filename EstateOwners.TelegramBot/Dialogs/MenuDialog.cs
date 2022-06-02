@@ -1,78 +1,71 @@
 ﻿using EstateOwners.App;
-using System;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstractions;
-using Telegram.Bot.Types;
-using Telegram.Bot.Types.InlineKeyboardButtons;
-using Telegram.Bot.Types.ReplyMarkups;
 
 namespace EstateOwners.TelegramBot
 {
-    internal class MenuDialog : IUpdateHandler
+    internal class MenuDialog : DialogBase
     {
-        int step = 1;
-        public static bool activate = true;
-
-        string fio;
-        int liter;
-        int apartament;
-
         private readonly IUsersService _usersService;
 
         public MenuDialog(IUsersService usersService)
         {
-            step = 1;
-            activate = false;
             _usersService = usersService;
         }
 
-        public bool CanHandleUpdate(IBot bot, Update update)
+        public override bool CanHandle(IUpdateContext context)
         {
-            if (update.Message != null)
+            if (context.IsMessageUpdate())
                 return true;
 
             return false;
         }
 
-        public async Task<UpdateHandlingResult> HandleUpdateAsync(IBot bot, Update update)
+        public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next)
         {
-            var user = await _usersService.GetByAuthTokenAsync(update.Message.Chat.Id.ToString(), Domain.AuthTokenType.TelegramChatId);
+            var msg = context.GetMessage();
+
+            var user = await _usersService.GetByAuthTokenAsync(msg.Chat.Id.ToString(), Domain.AuthTokenType.TelegramChatId);
 
             if (user == null)
             {
                 activate = true;
-                return UpdateHandlingResult.Continue;
+                await next(context);
+                return;
             }
 
             switch (step)
             {
                 case 1:
-                    return await Step1(bot, update);
+                    await Step1(context, next);
+                    break;
 
                 default:
-                    throw new System.Exception("Step not supported");
+                    throw new System.Exception("Step is not supported");
             }
         }
 
-        public async Task<UpdateHandlingResult> Step1(IBot bot, Update update)
+        public async Task Step1(IUpdateContext context, UpdateDelegate next)
         {
-            if (update.Message.Text == "Добавить объект недвижимости")
+            var msg = context.GetMessage();
+
+            if (msg.Text == "Добавить объект недвижимости")
             {
                 step = 1;
-                NewEstateDialog.activate = true;
-                return UpdateHandlingResult.Continue;
+                await next.ReplaceDialogAsync<NewEstateDialog>(context);
+                return;
             }
 
-            if (update.Message.Text == "Сайт")
+            if (msg.Text == "Сайт")
             {
-                await bot.Client.SendTextMessageAsync(
-                    update.Message.Chat.Id,
+                await context.Bot.Client.SendTextMessageAsync(
+                    msg.Chat.Id,
                     "Вы выбрали сайт");
             }
 
-
             step = 1;
-            return UpdateHandlingResult.Continue;
+            await next(context);
         }
     }
 }

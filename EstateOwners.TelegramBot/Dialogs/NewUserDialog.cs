@@ -1,19 +1,15 @@
 ﻿using EstateOwners.App;
 using EstateOwners.Domain;
-using System;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.InlineKeyboardButtons;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace EstateOwners.TelegramBot
 {
-    internal class NewUserDialog : IUpdateHandler
+    internal class NewUserDialog : DialogBase
     {
-        int step = 1;
-        public static bool activate = false;
-
         string _email;
         string _firstName;
         string _middleName;
@@ -23,147 +19,162 @@ namespace EstateOwners.TelegramBot
 
         public NewUserDialog(IUsersService usersService)
         {
-            step = 1;
-            activate = false;
             _usersService = usersService;
         }
 
-        public bool CanHandleUpdate(IBot bot, Update update)
+        public override bool CanHandle(IUpdateContext context)
         {
             return true;
         }
 
-        public async Task<UpdateHandlingResult> HandleUpdateAsync(IBot bot, Update update)
+        public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next)
         {
             if (!activate)
-                return UpdateHandlingResult.Continue;
+            {
+                await next(context);
+                return;
+            }
 
             switch (step)
             {
                 case 1:
-                    return await Step1(bot, update);
+                    await Step1(context, next);
+                    break;
                 case 2:
-                    return await Step2(bot, update);
+                    await Step2(context, next);
+                    break;
                 case 3:
-                    return await Step3(bot, update);
+                    await Step3(context, next);
+                    break;
                 case 4:
-                    return await Step4(bot, update);
+                    await Step4(context, next);
+                    break;
                 case 5:
-                    return await Step5(bot, update);
+                    await Step5(context, next);
+                    break;
                 case 6:
-                    return await Step6(bot, update);
+                    await Step6(context, next);
+                    break;
 
                 default:
                     throw new System.Exception("Step not supported");
             }
         }
 
-        public async Task<UpdateHandlingResult> Step1(IBot bot, Update update)
+        public async Task Step1(IUpdateContext context, UpdateDelegate next)
         {
-            await bot.Client.SendTextMessageAsync(
-                    update.Message.Chat.Id,
+            var msg = context.GetMessage();
+
+            await context.Bot.Client.SendTextMessageAsync(
+                    msg.Chat.Id,
                     "Мы вас не знаем",
                     replyMarkup: new ReplyKeyboardRemove());
 
-            var myInlineKeyboard = new InlineKeyboardMarkup()
-            {
-                InlineKeyboard = new InlineKeyboardButton[][]
+            var myInlineKeyboard = new InlineKeyboardMarkup(new InlineKeyboardButton[][]
                 {
                     new InlineKeyboardButton[]
                     {
                         InlineKeyboardButton.WithCallbackData("Зарегистрироваться","register"),
                     }
                 }
-            };
+            );
 
-            await bot.Client.SendTextMessageAsync(
-                update.Message.Chat.Id,
+            await context.Bot.Client.SendTextMessageAsync(
+                msg.Chat.Id,
                 "Чтобы продолжить пользоваться, вы должны зарегестрироваться",
                 replyMarkup: myInlineKeyboard);
 
             step++;
-            return UpdateHandlingResult.Handled;
         }
 
-        public async Task<UpdateHandlingResult> Step2(IBot bot, Update update)
+        public async Task Step2(IUpdateContext context, UpdateDelegate next)
         {
-            CallbackQuery cq = update.CallbackQuery;
+            CallbackQuery cq = context.Update.CallbackQuery;
 
-            await bot.Client.SendTextMessageAsync(
+            await context.Bot.Client.SendTextMessageAsync(
                 cq.Message.Chat.Id,
                 "Введите ваш email");
 
             step++;
-            return UpdateHandlingResult.Handled;
         }
 
-        public async Task<UpdateHandlingResult> Step3(IBot bot, Update update)
+        public async Task Step3(IUpdateContext context, UpdateDelegate next)
         {
-            _email = update.Message.Text;
+            var msg = context.GetMessage();
 
-            await bot.Client.SendTextMessageAsync(
-                update.Message.Chat.Id,
+            _email = msg.Text;
+
+            await context.Bot.Client.SendTextMessageAsync(
+                msg.Chat.Id,
                 "Введите вашу фамилию");
 
             step++;
-            return UpdateHandlingResult.Handled;
         }
 
-        public async Task<UpdateHandlingResult> Step4(IBot bot, Update update)
+        public async Task Step4(IUpdateContext context, UpdateDelegate next)
         {
-            _lastName = update.Message.Text;
+            var msg = context.GetMessage();
 
-            await bot.Client.SendTextMessageAsync(
-                update.Message.Chat.Id,
+            _lastName = msg.Text;
+
+            await context.Bot.Client.SendTextMessageAsync(
+                msg.Chat.Id,
                 "Введите ваше имя");
 
             step++;
-            return UpdateHandlingResult.Handled;
         }
 
-        public async Task<UpdateHandlingResult> Step5(IBot bot, Update update)
+        public async Task Step5(IUpdateContext context, UpdateDelegate next)
         {
-            _firstName = update.Message.Text;
+            var msg = context.GetMessage();
 
-            await bot.Client.SendTextMessageAsync(
-                update.Message.Chat.Id,
+            _firstName = msg.Text;
+
+            await context.Bot.Client.SendTextMessageAsync(
+                msg.Chat.Id,
                 "Введите ваше отчество");
 
             step++;
-            return UpdateHandlingResult.Handled;
         }
 
-        public async Task<UpdateHandlingResult> Step6(IBot bot, Update update)
+        public async Task Step6(IUpdateContext context, UpdateDelegate next)
         {
-            _middleName = update.Message.Text;
+            var msg = context.GetMessage();
 
-            var result = await _usersService.CreateUserAsync(_email, update.Message.Chat.Id.ToString(), AuthTokenType.TelegramChatId);
+            _middleName = msg.Text;
+
+            var user = new ApplicationUser(new Trustee(), _email)
+            {
+                FirstName = _firstName,
+                MiddleName = _middleName,
+                LastName = _lastName
+            };
+
+            var result = await _usersService.CreateUserAsync(_email, msg.Chat.Id.ToString(), AuthTokenType.TelegramChatId);
             if (!result.Succeeded)
             {
-                await bot.Client.SendTextMessageAsync(
-                    update.Message.Chat.Id,
+                await context.Bot.Client.SendTextMessageAsync(
+                    msg.Chat.Id,
                     "Не удалось вас зарегестрировать, попробуйте позже или свяжитесь с администратором.");
 
                 activate = false;
                 step = 1;
 
-                return UpdateHandlingResult.Handled;
+                return;
             }
 
-            await bot.Client.SendTextMessageAsync(
-                update.Message.Chat.Id,
+            await context.Bot.Client.SendTextMessageAsync(
+                msg.Chat.Id,
                 "Мы вас зарегестрировали");
 
-            await bot.Client.SendTextMessageAsync(
-                update.Message.Chat.Id,
+            await context.Bot.Client.SendTextMessageAsync(
+                msg.Chat.Id,
                 "Добавьте свой объект недвижимости. Если у вас несколько объектов, добавьте их по очереди");
 
             activate = false;
             step = 1;
 
-            NewEstateDialog.activate = true;
-
-            return UpdateHandlingResult.Continue;
+            await next.ReplaceDialogAsync<NewEstateDialog>(context);
         }
     }
 }

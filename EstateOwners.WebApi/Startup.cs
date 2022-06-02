@@ -303,7 +303,7 @@ namespace EstateOwners.WebApi
 				botSettings = new TelegramBotSettings ()
 				{
 					ApiToken = Environment.GetEnvironmentVariable("BOT_KEY"),
-					BotUserName = Environment.GetEnvironmentVariable("BOT_NAME"),
+					Username = Environment.GetEnvironmentVariable("BOT_NAME"),
 				};
 			}
 

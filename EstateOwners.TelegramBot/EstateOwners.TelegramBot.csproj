@@ -1,15 +1,23 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+	  <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Telegram.Bot.Framework" Version="1.1.4" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="5.0.0" />
+    <PackageReference Include="Telegram.Bot" Version="16.0.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\EstateOwners.App\EstateOwners.App.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Telegram.Bot.Framework">
+      <HintPath>..\..\Telegram.Bot.Framework\src\Telegram.Bot.Framework\bin\Debug\netstandard2.1\Telegram.Bot.Framework.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
