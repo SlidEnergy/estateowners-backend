@@ -1,11 +1,12 @@
 ﻿using EstateOwners.App;
+using EstateOwners.App.Signing;
 using EstateOwners.Domain;
 using EstateOwners.TelegramBot.Dialogs.Core;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework;
 
-namespace EstateOwners.TelegramBot
+namespace EstateOwners.TelegramBot.Dialogs.Signing
 {
     internal class AddMessageToSignDialog : DialogBase
     {

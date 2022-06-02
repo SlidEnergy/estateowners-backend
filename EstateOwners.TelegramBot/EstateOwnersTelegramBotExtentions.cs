@@ -1,4 +1,6 @@
 ﻿using EstateOwners.TelegramBot.Dialogs.Core;
+using EstateOwners.TelegramBot.Dialogs.Polls;
+using EstateOwners.TelegramBot.Dialogs.Signing;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -37,6 +39,8 @@ namespace EstateOwners.TelegramBot
             services.AddScoped<NewEstateDialog>();
             services.AddScoped<MessagesToSignDialog>();
             services.AddScoped<AddMessageToSignDialog>();
+            services.AddScoped<AddPollDialog>();
+            services.AddScoped<PollsDialog>();
 
             services.AddTelegramBot<EstateOwnersBot>(botOptions);
                 //.AddUpdateHandler<StartCommand>()

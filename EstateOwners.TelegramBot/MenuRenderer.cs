@@ -22,7 +22,8 @@ namespace EstateOwners.TelegramBot
                         },
                         new KeyboardButton[]
                         {
-                            new KeyboardButton("Документы на подпись")
+                            new KeyboardButton("Документы на подпись"),
+                            new KeyboardButton("Голосования")
                         }
                     },
                 ResizeKeyboard = true

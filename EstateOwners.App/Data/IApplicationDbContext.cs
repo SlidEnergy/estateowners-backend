@@ -29,6 +29,8 @@ namespace EstateOwners.App
 
 		DbSet<UserSignature> UserSignatures { get; set; }
 
+		DbSet<Poll> Polls { get; set; }
+
 		Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
 	}
 }

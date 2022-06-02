@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace EstateOwners.App
+namespace EstateOwners.App.Signing
 {
     public interface ISigningService
     {

@@ -38,5 +38,7 @@ namespace EstateOwners.Infrastructure
         public DbSet<MessageToSign> MessagesToSign { get; set; }
 
         public DbSet<UserSignature> UserSignatures { get; set; }
+
+        public DbSet<Poll> Polls { get; set; }
     }
 }

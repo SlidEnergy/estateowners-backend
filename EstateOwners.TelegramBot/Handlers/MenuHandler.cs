@@ -1,5 +1,7 @@
 ﻿using EstateOwners.App;
 using EstateOwners.TelegramBot.Dialogs.Core;
+using EstateOwners.TelegramBot.Dialogs.Polls;
+using EstateOwners.TelegramBot.Dialogs.Signing;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstractions;
@@ -30,6 +32,7 @@ namespace EstateOwners.TelegramBot
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next)
         {
             var msg = context.GetMessage();
+            var chatId = context.GetChatId().Value;
 
             var user = await _usersService.GetByAuthTokenAsync(msg.Chat.Id.ToString(), Domain.AuthTokenType.TelegramChatId);
 
@@ -42,17 +45,23 @@ namespace EstateOwners.TelegramBot
 
             if (msg.Text == "Добавить объект недвижимости")
             {
-                _dialogManager.SetActiveDialog<NewEstateDialog>(context.GetChatId().Value);
+                _dialogManager.SetActiveDialog<NewEstateDialog>(chatId);
             }
 
             if (msg.Text == "Мои объекты недвижимости")
             {
-                await context.SendEstateListAsync(context.GetChatId().Value);
+                await context.SendEstateListAsync(chatId);
+                _dialogManager.ClearActiveDialog(chatId);
             }
 
             if (msg.Text == "Документы на подпись")
             {
-                _dialogManager.SetActiveDialog<MessagesToSignDialog>(context.GetChatId().Value);
+                _dialogManager.SetActiveDialog<MessagesToSignDialog>(chatId);
+            }
+
+            if (msg.Text == "Голосования")
+            {
+                _dialogManager.SetActiveDialog<PollsDialog>(chatId);
             }
 
             await next(context);

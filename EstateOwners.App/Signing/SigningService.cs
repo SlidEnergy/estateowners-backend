@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace EstateOwners.App
+namespace EstateOwners.App.Signing
 {
     public class SigningService : ISigningService
     {

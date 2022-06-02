@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using EstateOwners.App.Polls;
+using EstateOwners.App.Signing;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace EstateOwners.App
 {
@@ -11,6 +13,7 @@ namespace EstateOwners.App
 			services.AddScoped<IEstatesService, EstatesService>();
 			services.AddScoped<IBuildingsService, BuildingsService>();
 			services.AddScoped<ISigningService, SigningService>();
+			services.AddScoped<IPollsService, PollsService>();
 
 			return services;
 		}

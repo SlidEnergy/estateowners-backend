@@ -1,4 +1,5 @@
 ﻿using EstateOwners.App;
+using EstateOwners.App.Signing;
 using EstateOwners.Domain;
 using EstateOwners.TelegramBot.Dialogs.Core;
 using System;
@@ -9,7 +10,7 @@ using Telegram.Bot.Framework;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace EstateOwners.TelegramBot
+namespace EstateOwners.TelegramBot.Dialogs.Signing
 {
     internal class MessagesToSignDialog : DialogBase
     {
