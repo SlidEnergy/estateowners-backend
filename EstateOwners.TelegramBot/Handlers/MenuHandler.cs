@@ -45,11 +45,9 @@ namespace EstateOwners.TelegramBot
                 _dialogManager.SetActiveDialog<NewEstateDialog>(context.GetChatId().Value);
             }
 
-            if (msg.Text == "Сайт")
+            if (msg.Text == "Мои объекты недвижимости")
             {
-                await context.Bot.Client.SendTextMessageAsync(
-                    msg.Chat.Id,
-                    "Вы выбрали сайт");
+                await context.SendEstateListAsync(context.GetChatId().Value);
             }
 
             await next(context);

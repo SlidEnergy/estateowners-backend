@@ -1,6 +1,8 @@
 ﻿using EstateOwners.Domain;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace EstateOwners.App
@@ -14,7 +16,7 @@ namespace EstateOwners.App
             _context = context;
         }
 
-        public async Task<Estate> AddEstate(string userId, int buildingId, EstateType type, string number)
+        public async Task<Estate> AddEstateAsync(string userId, int buildingId, EstateType type, string number)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
 
@@ -32,6 +34,12 @@ namespace EstateOwners.App
             await _context.SaveChangesAsync();
 
             return estate;
+        }
+
+        public async Task<List<Estate>> GetListWithAccessCheckAsync(string userId, CancellationToken cancellationToken = default)
+        {
+            return await _context.GetEstateListWithAccessCheckAsync(userId);
+
         }
     }
 }

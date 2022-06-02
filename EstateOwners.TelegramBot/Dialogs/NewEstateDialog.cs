@@ -138,7 +138,7 @@ namespace EstateOwners.TelegramBot
             var building = (Building)context.Values["building"];
             var number = msg.Text;
 
-            var estate = await _estatesService.AddEstate(user.Id, building.Id, type, number);
+            var estate = await _estatesService.AddEstateAsync(user.Id, building.Id, type, number);
 
             if (estate == null)
             {
@@ -185,6 +185,8 @@ namespace EstateOwners.TelegramBot
             await context.Bot.Client.SendTextMessageAsync(
                 cb.Message.Chat.Id,
                 "Добавление завершено");
+
+            await context.SendEstateListAsync(context.ChatId);
 
             context.EndDialog();
         }

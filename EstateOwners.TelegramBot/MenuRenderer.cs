@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -20,7 +17,7 @@ namespace EstateOwners.TelegramBot
                     {
                         new KeyboardButton[]
                         {
-                            new KeyboardButton("Сайт"),
+                            new KeyboardButton("Мои объекты недвижимости"),
                             new KeyboardButton("Добавить объект недвижимости")
                         }
                     },

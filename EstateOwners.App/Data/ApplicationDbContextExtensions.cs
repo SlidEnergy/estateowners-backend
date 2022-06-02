@@ -1,6 +1,8 @@
 ﻿using EstateOwners.Domain;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace EstateOwners.App
@@ -17,6 +19,18 @@ namespace EstateOwners.App
 			var userRole = await context.UserRoles.FirstOrDefaultAsync(x => x.RoleId == role.Id && x.UserId == userId);
 
 			return userRole == null ? false : true;
+		}
+
+		public static async Task<List<Estate>> GetEstateListWithAccessCheckAsync(this IApplicationDbContext context, string userId)
+		{
+			var user = await context.Users.FindAsync(userId);
+
+			var estates = await context.TrusteeEstates
+				.Where(x => x.TrusteeId == user.TrusteeId)
+				.Join(context.Estates, t => t.EstateId, e => e.Id, (t, e) => e)
+				.ToListAsync();
+
+			return estates;
 		}
 	}
 }

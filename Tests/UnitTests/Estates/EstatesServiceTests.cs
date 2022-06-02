@@ -33,7 +33,7 @@ namespace EstateOwners.UnitTests
 			var type = EstateType.Apartment;
 			var number = "324";
 
-			await _service.AddEstate(_user.Id, building.Id, type, number);
+			await _service.AddEstateAsync(_user.Id, building.Id, type, number);
 
 			var count = await _db.Estates.CountAsync();
 			Assert.AreEqual(1, count);
