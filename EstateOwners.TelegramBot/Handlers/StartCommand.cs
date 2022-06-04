@@ -35,13 +35,13 @@ namespace EstateOwners.TelegramBot
                 await _menuRenderer.ClearMenu(context);
 
                 _dialogManager.SetActiveDialog<NewUserDialog, NewUserDialogStore>(context.Update.Message.Chat.Id);
+                await next(context);
+                return;
             }
             else
             {
                 await _menuRenderer.RenderMenuAsync(context);
             }
-
-            await next(context);
         }
     }
 }
