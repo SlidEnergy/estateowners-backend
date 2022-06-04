@@ -144,6 +144,8 @@ namespace EstateOwners.TelegramBot
                 msg.Chat.Id,
                 "Мы вас зарегестрировали");
 
+            await _menuRenderer.RenderMenuAsync(context);
+
             await context.Bot.Client.SendTextMessageAsync(
                 msg.Chat.Id,
                 "Добавьте свой объект недвижимости. Если у вас несколько объектов, добавьте их по очереди");

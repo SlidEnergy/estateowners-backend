@@ -6,6 +6,6 @@ namespace EstateOwners.TelegramBot
     public interface IMenuRenderer
     {
         Task ClearMenu(IUpdateContext context);
-        Task RenderMenu(IUpdateContext context);
+        Task RenderMenuAsync(IUpdateContext context);
     }
 }

@@ -31,10 +31,12 @@ namespace EstateOwners.Infrastucture
 		{
 			_context.Database.EnsureCreated();
 
-			await CreateDefaultUserAndRole();
+			await CreateDefaultUserAndRoleAsync();
+
+			await CreateResidentialComplexAsync();
 		}
 
-		private async Task CreateDefaultUserAndRole()
+		private async Task CreateDefaultUserAndRoleAsync()
 		{
 			const string email = "admin@mail.ru";
 			const string password = "admin";
@@ -149,5 +151,31 @@ namespace EstateOwners.Infrastucture
 			}
 			return errors;
 		}
-	}
+
+		private async Task CreateResidentialComplexAsync()
+        {
+			var count = await _context.ResidentialComplexes.CountAsync();
+
+			// Для пустой базы создаем ЖК
+			if (count == 0)
+			{
+				var complex = new ResidentialComplex("ЖК Изумрудный город", "г. Геленджик, ул. Мира 44");
+				_context.ResidentialComplexes.Add(complex);
+
+				var buildings = new Building[]
+				{
+				new Building(complex.Id, "лит 1", "г. Геленджик, ул. Мира 44, лит 1"),
+				new Building(complex.Id, "лит 2", "г. Геленджик, ул. Мира 44, лит 1"),
+				new Building(complex.Id, "лит 3", "г. Геленджик, ул. Мира 44, лит 3"),
+				new Building(complex.Id, "лит 4", "г. Геленджик, ул. Мира 44, лит 4"),
+				new Building(complex.Id, "лит 5", "г. Геленджик, ул. Мира 44, лит 5"),
+				new Building(complex.Id, "лит 6", "г. Геленджик, ул. Мира 44, лит 6"),
+				};
+
+				_context.Buildings.AddRange(buildings);
+
+				await _context.SaveChangesAsync();
+			}
+        }
+    }
 }

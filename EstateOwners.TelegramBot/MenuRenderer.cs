@@ -7,7 +7,7 @@ namespace EstateOwners.TelegramBot
 {
     public class MenuRenderer : IMenuRenderer
     {
-        public async Task RenderMenu(IUpdateContext context)
+        public async Task RenderMenuAsync(IUpdateContext context)
         {
             var msg = context.GetMessage();
 

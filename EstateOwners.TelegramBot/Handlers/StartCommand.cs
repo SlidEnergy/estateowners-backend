@@ -38,7 +38,7 @@ namespace EstateOwners.TelegramBot
             }
             else
             {
-                await _menuRenderer.RenderMenu(context);
+                await _menuRenderer.RenderMenuAsync(context);
             }
 
             await next(context);
