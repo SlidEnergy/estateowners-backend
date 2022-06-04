@@ -1,4 +1,5 @@
 ﻿using EstateOwners.App;
+using EstateOwners.TelegramBot.Dialogs;
 using EstateOwners.TelegramBot.Dialogs.Core;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework;
@@ -32,12 +33,15 @@ namespace EstateOwners.TelegramBot
             if (user == null)
             {
                 await _menuRenderer.ClearMenu(context);
-                _dialogManager.SetActiveDialog<NewUserDialog>(context.Update.Message.Chat.Id);
+
+                _dialogManager.SetActiveDialog<NewUserDialog, NewUserDialogStore>(context.Update.Message.Chat.Id);
             }
             else
             {
                 await _menuRenderer.RenderMenu(context);
             }
+
+            await next(context);
         }
     }
 }

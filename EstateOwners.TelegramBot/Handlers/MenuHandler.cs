@@ -44,40 +44,31 @@ namespace EstateOwners.TelegramBot
                 return;
             }
 
-            if (msg.Text == "Добавить объект недвижимости")
-            {
-                _dialogManager.SetActiveDialog<NewEstateDialog>(chatId);
-            }
+            var store = new AuthDialogStore(user);
 
-            if (msg.Text == "Мои объекты недвижимости")
+            if (msg.Text == "Профиль")
             {
-                await context.SendEstateListAsync(chatId);
-                _dialogManager.ClearActiveDialog(chatId);
+                _dialogManager.SetActiveDialog<ProfileDialog, AuthDialogStore>(chatId, store);
             }
 
             if (msg.Text == "Документы на подпись")
             {
-                _dialogManager.SetActiveDialog<MessagesToSignDialog>(chatId);
+                _dialogManager.SetActiveDialog<MessagesToSignDialog, AuthDialogStore>(chatId, store);
             }
 
             if (msg.Text == "Опросы")
             {
-                _dialogManager.SetActiveDialog<PollsDialog>(chatId);
-            }
-
-            if (msg.Text == "Добавить подпись")
-            {
-                _dialogManager.SetActiveDialog<AddSignatureDialog>(chatId);
+                _dialogManager.SetActiveDialog<PollsDialog, AuthDialogStore>(chatId, store);
             }
 
             if (msg.Text == "Председатель и совет дома")
             {
-                _dialogManager.SetActiveDialog<CandidatesDialog>(chatId);
+                _dialogManager.SetActiveDialog<CandidatesDialog, AuthDialogStore>(chatId, store);
             }
 
             if (msg.Text == "Отчетность и аудит")
             {
-                _dialogManager.SetActiveDialog<EmptyDialog>(chatId);
+                _dialogManager.SetActiveDialog<EmptyDialog, DialogStore>(chatId);
             }
             await next(context);
         }

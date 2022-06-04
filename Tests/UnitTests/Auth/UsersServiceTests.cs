@@ -36,7 +36,7 @@ namespace EstateOwners.UnitTests
 
 			var password = "Password1#";
 
-			var result = await _service.CreateUserAsync(_user.Email, password);
+			var result = await _service.CreateUserAsync(_user, password);
 
 			_manager.Verify(x => x.CreateAsync(
 				It.Is<ApplicationUser>(u=> u.UserName == _user.UserName && u.Email == _user.Email), 
@@ -52,7 +52,7 @@ namespace EstateOwners.UnitTests
 			var token = "23423423";
 			var tokenType = AuthTokenType.TelegramChatId;
 
-			var result = await _service.CreateUserAsync(_user.Email, token, tokenType);
+			var result = await _service.CreateUserAsync(_user, token, tokenType);
 
 			_manager.Verify(x => x.CreateAsync(It.Is<ApplicationUser>(u => u.UserName == _user.UserName && u.Email == _user.Email)), Times.Exactly(1));
 

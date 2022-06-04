@@ -9,19 +9,17 @@ using Telegram.Bot.Framework;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace EstateOwners.TelegramBot
+namespace EstateOwners.TelegramBot.Dialogs
 {
-    internal class NewEstateDialog : DialogBase
+    internal class AddEstateDialog : DialogBase<EstateDialogStore>
     {
         private readonly IEstatesService _estatesService;
         private readonly IBuildingsService _buildingsService;
-        private readonly IUsersService _usersService;
 
-        public NewEstateDialog(IEstatesService estatesService, IBuildingsService buildingsService, IUsersService usersService)
+        public AddEstateDialog(IEstatesService estatesService, IBuildingsService buildingsService)
         {
             _estatesService = estatesService;
             _buildingsService = buildingsService;
-            _usersService = usersService;
 
             AddStep(Step1);
             AddStep(Step2);
@@ -30,22 +28,8 @@ namespace EstateOwners.TelegramBot
             AddStep(Step5);
         }
 
-        public async Task Step1(DialogContext context, CancellationToken cancellationToken)
+        public async Task Step1(DialogContext<EstateDialogStore> context, CancellationToken cancellationToken)
         {
-            var msg = context.GetMessage();
-
-            var chatId = msg?.Chat.Id ?? context.Update.CallbackQuery.Message.Chat.Id;
-
-            var user = await _usersService.GetByAuthTokenAsync(chatId.ToString(), AuthTokenType.TelegramChatId);
-
-            if (user == null)
-            {
-                await context.ReplaceDialogAsync<NewUserDialog>();
-                return;
-            }
-
-            context.Values["user"] = user;
-
             var myInlineKeyboard = new InlineKeyboardMarkup(new InlineKeyboardButton[][]
                  {
                     new InlineKeyboardButton[]
@@ -58,26 +42,24 @@ namespace EstateOwners.TelegramBot
             );
 
             await context.Bot.Client.SendTextMessageAsync(
-                    chatId,
+                    context.ChatId,
                     "Какая у вас недвижимость?",
                     replyMarkup: myInlineKeyboard);
 
             context.NextStep();
         }
 
-        public async Task Step2(DialogContext context, CancellationToken cancellationToken)
+        public async Task Step2(DialogContext<EstateDialogStore> context, CancellationToken cancellationToken)
         {
             CallbackQuery cq = context.Update.CallbackQuery;
 
-            context.Values["type"] = (EstateType)Enum.Parse(typeof(EstateType), cq.Data);
+            context.Store.Type = (EstateType)Enum.Parse(typeof(EstateType), cq.Data);
 
-            var buildings = await _buildingsService.GetListAsync();
-
-            context.Values["buildings"] = buildings;
+            context.Store.Buildings = await _buildingsService.GetListAsync(); ;
 
             var buttons = new List<InlineKeyboardButton>();
 
-            foreach (var building in buildings)
+            foreach (var building in context.Store.Buildings)
                 buttons.Add(InlineKeyboardButton.WithCallbackData(building.ShortAddress));
 
             var myInlineKeyboard = new InlineKeyboardMarkup(new InlineKeyboardButton[][]
@@ -94,17 +76,15 @@ namespace EstateOwners.TelegramBot
             context.NextStep();
         }
 
-        public async Task Step3(DialogContext context, CancellationToken cancellationToken)
+        public async Task Step3(DialogContext<EstateDialogStore> context, CancellationToken cancellationToken)
         {
             CallbackQuery cq = context.Update.CallbackQuery;
 
-            var buildings = (List<Building>)context.Values["buildings"];
-            var type = context.Values["type"];
-            context.Values["building"] = buildings.Find(x => x.ShortAddress == cq.Data);
+            context.Store.Building = context.Store.Buildings.Find(x => x.ShortAddress == cq.Data);
 
             var message = "";
 
-            switch (type)
+            switch (context.Store.Type)
             {
                 case EstateType.Apartment:
                     message = "Введите номер апартамента";
@@ -129,16 +109,11 @@ namespace EstateOwners.TelegramBot
             context.NextStep();
         }
 
-        public async Task Step4(DialogContext context, CancellationToken cancellationToken)
+        public async Task Step4(DialogContext<EstateDialogStore> context, CancellationToken cancellationToken)
         {
             var msg = context.GetMessage();
 
-            var user = (ApplicationUser)context.Values["user"];
-            var type = (EstateType)context.Values["type"];
-            var building = (Building)context.Values["building"];
-            var number = msg.Text;
-
-            var estate = await _estatesService.AddEstateAsync(user.Id, building.Id, type, number);
+            var estate = await _estatesService.AddEstateAsync(context.Store.User.Id, context.Store.Building.Id, context.Store.Type, context.Store.Number);
 
             if (estate == null)
             {
@@ -172,7 +147,7 @@ namespace EstateOwners.TelegramBot
             context.NextStep();
         }
 
-        public async Task Step5(DialogContext context, CancellationToken cancellationToken)
+        public async Task Step5(DialogContext<EstateDialogStore> context, CancellationToken cancellationToken)
         {
             var cb = context.Update.CallbackQuery;
 

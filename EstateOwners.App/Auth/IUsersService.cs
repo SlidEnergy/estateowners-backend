@@ -7,9 +7,9 @@ namespace EstateOwners.App
 {
 	public interface IUsersService
 	{
-		Task<IdentityResult> CreateUserAsync(string email, string password);
+		Task<IdentityResult> CreateUserAsync(ApplicationUser user, string password);
 
-		Task<IdentityResult> CreateUserAsync(string email, string token, AuthTokenType tokenType);
+		Task<IdentityResult> CreateUserAsync(ApplicationUser user, string token, AuthTokenType tokenType);
 
 		Task<ApplicationUser> GetByIdAsync(string userId);
 

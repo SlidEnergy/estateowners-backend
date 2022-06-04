@@ -1,5 +1,6 @@
 ﻿using EstateOwners.App;
 using EstateOwners.Domain;
+using EstateOwners.TelegramBot.Dialogs;
 using EstateOwners.TelegramBot.Dialogs.Core;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,17 +10,15 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace EstateOwners.TelegramBot
 {
-    internal class NewUserDialog : DialogBase
+    internal class NewUserDialog : DialogBase<NewUserDialogStore>
     {
         private readonly IUsersService _usersService;
         private readonly IMenuRenderer _menuRenderer;
-        private readonly IDialogManager _dialogManager;
 
-        public NewUserDialog(IUsersService usersService, IMenuRenderer menuRenderer, IDialogManager dialogManager)
+        public NewUserDialog(IUsersService usersService, IMenuRenderer menuRenderer)
         {
             _usersService = usersService;
             _menuRenderer = menuRenderer;
-            _dialogManager = dialogManager;
 
             AddStep(Step1);
             AddStep(Step2);
@@ -29,7 +28,7 @@ namespace EstateOwners.TelegramBot
             AddStep(Step6);
         }
 
-        public async Task Step1(DialogContext context, CancellationToken cancellationToken)
+        public async Task Step1(DialogContext<NewUserDialogStore> context, CancellationToken cancellationToken)
         {
             var msg = context.GetMessage();
 
@@ -52,7 +51,7 @@ namespace EstateOwners.TelegramBot
             context.NextStep();
         }
 
-        public async Task Step2(DialogContext context, CancellationToken cancellationToken)
+        public async Task Step2(DialogContext<NewUserDialogStore> context, CancellationToken cancellationToken)
         {
             CallbackQuery cq = context.Update.CallbackQuery;
 
@@ -63,11 +62,11 @@ namespace EstateOwners.TelegramBot
             context.NextStep();
         }
 
-        public async Task Step3(DialogContext context, CancellationToken cancellationToken)
+        public async Task Step3(DialogContext<NewUserDialogStore> context, CancellationToken cancellationToken)
         {
             var msg = context.GetMessage();
 
-            context.Values["email"] = msg.Text;
+            context.Store.Email = msg.Text;
 
             await context.Bot.Client.SendTextMessageAsync(
                 msg.Chat.Id,
@@ -76,11 +75,11 @@ namespace EstateOwners.TelegramBot
             context.NextStep();
         }
 
-        public async Task Step4(DialogContext context, CancellationToken cancellationToken)
+        public async Task Step4(DialogContext<NewUserDialogStore> context, CancellationToken cancellationToken)
         {
             var msg = context.GetMessage();
 
-            context.Values["lastName"] = msg.Text;
+            context.Store.LastName = msg.Text;
 
             await context.Bot.Client.SendTextMessageAsync(
                 msg.Chat.Id,
@@ -89,11 +88,11 @@ namespace EstateOwners.TelegramBot
             context.NextStep();
         }
 
-        public async Task Step5(DialogContext context, CancellationToken cancellationToken)
+        public async Task Step5(DialogContext<NewUserDialogStore> context, CancellationToken cancellationToken)
         {
             var msg = context.GetMessage();
 
-            context.Values["firstName"] = msg.Text;
+            context.Store.FirstName = msg.Text;
 
             await context.Bot.Client.SendTextMessageAsync(
                 msg.Chat.Id,
@@ -102,23 +101,18 @@ namespace EstateOwners.TelegramBot
             context.NextStep();
         }
 
-        public async Task Step6(DialogContext context, CancellationToken cancellationToken)
+        public async Task Step6(DialogContext<NewUserDialogStore> context, CancellationToken cancellationToken)
         {
             var msg = context.GetMessage();
 
-            var middleName = msg.Text;
-            var email = (string)context.Values["email"];
-            var firstName = (string)context.Values["firstName"];
-            var lastName = (string)context.Values["lastName"];
-
-            var user = new ApplicationUser(new Trustee(), email)
+            var user = new ApplicationUser(new Trustee(), context.Store.Email)
             {
-                FirstName = firstName,
-                MiddleName = middleName,
-                LastName = lastName
+                FirstName = context.Store.FirstName,
+                MiddleName = context.Store.MiddleName,
+                LastName = context.Store.LastName,
             };
 
-            var result = await _usersService.CreateUserAsync(email, msg.Chat.Id.ToString(), AuthTokenType.TelegramChatId);
+            var result = await _usersService.CreateUserAsync(user, msg.Chat.Id.ToString(), AuthTokenType.TelegramChatId);
             if (!result.Succeeded)
             {
                 await context.Bot.Client.SendTextMessageAsync(
@@ -137,7 +131,9 @@ namespace EstateOwners.TelegramBot
                 msg.Chat.Id,
                 "Добавьте свой объект недвижимости. Если у вас несколько объектов, добавьте их по очереди");
 
-            await context.ReplaceDialogAsync<NewEstateDialog>();
+            var store = new EstateDialogStore(user);
+
+            await context.ReplaceDialogAsync<AddEstateDialog, EstateDialogStore>(store);
         }
     }
 }

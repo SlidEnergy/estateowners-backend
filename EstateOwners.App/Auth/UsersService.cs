@@ -44,19 +44,13 @@ namespace EstateOwners.App
 			return null;
 		}
 
-		public async Task<IdentityResult> CreateUserAsync(string email, string password)
+		public async Task<IdentityResult> CreateUserAsync(ApplicationUser user, string password)
 		{
-			var user = new ApplicationUser(new Trustee(), email);
-			await _context.SaveChangesAsync();
-
 			return await _userManager.CreateAsync(user, password);
 		}
 
-		public async Task<IdentityResult> CreateUserAsync(string email, string token, AuthTokenType tokenType)
+		public async Task<IdentityResult> CreateUserAsync(ApplicationUser user, string token, AuthTokenType tokenType)
 		{
-			var user = new ApplicationUser(new Trustee(), email);
-			await _context.SaveChangesAsync();
-
 			var identity = await _userManager.CreateAsync(user);
 
 			if (identity.Succeeded)

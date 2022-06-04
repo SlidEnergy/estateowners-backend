@@ -11,7 +11,7 @@ namespace EstateOwners.TelegramBot
             AddStep(Step1);
         }
 
-        public async Task Step1(DialogContext context, CancellationToken cancellationToken)
+        public async Task Step1(DialogContext<DialogStore> context, CancellationToken cancellationToken)
         {
             context.EndDialog();
         }

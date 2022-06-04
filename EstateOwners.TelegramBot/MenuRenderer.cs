@@ -14,26 +14,25 @@ namespace EstateOwners.TelegramBot
             var myReplyKeyboard = new ReplyKeyboardMarkup()
             {
                 Keyboard = new KeyboardButton[][]
+                {
+                    new KeyboardButton[]
                     {
-                        new KeyboardButton[]
-                        {
-                            new KeyboardButton("Мои объекты недвижимости"),
-                            new KeyboardButton("Добавить объект недвижимости"),
-                            new KeyboardButton("Председатель и совет дома")
-                        },
-                        new KeyboardButton[]
-                        {
-                            new KeyboardButton("Документы на подпись"),
-                            new KeyboardButton("Опросы"),
-                            new KeyboardButton("Добавить подпись")
-                        },
-                          new KeyboardButton[]
-                        {
-                            new KeyboardButton("Отчетность и аудит"),
-                        },
+                        new KeyboardButton("Документы на подпись"),
+                        new KeyboardButton("Опросы"),
                     },
+                    new KeyboardButton[]
+                    {
+                        new KeyboardButton("Отчетность и аудит"),
+                    },
+                    new KeyboardButton[]
+                    {
+                        new KeyboardButton("Председатель и совет дома"),
+                        new KeyboardButton("Профиль"),
+                    }
+                },
                 ResizeKeyboard = true
             };
+
             await context.Bot.Client.SendTextMessageAsync(
                 msg.Chat.Id,
                 "Добро пожаловать " + msg.Chat.FirstName,

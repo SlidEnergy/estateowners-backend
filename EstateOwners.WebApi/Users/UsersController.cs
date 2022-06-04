@@ -63,7 +63,7 @@ namespace EstateOwners.WebApi
 
 			var user = _mapper.Map<ApplicationUser>(model);
 
-			var result = await _usersService.CreateUserAsync(model.Email, model.Password);
+			var result = await _usersService.CreateUserAsync(user, model.Password);
 
 			if (!result.Succeeded) {
 				foreach (var e in result.Errors)
