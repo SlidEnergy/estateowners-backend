@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
+﻿using EstateOwners.Infrastructure;
+using EstateOwners.Infrastucture;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using EstateOwners.Domain;
-using EstateOwners.Infrastructure;
-using EstateOwners.Infrastucture;
 using System;
 
 namespace EstateOwners.WebApi
@@ -40,11 +38,8 @@ namespace EstateOwners.WebApi
 				var services = scope.ServiceProvider;
 				try
 				{
-					var context = services.GetRequiredService<ApplicationDbContext>();
-					var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
-					var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-					var dbInitializerLogger = services.GetRequiredService<ILogger<DbInitializer>>();
-					DbInitializer.Initialize(context, userManager, roleManager, dbInitializerLogger).Wait();
+					var dbInitializer = new DbInitializer(services);
+					dbInitializer.Initialize().GetAwaiter().GetResult();
 				}
 				catch (Exception ex)
 				{

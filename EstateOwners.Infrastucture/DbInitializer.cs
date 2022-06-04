@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using EstateOwners.Domain;
+﻿using EstateOwners.Domain;
 using EstateOwners.Infrastructure;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 
@@ -10,115 +11,130 @@ namespace EstateOwners.Infrastucture
 {
     public class DbInitializer
 	{
-		public static async Task Initialize(ApplicationDbContext context, UserManager<ApplicationUser> userManager,
-			RoleManager<IdentityRole> roleManager, ILogger<DbInitializer> logger)
-		{
-			context.Database.EnsureCreated();
+        private readonly ApplicationDbContext _context;
+        private readonly IServiceProvider _services;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ILogger<DbInitializer> _logger;
 
-			await CreateDefaultUserAndRoleForApplication(context, userManager, roleManager, logger);
+        public DbInitializer(IServiceProvider services)
+        {  
+			_services = services;
+
+            _context = _services.GetRequiredService<ApplicationDbContext>();
+			_userManager = _services.GetRequiredService<UserManager<ApplicationUser>>();
+			_roleManager = _services.GetRequiredService<RoleManager<IdentityRole>>();
+			_logger = _services.GetRequiredService<ILogger<DbInitializer>>();
 		}
 
-		private static async Task CreateDefaultUserAndRoleForApplication(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ILogger<DbInitializer> logger)
+		public async Task Initialize()
+		{
+			_context.Database.EnsureCreated();
+
+			await CreateDefaultUserAndRole();
+		}
+
+		private async Task CreateDefaultUserAndRole()
 		{
 			const string email = "admin@mail.ru";
 			const string password = "admin";
 
 			// Берем первого созданного пользователя
-			var user = await context.Users.FirstOrDefaultAsync();
+			var user = await _context.Users.FirstOrDefaultAsync();
 
 			// Для пустой базы создаем нового пользователя
 			if (user == null)
 			{
-				user = await CreateDefaultUser(userManager, logger, email);
+				user = await CreateDefaultUser(email);
 
 				// Временно отключаем проверку пароля для администратора
-				var passwordValidators = userManager.PasswordValidators;
-				userManager.PasswordValidators.Clear();
+				var passwordValidators = _userManager.PasswordValidators;
+				_userManager.PasswordValidators.Clear();
 
-				await SetPasswordForUser(userManager, logger, email, user, password);
+				await SetPasswordForUser(email, user, password);
 
 				// Возвращаем проверку пароля обратно
 				foreach (var validator in passwordValidators)
-					userManager.PasswordValidators.Add(validator);
+					_userManager.PasswordValidators.Add(validator);
 			}
 
-			var role = await context.Roles.FirstOrDefaultAsync(x => x.Name == Role.Admin);
+			var role = await _context.Roles.FirstOrDefaultAsync(x => x.Name == Role.Admin);
 
 			// Создаем группу администратора, если в системе еще не было групп и устанавливаем её для пользователя
 			// Если ранее был пользователь но не было группы, то для первого созданного пользователя будет установалена группа администратора
 			if (role == null)
 			{
-				await CreateDefaultAdministratorRole(roleManager, logger, Role.Admin);
+				await CreateDefaultAdministratorRole(Role.Admin);
 
-				await AddRoleToUser(userManager, logger, email, Role.Admin, user);
+				await AddRoleToUser(email, Role.Admin, user);
 			}
 		}
 
-		private static async Task CreateDefaultAdministratorRole(RoleManager<IdentityRole> roleManager, ILogger<DbInitializer> logger, string administratorRole)
+		private async Task CreateDefaultAdministratorRole(string administratorRole)
 		{
-			logger.LogInformation($"Create the role `{administratorRole}` for application");
-			var result = await roleManager.CreateAsync(new IdentityRole(administratorRole));
+			_logger.LogInformation($"Create the role `{administratorRole}` for application");
+			var result = await _roleManager.CreateAsync(new IdentityRole(administratorRole));
 			if (result.Succeeded)
 			{
-				logger.LogDebug($"Created the role `{administratorRole}` successfully");
+				_logger.LogDebug($"Created the role `{administratorRole}` successfully");
 			}
 			else
 			{
 				var exception = new ApplicationException($"Default role `{administratorRole}` cannot be created");
-				logger.LogError(exception, GetIdentiryErrorsInCommaSeperatedList(result));
+				_logger.LogError(exception, GetIdentiryErrorsInCommaSeperatedList(result));
 				throw exception;
 			}
 		}
 
-		private static async Task<ApplicationUser> CreateDefaultUser(UserManager<ApplicationUser> userManager, ILogger<DbInitializer> logger, string email)
+		private async Task<ApplicationUser> CreateDefaultUser(string email)
 		{
-			logger.LogInformation($"Create default user with email `{email}` for application");
+			_logger.LogInformation($"Create default user with email `{email}` for application");
 			var user = new ApplicationUser(new Trustee(), email);
 
-			var result = await userManager.CreateAsync(user);
+			var result = await _userManager.CreateAsync(user);
 			if (result.Succeeded)
 			{
-				logger.LogDebug($"Created default user `{email}` successfully");
+				_logger.LogDebug($"Created default user `{email}` successfully");
 			}
 			else
 			{
 				var exception = new ApplicationException($"Default user `{email}` cannot be created");
-				logger.LogError(exception, GetIdentiryErrorsInCommaSeperatedList(result));
+				_logger.LogError(exception, GetIdentiryErrorsInCommaSeperatedList(result));
 				throw exception;
 			}
 
-			var createdUser = await userManager.FindByEmailAsync(email);
+			var createdUser = await _userManager.FindByEmailAsync(email);
 			return createdUser;
 		}
 
-		private static async Task SetPasswordForUser(UserManager<ApplicationUser> userManager, ILogger<DbInitializer> logger, string email, ApplicationUser user, string password)
+		private async Task SetPasswordForUser(string email, ApplicationUser user, string password)
 		{
-			logger.LogInformation($"Set password for default user `{email}`");
-			var result = await userManager.AddPasswordAsync(user, password);
+			_logger.LogInformation($"Set password for default user `{email}`");
+			var result = await _userManager.AddPasswordAsync(user, password);
 			if (result.Succeeded)
 			{
-				logger.LogTrace($"Set password `{password}` for default user `{email}` successfully");
+				_logger.LogTrace($"Set password `{password}` for default user `{email}` successfully");
 			}
 			else
 			{
 				var exception = new ApplicationException($"Password for the user `{email}` cannot be set");
-				logger.LogError(exception, GetIdentiryErrorsInCommaSeperatedList(result));
+				_logger.LogError(exception, GetIdentiryErrorsInCommaSeperatedList(result));
 				throw exception;
 			}
 		}
 
-		private static async Task AddRoleToUser(UserManager<ApplicationUser> userManager, ILogger<DbInitializer> logger, string email, string administratorRole, ApplicationUser user)
+		private async Task AddRoleToUser(string email, string administratorRole, ApplicationUser user)
 		{
-			logger.LogInformation($"Add default user `{email}` to role '{administratorRole}'");
-			var result = await userManager.AddToRoleAsync(user, administratorRole);
+			_logger.LogInformation($"Add default user `{email}` to role '{administratorRole}'");
+			var result = await _userManager.AddToRoleAsync(user, administratorRole);
 			if (result.Succeeded)
 			{
-				logger.LogDebug($"Added the role '{administratorRole}' to default user `{email}` successfully");
+				_logger.LogDebug($"Added the role '{administratorRole}' to default user `{email}` successfully");
 			}
 			else
 			{
 				var exception = new ApplicationException($"The role `{administratorRole}` cannot be set for the user `{email}`");
-				logger.LogError(exception, GetIdentiryErrorsInCommaSeperatedList(result));
+				_logger.LogError(exception, GetIdentiryErrorsInCommaSeperatedList(result));
 				throw exception;
 			}
 		}
