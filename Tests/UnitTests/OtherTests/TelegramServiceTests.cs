@@ -27,7 +27,7 @@ namespace EstateOwners.UnitTests
 		{
 			_tokenService.Setup(x => x.AddToken(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<AuthTokenType>())).Returns(Task.CompletedTask);
 
-			var telegramUser = new TelegramUser()
+			var telegramUser = new WebApi.TelegramUser()
 			{
 				Auth_date = 1575256110,
 				First_name = "FirstName",
@@ -42,7 +42,7 @@ namespace EstateOwners.UnitTests
 			_tokenService.Verify(x => x.AddToken(
 				It.Is<string>(u => u == _user.Id), 
 				It.Is<string>(t => t == telegramUser.Id.ToString()), 
-				It.Is<AuthTokenType>(t=>t == AuthTokenType.TelegramChatId)));
+				It.Is<AuthTokenType>(t=>t == AuthTokenType.TelegramUserId)));
 		}
 	}
 }

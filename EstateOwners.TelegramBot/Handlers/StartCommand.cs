@@ -28,7 +28,7 @@ namespace EstateOwners.TelegramBot
                 msg.Chat.Id,
                 "Приветствую. Описание бота.");
 
-            var user = await _usersService.GetByAuthTokenAsync(msg.Chat.Id.ToString(), Domain.AuthTokenType.TelegramChatId);
+            var user = await _usersService.GetByAuthTokenAsync(msg.From.Id.ToString(), Domain.AuthTokenType.TelegramUserId);
 
             if (user == null)
             {

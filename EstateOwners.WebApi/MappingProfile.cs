@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using EstateOwners.Domain;
 using EstateOwners.Infrastructure;
+using Telegram.Bot.Types;
 
 namespace EstateOwners.WebApi
 {

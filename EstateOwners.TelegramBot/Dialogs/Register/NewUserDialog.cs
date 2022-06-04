@@ -1,4 +1,5 @@
-﻿using EstateOwners.App;
+﻿using AutoMapper;
+using EstateOwners.App;
 using EstateOwners.Domain;
 using EstateOwners.TelegramBot.Dialogs;
 using EstateOwners.TelegramBot.Dialogs.Core;
@@ -14,11 +15,13 @@ namespace EstateOwners.TelegramBot
     {
         private readonly IUsersService _usersService;
         private readonly IMenuRenderer _menuRenderer;
+        private readonly IMapper _mapper;
 
-        public NewUserDialog(IUsersService usersService, IMenuRenderer menuRenderer)
+        public NewUserDialog(IUsersService usersService, IMenuRenderer menuRenderer, IMapper mapper)
         {
             _usersService = usersService;
             _menuRenderer = menuRenderer;
+            _mapper = mapper;
 
             AddStep(Step1);
             AddStep(Step2);
@@ -129,7 +132,7 @@ namespace EstateOwners.TelegramBot
                 LastName = context.Store.LastName,
             };
 
-            var result = await _usersService.CreateUserAsync(user, msg.Chat.Id.ToString(), AuthTokenType.TelegramChatId);
+            var result = await _usersService.CreateUserAsync(user, msg.From.Id.ToString(), AuthTokenType.TelegramUserId);
             if (!result.Succeeded)
             {
                 await context.Bot.Client.SendTextMessageAsync(
@@ -139,6 +142,19 @@ namespace EstateOwners.TelegramBot
                 context.EndDialog();
                 return;
             }
+
+            var telegramUser = new TelegramUser()
+            {
+                UserId = user.Id,
+                TelegramUserId = msg.From.Id,
+                FirstName = msg.From.FirstName,
+                LastName = msg.From.LastName,
+                Username = msg.From.Username,
+                LanguageCode = msg.From.LanguageCode,
+                IsBot = msg.From.IsBot
+            };
+
+            await _usersService.AddTelegramUserInfo(telegramUser);
 
             await context.Bot.Client.SendTextMessageAsync(
                 msg.Chat.Id,

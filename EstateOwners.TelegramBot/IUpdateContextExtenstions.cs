@@ -18,7 +18,7 @@ namespace EstateOwners.TelegramBot
             var usersService = (IUsersService)context.Services.GetService(typeof(IUsersService));
             var estatesService = (IEstatesService)context.Services.GetService(typeof(IEstatesService));
 
-            var user = await usersService.GetByAuthTokenAsync(chatId.ToString(), Domain.AuthTokenType.TelegramChatId);
+            var user = await usersService.GetByAuthTokenAsync(chatId.ToString(), Domain.AuthTokenType.TelegramUserId);
 
             var estates = await estatesService.GetListWithAccessCheckAsync(user.Id);
 

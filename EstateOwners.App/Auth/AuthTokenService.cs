@@ -21,7 +21,7 @@ namespace EstateOwners.App
 
 			var existToken = await _dal.AuthTokens.FindAnyToken(token);
 
-			if (existToken == null || existToken.Type != AuthTokenType.TelegramChatId || existToken.UserId != user.Id)
+			if (existToken == null || existToken.Type != AuthTokenType.TelegramUserId || existToken.UserId != user.Id)
 			{
 				await _dal.AuthTokens.Add(new AuthToken("any", token, user, type));
 			}

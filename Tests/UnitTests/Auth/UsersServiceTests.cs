@@ -50,7 +50,7 @@ namespace EstateOwners.UnitTests
 			_authTokenService.Setup(x => x.AddToken(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<AuthTokenType>())).Returns(Task.CompletedTask);
 
 			var token = "23423423";
-			var tokenType = AuthTokenType.TelegramChatId;
+			var tokenType = AuthTokenType.TelegramUserId;
 
 			var result = await _service.CreateUserAsync(_user, token, tokenType);
 

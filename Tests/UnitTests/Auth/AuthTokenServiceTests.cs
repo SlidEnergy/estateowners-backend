@@ -29,7 +29,7 @@ namespace EstateOwners.UnitTests
 
 		[Test]
 		[TestCase(AuthTokenType.RefreshToken)]
-		[TestCase(AuthTokenType.TelegramChatId)]
+		[TestCase(AuthTokenType.TelegramUserId)]
 		public async Task AddToken_ShouldNotBeException(AuthTokenType type)
 		{
 			_manager.Setup(x => x.FindByIdAsync(It.IsAny<string>())).ReturnsAsync(_user);

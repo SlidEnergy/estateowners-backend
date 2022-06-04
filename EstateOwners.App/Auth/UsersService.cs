@@ -60,5 +60,14 @@ namespace EstateOwners.App
 
 			return identity;
 		}
+
+		public async Task<TelegramUser> AddTelegramUserInfo(TelegramUser telegramUser)
+        {
+			_context.TelegramUsers.Add(telegramUser);
+
+			await _context.SaveChangesAsync();
+
+			return telegramUser;
+        }
 	}
 }

@@ -18,5 +18,7 @@ namespace EstateOwners.App
 		Task<List<ApplicationUser>> GetListAsyncAsync();
 
 		Task<ApplicationUser> GetByAuthTokenAsync(string token, AuthTokenType type);
+
+		Task<TelegramUser> AddTelegramUserInfo(TelegramUser telegramUser);
 	}
 }

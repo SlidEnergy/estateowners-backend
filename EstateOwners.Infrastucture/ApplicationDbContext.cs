@@ -51,5 +51,6 @@ namespace EstateOwners.Infrastructure
         public DbSet<Candidate> Candidates { get; set; }
 
         public DbSet<VoteForCandidate> VotesForCandidates { get; set; }
+        public DbSet<TelegramUser> TelegramUsers { get; set; }
     }
 }

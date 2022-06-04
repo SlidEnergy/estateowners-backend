@@ -35,7 +35,7 @@ namespace EstateOwners.TelegramBot
             var msg = context.GetMessage();
             var chatId = context.GetChatId().Value;
 
-            var user = await _usersService.GetByAuthTokenAsync(msg.Chat.Id.ToString(), Domain.AuthTokenType.TelegramChatId);
+            var user = await _usersService.GetByAuthTokenAsync(msg.Chat.Id.ToString(), Domain.AuthTokenType.TelegramUserId);
 
             if (user == null)
             {

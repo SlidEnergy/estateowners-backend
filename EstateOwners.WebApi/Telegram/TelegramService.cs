@@ -25,7 +25,7 @@ namespace EstateOwners.WebApi
 				throw new ArgumentException("Данные телеграм пользователя не прошли проверку.", nameof(telegramUser));
 			}
 
-			await _authTokenService.AddToken(userId, telegramUser.Id.ToString(), AuthTokenType.TelegramChatId);
+			await _authTokenService.AddToken(userId, telegramUser.Id.ToString(), AuthTokenType.TelegramUserId);
 		}
 
 		private bool ValidateTelegramInput(TelegramUser telegramUser)

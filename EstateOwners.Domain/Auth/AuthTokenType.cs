@@ -3,6 +3,6 @@
     public enum AuthTokenType
 	{
 		RefreshToken = 1,
-		TelegramChatId = 2,
+		TelegramUserId = 2,
 	}
 }

@@ -36,6 +36,8 @@ namespace EstateOwners.App
 
 		DbSet<VoteForCandidate> VotesForCandidates { get; set; }
 
-        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
+		DbSet<TelegramUser> TelegramUsers { get; set; }
+
+		Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
 	}
 }
