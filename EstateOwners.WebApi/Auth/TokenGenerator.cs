@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using EstateOwners.App;
-using EstateOwners.App.Utils;
+﻿using EstateOwners.App.Utils;
 using EstateOwners.Domain;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -12,10 +9,10 @@ using System.Security.Cryptography;
 
 namespace EstateOwners.WebApi
 {
-	/// <summary>
-	/// Формирует AccessToken и RefreshToken, необходимые для авторизации.
-	/// </summary>
-	public class TokenGenerator : ITokenGenerator
+    /// <summary>
+    /// Формирует AccessToken и RefreshToken, необходимые для авторизации.
+    /// </summary>
+    public class TokenGenerator : ITokenGenerator
 	{
 		private readonly AuthSettings _authSettings;
 		private readonly IClaimsGenerator _claimsGenerator;
@@ -42,7 +39,7 @@ namespace EstateOwners.WebApi
 		/// <summary>
 		/// Формирует AccessToken для указанного пользователя.
 		/// </summary>
-		public string GenerateAccessToken(ApplicationUser user, IEnumerable<string> roles) => GenerateAccessToken(_claimsGenerator.CreateClaims(user, roles));
+		public string GenerateAccessToken(ApplicationUser user, IEnumerable<string> roles, AccessMode accessMode) => GenerateAccessToken(_claimsGenerator.CreateClaims(user, roles, accessMode));
 
 		/// <summary>
 		/// Формирует AccessToken с указанными Claims.

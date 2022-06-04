@@ -17,7 +17,7 @@ namespace EstateOwners.WebApi
 			_identityOptions = identityOptions?.Value ?? new IdentityOptions();
 		}
 
-		public IEnumerable<Claim> CreateClaims(ApplicationUser user, IEnumerable<string> roles)
+		public IEnumerable<Claim> CreateClaims(ApplicationUser user, IEnumerable<string> roles, AccessMode accessMode)
 		{
 			var claims = new List<Claim>
 				{
@@ -33,9 +33,10 @@ namespace EstateOwners.WebApi
 
 					// Application
 
+					new Claim(nameof(AccessMode), accessMode.ToString())
 				};
 
-			foreach(var role in roles)
+			foreach (var role in roles)
 				claims.Add(new Claim(_identityOptions.ClaimsIdentity.RoleClaimType, role));
 
 			return claims.ToArray();

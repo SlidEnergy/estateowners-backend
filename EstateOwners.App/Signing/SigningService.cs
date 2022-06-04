@@ -43,5 +43,15 @@ namespace EstateOwners.App.Signing
         {
             return await _context.UserSignatures.Where(x => x.Messageid == messageId).CountAsync();
         }
+
+        public Task<List<ApplicationUser>> GetUserListWhoLeftSignatureAsync(int messageId)
+        {
+            var users = from signature in _context.UserSignatures
+                       join user in _context.Users on signature.UserId equals user.Id
+                       where signature.Messageid == messageId
+                       select user;
+
+            return Task.FromResult(users.ToList());
+        }
     }
 }

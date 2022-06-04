@@ -160,19 +160,19 @@ namespace EstateOwners.WebApi
 					sharedOptions.DefaultScheme = "smart";
 					sharedOptions.DefaultChallengeScheme = "smart";
 				})
-				.AddPolicyScheme("smart", "Authorization Bearer or api key", options =>
-				{
-					options.ForwardDefaultSelector = context =>
-					{
-						var authHeader = context.Request.Headers["Authorization"].FirstOrDefault();
-						if (authHeader?.StartsWith("Bearer ") == true)
-						{
-							return JwtBearerDefaults.AuthenticationScheme;
-						}
-						return ApiKeyDefaults.AuthenticationScheme;
-					};
-				})
-				.AddJwtBearer(options =>
+                .AddPolicyScheme("smart", "Authorization Bearer or api key", options =>
+                {
+                    options.ForwardDefaultSelector = context =>
+                    {
+                        var authHeader = context.Request.Headers["Authorization"].FirstOrDefault();
+                        if (authHeader?.StartsWith("Bearer ") == true)
+                        {
+                            return JwtBearerDefaults.AuthenticationScheme;
+                        }
+                        return ApiKeyDefaults.AuthenticationScheme;
+                    };
+                })
+                .AddJwtBearer(options =>
 				{
 					options.RequireHttpsMetadata = false;
 					options.TokenValidationParameters = new TokenValidationParameters
@@ -195,8 +195,13 @@ namespace EstateOwners.WebApi
 						ValidateIssuerSigningKey = true,
 					};
 					// options.SaveToken = true;
-				});
-		}
+				})
+				.AddApiKeyInQueryParams<Auth.ApiKeyProvider>(options =>
+                {
+                    options.Realm = "EstateOwners";
+                    options.KeyName = "api_key";
+                });
+        }
 
 		private void ConfigureAutoMapper(IServiceCollection services)
 		{
@@ -228,16 +233,16 @@ namespace EstateOwners.WebApi
 					}
 				});
 
-				c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-				{
-					Description = "Токен авторизации JWT, использующий схему Bearer. Пример: \"Authorization: Bearer {token}\", provide value: \"Bearer {token}\"",
-					Name = "Authorization",
-					In = Microsoft.OpenApi.Models.ParameterLocation.Header,
-					Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey
-				});
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "Токен авторизации JWT, использующий схему Bearer. Пример: \"Authorization: Bearer {token}\", provide value: \"Bearer {token}\"",
+                    Name = "Authorization",
+                    In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+                    Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey
+                });
 
 
-				c.OperationFilter<ResponseWithDescriptionOperationFilter>();
+                c.OperationFilter<ResponseWithDescriptionOperationFilter>();
 				c.OperationFilter<SecurityRequirementsOperationFilter>();
 
 				c.CustomOperationIds(apiDesc =>
@@ -283,6 +288,9 @@ namespace EstateOwners.WebApi
 			services.AddAuthorization(options =>
 			{
 				// Добавляем политики на наличие нужной роли у учётной записи.
+				options.AddPolicy(Policy.MustBeAllAccessMode, policy => policy.RequireClaim(nameof(AccessMode), AccessMode.All.ToString()));
+				//options.AddPolicy(Policy.MustBeAllOrImportAccessMode, policy => policy.RequireClaim(nameof(AccessMode), AccessMode.All.ToString(), AccessMode.Import.ToString()));
+				options.AddPolicy(Policy.MustBeAllOrExportAccessMode, policy => policy.RequireClaim(nameof(AccessMode), AccessMode.All.ToString(), AccessMode.Export.ToString()));
 				options.AddPolicy(Policy.MustBeAdmin, policy => policy.RequireRole(Role.Admin));
 			});
 		}

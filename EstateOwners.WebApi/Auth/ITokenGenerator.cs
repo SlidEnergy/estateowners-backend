@@ -8,7 +8,7 @@ namespace EstateOwners.WebApi
 {
     public interface ITokenGenerator
     {
-        string GenerateAccessToken(ApplicationUser user, IEnumerable<string> roles);
+        string GenerateAccessToken(ApplicationUser user, IEnumerable<string> roles, AccessMode accessMode);
         string GenerateAccessToken(IEnumerable<Claim> claims);
         string GenerateRefreshToken();
     }

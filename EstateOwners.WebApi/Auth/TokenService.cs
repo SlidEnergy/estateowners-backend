@@ -25,6 +25,23 @@ namespace EstateOwners.WebApi
 			_userManager = userManager;
 		}
 
+		//public async Task<TokensCortage> RefreshImportToken(string refreshToken)
+		//{
+		//	var savedToken = await _authTokenService.FindAnyToken(refreshToken);
+
+		//	if (savedToken == null || savedToken.Type != AuthTokenType.ImportToken)
+		//		throw new SecurityTokenException("Invalid refresh token");
+
+		//	var roles = await _userManager.GetRolesAsync(savedToken.User);
+
+		//	var newToken = _tokenGenerator.GenerateAccessToken(savedToken.User, roles, AccessMode.Import);
+		//	var newRefreshToken = _tokenGenerator.GenerateRefreshToken();
+
+		//	await _authTokenService.UpdateToken(savedToken, newRefreshToken);
+
+		//	return new TokensCortage() { Token = newToken, RefreshToken = newRefreshToken };
+		//}
+
 		public async Task<TokensCortage> RefreshToken(string token, string refreshToken)
 		{
 			var principal = GetPrincipalFromExpiredToken(token);
@@ -42,7 +59,7 @@ namespace EstateOwners.WebApi
 			return new TokensCortage() { Token = newToken, RefreshToken = newRefreshToken };
 		}
 
-		public async Task<TokensCortage> GenerateAccessAndRefreshTokens(ApplicationUser user)
+		public async Task<TokensCortage> GenerateAccessAndRefreshTokens(ApplicationUser user, AccessMode accessMode)
 		{
 			var refreshToken = _tokenGenerator.GenerateRefreshToken();
 			await _authTokenService.AddToken(user.Id, refreshToken, AuthTokenType.RefreshToken);
@@ -51,7 +68,7 @@ namespace EstateOwners.WebApi
 
 			return new TokensCortage()
 			{
-				Token = _tokenGenerator.GenerateAccessToken(user, roles),
+				Token = _tokenGenerator.GenerateAccessToken(user, roles, accessMode),
 				RefreshToken = refreshToken
 			};
 		}
@@ -97,7 +114,7 @@ namespace EstateOwners.WebApi
 			if (!checkResult)
 				throw new AuthenticationException();
 
-			return await GenerateAccessAndRefreshTokens(user);
+			return await GenerateAccessAndRefreshTokens(user, AccessMode.All);
 		}
 	}
 }

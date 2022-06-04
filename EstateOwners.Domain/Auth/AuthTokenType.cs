@@ -4,5 +4,6 @@
 	{
 		RefreshToken = 1,
 		TelegramUserId = 2,
+		ApiKey = 3
 	}
 }
