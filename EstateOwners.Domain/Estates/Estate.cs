@@ -14,6 +14,8 @@ namespace EstateOwners.Domain
 
         public virtual Building Building { get; set; }
 
+        public float Area { get; set; }
+
         public Estate(EstateType type, int buildingId, string number)
         {
             Type = type;

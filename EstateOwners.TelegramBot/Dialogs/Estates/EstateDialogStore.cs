@@ -14,6 +14,13 @@ namespace EstateOwners.TelegramBot.Dialogs
         public string Number { get; set; }
 
         public EstateType Type { get; set; }
+        
+        public float Area { get; set; }
+
+        public EstateDialogStore()
+        {
+
+        }
 
         public EstateDialogStore(ApplicationUser user) :base(user)
         {

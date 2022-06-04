@@ -26,6 +26,7 @@ namespace EstateOwners.TelegramBot.Dialogs
             AddStep(Step3);
             AddStep(Step4);
             AddStep(Step5);
+            AddStep(Step6);
         }
 
         public async Task Step1(DialogContext<EstateDialogStore> context, CancellationToken cancellationToken)
@@ -113,7 +114,27 @@ namespace EstateOwners.TelegramBot.Dialogs
         {
             var msg = context.GetMessage();
 
-            var estate = await _estatesService.AddEstateAsync(context.Store.User.Id, context.Store.Building.Id, context.Store.Type, context.Store.Number);
+            context.Store.Number = msg.Text;
+
+            await context.Bot.Client.SendTextMessageAsync(
+                    context.ChatId,
+                    "Введите площадь вашего объекта недвижимости");
+
+            context.NextStep();
+        }
+
+        public async Task Step5(DialogContext<EstateDialogStore> context, CancellationToken cancellationToken)
+        {
+            var msg = context.GetMessage();
+
+            context.Store.Area = Convert.ToSingle(msg.Text);
+
+            var model = new Estate(context.Store.Type, context.Store.Building.Id, context.Store.Number)
+            {
+                Area = context.Store.Area
+            };
+
+            var estate = await _estatesService.AddEstateAsync(context.Store.User.Id, model);
 
             if (estate == null)
             {
@@ -147,7 +168,7 @@ namespace EstateOwners.TelegramBot.Dialogs
             context.NextStep();
         }
 
-        public async Task Step5(DialogContext<EstateDialogStore> context, CancellationToken cancellationToken)
+        public async Task Step6(DialogContext<EstateDialogStore> context, CancellationToken cancellationToken)
         {
             var cb = context.Update.CallbackQuery;
 

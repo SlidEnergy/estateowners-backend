@@ -16,16 +16,15 @@ namespace EstateOwners.App
             _context = context;
         }
 
-        public async Task<Estate> AddEstateAsync(string userId, int buildingId, EstateType type, string number)
+        public async Task<Estate> AddEstateAsync(string userId, Estate estate)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
 
-            var building = await _context.Buildings.Where(x => x.Id == buildingId).FirstOrDefaultAsync();
+            var building = await _context.Buildings.Where(x => x.Id == estate.BuildingId).FirstOrDefaultAsync();
 
             if (building == null)
                 return null;
 
-            var estate = new Estate(type, buildingId, number);
             _context.Estates.Add(estate);
 
             await _context.SaveChangesAsync();

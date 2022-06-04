@@ -26,13 +26,14 @@ namespace EstateOwners.TelegramBot
             AddStep(Step4);
             AddStep(Step5);
             AddStep(Step6);
+            AddStep(Step7);
         }
 
         public async Task Step1(DialogContext<NewUserDialogStore> context, CancellationToken cancellationToken)
         {
             var msg = context.GetMessage();
 
-            await _menuRenderer.ClearMenu(context);
+            //await _menuRenderer.ClearMenu(context);
 
             var myInlineKeyboard = new InlineKeyboardMarkup(new InlineKeyboardButton[][]
                 {
@@ -70,12 +71,25 @@ namespace EstateOwners.TelegramBot
 
             await context.Bot.Client.SendTextMessageAsync(
                 msg.Chat.Id,
-                "Введите вашу фамилию");
+                "Введите ваш номер телефона");
 
             context.NextStep();
         }
 
         public async Task Step4(DialogContext<NewUserDialogStore> context, CancellationToken cancellationToken)
+        {
+            var msg = context.GetMessage();
+
+            context.Store.Phone = msg.Text;
+
+            await context.Bot.Client.SendTextMessageAsync(
+                msg.Chat.Id,
+                "Введите вашу фамилию");
+
+            context.NextStep();
+        }
+
+        public async Task Step5(DialogContext<NewUserDialogStore> context, CancellationToken cancellationToken)
         {
             var msg = context.GetMessage();
 
@@ -88,7 +102,7 @@ namespace EstateOwners.TelegramBot
             context.NextStep();
         }
 
-        public async Task Step5(DialogContext<NewUserDialogStore> context, CancellationToken cancellationToken)
+        public async Task Step6(DialogContext<NewUserDialogStore> context, CancellationToken cancellationToken)
         {
             var msg = context.GetMessage();
 
@@ -101,12 +115,15 @@ namespace EstateOwners.TelegramBot
             context.NextStep();
         }
 
-        public async Task Step6(DialogContext<NewUserDialogStore> context, CancellationToken cancellationToken)
+        public async Task Step7(DialogContext<NewUserDialogStore> context, CancellationToken cancellationToken)
         {
             var msg = context.GetMessage();
 
+            context.Store.MiddleName = msg.Text;
+
             var user = new ApplicationUser(new Trustee(), context.Store.Email)
             {
+                PhoneNumber = context.Store.Phone,
                 FirstName = context.Store.FirstName,
                 MiddleName = context.Store.MiddleName,
                 LastName = context.Store.LastName,

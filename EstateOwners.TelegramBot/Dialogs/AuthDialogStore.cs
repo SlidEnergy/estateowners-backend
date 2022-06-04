@@ -6,6 +6,10 @@ namespace EstateOwners.TelegramBot.Dialogs
     {
         public ApplicationUser User { get; set; }
 
+        public AuthDialogStore()
+        {
+
+        }
         public AuthDialogStore(ApplicationUser user)
         {
             User = user;

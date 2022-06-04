@@ -39,7 +39,7 @@ namespace EstateOwners.TelegramBot
 
             if (user == null)
             {
-                await _menuRenderer.ClearMenu(context);
+                //await _menuRenderer.ClearMenu(context);
                 await next(context);
                 return;
             }

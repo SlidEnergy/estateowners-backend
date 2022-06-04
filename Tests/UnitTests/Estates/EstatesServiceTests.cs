@@ -1,15 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
-using Moq;
-using NUnit.Framework;
-using EstateOwners.App;
+﻿using EstateOwners.App;
 using EstateOwners.Domain;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using NUnit.Framework;
+using System.Threading.Tasks;
 
 namespace EstateOwners.UnitTests
 {
-	public class EstatesServiceTests: TestsBase
+    public class EstatesServiceTests: TestsBase
 	{
 		EstatesService _service;
 
@@ -33,7 +30,7 @@ namespace EstateOwners.UnitTests
 			var type = EstateType.Apartment;
 			var number = "324";
 
-			await _service.AddEstateAsync(_user.Id, building.Id, type, number);
+			await _service.AddEstateAsync(_user.Id, new Estate(type, building.Id, number));
 
 			var count = await _db.Estates.CountAsync();
 			Assert.AreEqual(1, count);
