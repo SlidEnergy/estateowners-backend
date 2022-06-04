@@ -4,6 +4,7 @@ using EstateOwners.Domain;
 using System.Threading;
 using System.Threading.Tasks;
 using EstateOwners.Domain.Signing;
+using EstateOwners.Domain.Candidates;
 
 namespace EstateOwners.App
 {
@@ -31,6 +32,10 @@ namespace EstateOwners.App
 
 		DbSet<Poll> Polls { get; set; }
 
-		Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
+        DbSet<Candidate> Candidates { get; set; }
+
+		DbSet<VoteForCandidate> VotesForCandidates { get; set; }
+
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
 	}
 }

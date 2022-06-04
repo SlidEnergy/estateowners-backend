@@ -18,13 +18,19 @@ namespace EstateOwners.TelegramBot
                         new KeyboardButton[]
                         {
                             new KeyboardButton("Мои объекты недвижимости"),
-                            new KeyboardButton("Добавить объект недвижимости")
+                            new KeyboardButton("Добавить объект недвижимости"),
+                            new KeyboardButton("Председатель и совет дома")
                         },
                         new KeyboardButton[]
                         {
                             new KeyboardButton("Документы на подпись"),
-                            new KeyboardButton("Голосования")
-                        }
+                            new KeyboardButton("Опросы"),
+                            new KeyboardButton("Добавить подпись")
+                        },
+                          new KeyboardButton[]
+                        {
+                            new KeyboardButton("Отчетность и аудит"),
+                        },
                     },
                 ResizeKeyboard = true
             };

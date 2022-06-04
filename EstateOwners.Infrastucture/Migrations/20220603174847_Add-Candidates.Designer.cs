@@ -3,15 +3,17 @@ using System;
 using EstateOwners.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace EstateOwners.Infrastucture.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220603174847_Add-Candidates")]
+    partial class AddCandidates
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -165,21 +167,25 @@ namespace EstateOwners.Infrastucture.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId", "Type")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("Candidates");
                 });
 
             modelBuilder.Entity("EstateOwners.Domain.Candidates.VoteForCandidate", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<int>("CandidateId")
                         .HasColumnType("integer");
 
-                    b.HasKey("UserId", "CandidateId");
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
 
                     b.ToTable("VotesForCandidates");
                 });

@@ -1,13 +1,12 @@
-﻿using EstateOwners.TelegramBot.Dialogs.Core;
+﻿using EstateOwners.TelegramBot.Dialogs;
+using EstateOwners.TelegramBot.Dialogs.Core;
 using EstateOwners.TelegramBot.Dialogs.Polls;
 using EstateOwners.TelegramBot.Dialogs.Signing;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Threading.Tasks;
 using Telegram.Bot.Framework;
-using Telegram.Bot.Framework.Abstractions;
 
 namespace EstateOwners.TelegramBot
 {
@@ -41,48 +40,17 @@ namespace EstateOwners.TelegramBot
             services.AddScoped<AddMessageToSignDialog>();
             services.AddScoped<AddPollDialog>();
             services.AddScoped<PollsDialog>();
+            services.AddScoped<AddSignatureDialog>();
+            services.AddScoped<CandidatesDialog>();
+            services.AddScoped<EmptyDialog>();
 
             services.AddTelegramBot<EstateOwnersBot>(botOptions);
-                //.AddUpdateHandler<StartCommand>()
-                //.AddUpdateHandler<MainDialog>()
-                //.AddUpdateHandler<MenuDialog>()
-                //.AddUpdateHandler<CallbackQueryHandler>()
-                //.AddUpdateHandler<NewUserDialog>()
-                //.AddUpdateHandler<NewEstateDialog>()
-                //.Configure();
-
-            // services.AddScoped<IBotManager<EstateOwnersBot>, BotManager<EstateOwnersBot>>();
         }
 
         public static void UseTelegramBot(this IApplicationBuilder app, bool isDevelopment)
         {
             if (isDevelopment)
             {
-                //var a = app.ApplicationServices.GetRequiredService<IBotManager<EstateOwnersBot>>();
-                // get bot updates from Telegram via long-polling approach during development
-                // this will disable Telegram webhooks
-                //app.UseTelegramBotLongPolling<EstateOwnersBot>();
-
-                //Task.Factory.StartNew(async () =>
-                //{
-                //    using (var scope = app.ApplicationServices.CreateScope())
-                //    {
-                //        var botManager = scope.ServiceProvider.GetRequiredService<IBotManager<EstateOwnersBot>>();
-
-                //        // make sure webhook is disabled so we can use long-polling
-                //        await botManager.SetWebhookStateAsync(false);
-
-                //        while (true)
-                //        {
-                //            await Task.Delay(1_000);
-                //            await botManager.GetAndHandleNewUpdatesAsync();
-                //        }
-                //    }
-                //}).ContinueWith(t =>
-                //{
-                //    if (t.IsFaulted) throw t.Exception;
-                //});
-
                 var botBuilder = new BotBuilder()
                     .Use<ExceptionHandler>()
                     .Use<StartCommand>()

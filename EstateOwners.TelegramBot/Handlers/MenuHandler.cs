@@ -1,4 +1,5 @@
 ﻿using EstateOwners.App;
+using EstateOwners.TelegramBot.Dialogs;
 using EstateOwners.TelegramBot.Dialogs.Core;
 using EstateOwners.TelegramBot.Dialogs.Polls;
 using EstateOwners.TelegramBot.Dialogs.Signing;
@@ -59,11 +60,25 @@ namespace EstateOwners.TelegramBot
                 _dialogManager.SetActiveDialog<MessagesToSignDialog>(chatId);
             }
 
-            if (msg.Text == "Голосования")
+            if (msg.Text == "Опросы")
             {
                 _dialogManager.SetActiveDialog<PollsDialog>(chatId);
             }
 
+            if (msg.Text == "Добавить подпись")
+            {
+                _dialogManager.SetActiveDialog<AddSignatureDialog>(chatId);
+            }
+
+            if (msg.Text == "Председатель и совет дома")
+            {
+                _dialogManager.SetActiveDialog<CandidatesDialog>(chatId);
+            }
+
+            if (msg.Text == "Отчетность и аудит")
+            {
+                _dialogManager.SetActiveDialog<EmptyDialog>(chatId);
+            }
             await next(context);
         }
     }

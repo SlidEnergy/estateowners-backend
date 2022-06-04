@@ -30,5 +30,10 @@ namespace EstateOwners.Domain
             TrusteeId = trusteeId;
             Email = UserName = email;
         }
+
+        public override string ToString()
+        {
+            return $"{FirstName} {LastName} {MiddleName}";
+        }
     }
 }

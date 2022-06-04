@@ -3,15 +3,17 @@ using System;
 using EstateOwners.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace EstateOwners.Infrastucture.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220603180443_Remove-id-from-vote")]
+    partial class Removeidfromvote
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -165,8 +167,7 @@ namespace EstateOwners.Infrastucture.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId", "Type")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("Candidates");
                 });
