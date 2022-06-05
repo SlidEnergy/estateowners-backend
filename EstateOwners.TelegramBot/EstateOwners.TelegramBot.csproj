@@ -17,7 +17,7 @@
 
   <ItemGroup>
     <Reference Include="Telegram.Bot.Framework">
-      <HintPath>..\..\Telegram.Bot.Framework\src\Telegram.Bot.Framework\bin\Debug\netstandard2.1\Telegram.Bot.Framework.dll</HintPath>
+      <HintPath>..\libs\Telegram.Bot.Framework.dll</HintPath>
     </Reference>
   </ItemGroup>
 
