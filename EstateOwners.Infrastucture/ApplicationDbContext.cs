@@ -25,7 +25,7 @@ namespace EstateOwners.Infrastructure
                 .HasKey(key => new { key.CarId, key.TrusteeId });
 
 
-            modelBuilder.Entity<VoteForCandidate>()
+            modelBuilder.Entity<UserCandidateVote>()
                 .HasKey(key => new { key.UserId, key.CandidateId });
 
             modelBuilder.Entity<Candidate>()
@@ -49,13 +49,14 @@ namespace EstateOwners.Infrastructure
 
         public DbSet<MessageToSign> MessagesToSign { get; set; }
 
+        public DbSet<UserMessageSignature> UserMessageSignatures { get; set; }
         public DbSet<UserSignature> UserSignatures { get; set; }
 
         public DbSet<Poll> Polls { get; set; }
 
         public DbSet<Candidate> Candidates { get; set; }
 
-        public DbSet<VoteForCandidate> VotesForCandidates { get; set; }
+        public DbSet<UserCandidateVote> CandidateVotes { get; set; }
         public DbSet<TelegramUser> TelegramUsers { get; set; }
         public DbSet<Car> Cars { get; set; }
     }

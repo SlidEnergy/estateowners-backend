@@ -32,21 +32,21 @@ namespace EstateOwners.App.Signing
 
         public async Task SignAsync(string userId, int messageId)
         {
-            var userSignature = new UserSignature(userId, messageId);
+            var userSignature = new UserMessageSignature(userId, messageId);
 
-            _context.UserSignatures.Add(userSignature);
+            _context.UserMessageSignatures.Add(userSignature);
 
             await _context.SaveChangesAsync();
         }
 
         public async Task<int> GetUserSignatureCountAsync(int messageId)
         {
-            return await _context.UserSignatures.Where(x => x.Messageid == messageId).CountAsync();
+            return await _context.UserMessageSignatures.Where(x => x.Messageid == messageId).CountAsync();
         }
 
         public async Task<List<ApplicationUser>> GetUserListWhoLeftSignatureAsync(int messageId)
         {
-            var users = await _context.UserSignatures
+            var users = await _context.UserMessageSignatures
                 .Where(x => x.Messageid == messageId)
                 .Join(_context.Users, t => t.UserId, u => u.Id, (t, u) => u)
                 .ToListAsync();

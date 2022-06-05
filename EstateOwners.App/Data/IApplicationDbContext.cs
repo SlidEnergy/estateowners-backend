@@ -29,13 +29,15 @@ namespace EstateOwners.App
 
 		DbSet<MessageToSign> MessagesToSign { get; set; }
 
+		DbSet<UserMessageSignature> UserMessageSignatures { get; set; }
+
 		DbSet<UserSignature> UserSignatures { get; set; }
 
 		DbSet<Poll> Polls { get; set; }
 
         DbSet<Candidate> Candidates { get; set; }
 
-		DbSet<VoteForCandidate> VotesForCandidates { get; set; }
+		DbSet<UserCandidateVote> CandidateVotes { get; set; }
 
 		DbSet<TelegramUser> TelegramUsers { get; set; }
 		DbSet<Car> Cars { get; set; }

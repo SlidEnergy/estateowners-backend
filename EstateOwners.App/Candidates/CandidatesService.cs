@@ -23,16 +23,16 @@ namespace EstateOwners.App.Signing
 
         public async Task VoteForCandidateAsync(string userId, int candidateId)
         {
-            var vote = new VoteForCandidate(userId, candidateId);
+            var vote = new UserCandidateVote(userId, candidateId);
 
-            _context.VotesForCandidates.Add(vote);
+            _context.CandidateVotes.Add(vote);
 
             await _context.SaveChangesAsync();
         }
 
         public async Task<int> GetVotesForCandidatesCount(int candidateId)
         {
-            return await _context.VotesForCandidates.CountAsync(x => x.CandidateId == candidateId);
+            return await _context.CandidateVotes.CountAsync(x => x.CandidateId == candidateId);
         }
 
         public async Task AddAsync(string userId, CandidateType type)

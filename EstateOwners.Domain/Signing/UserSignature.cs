@@ -3,14 +3,20 @@
     public class UserSignature
     {
         public int Id { get; set; }
+
         public string UserId { get; set; }
 
-        public int Messageid { get; set; }
+        public byte[] Signature { get; set; }
 
-        public UserSignature(string userId, int messageid)
+        public UserSignature()
+        {
+
+        }
+
+        public UserSignature(string userId, byte[] signature)
         {
             UserId = userId;
-            Messageid = messageid;
+            Signature = signature;
         }
     }
 }
