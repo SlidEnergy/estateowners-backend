@@ -47,7 +47,7 @@ namespace EstateOwners.TelegramBot
 
             await context.Bot.Client.SendTextMessageAsync(
                 context.ChatId,
-                "Чтобы продолжить пользоваться сервисом, вы должны зарегестрироваться. Продолжая пользоваться сервисом, вы даете своё согласие на хранение и обработку ваших данных. Сейчас нам нужны ваши данные только для составления списка собственников, для распечатки подписавшихся под документом.",
+                "Чтобы продолжить пользоваться сервисом, вы должны зарегистрироваться. Продолжая пользоваться сервисом, вы даете своё согласие на хранение и обработку ваших данных. Сейчас нам нужны ваши данные только для составления списка собственников, для распечатки подписавшихся под документом.",
                 replyMarkup: myInlineKeyboard);
 
             context.NextStep();
@@ -189,7 +189,7 @@ namespace EstateOwners.TelegramBot
             {
                 await context.Bot.Client.SendTextMessageAsync(
                     msg.Chat.Id,
-                    "Не удалось вас зарегестрировать, попробуйте позже или свяжитесь с администратором.");
+                    "Не удалось вас зарегистрировать, попробуйте позже или свяжитесь с администратором.");
 
                 context.EndDialog();
                 return;
@@ -210,7 +210,7 @@ namespace EstateOwners.TelegramBot
 
             await context.Bot.Client.SendTextMessageAsync(
                 msg.Chat.Id,
-                "Мы вас зарегестрировали");
+                "Мы вас зарегистрировали");
 
             await _menuRenderer.RenderMenuAsync(context);
 
