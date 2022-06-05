@@ -16,6 +16,7 @@ namespace EstateOwners.App
 			services.AddScoped<ISigningService, SigningService>();
 			services.AddScoped<IPollsService, PollsService>();
 			services.AddScoped<ICandidatesService, CandidatesService>();
+			services.AddScoped<IExportService, ExportService>();
 
 			return services;
 		}

@@ -11,7 +11,8 @@ using System.Threading.Tasks;
 
 namespace EstateOwners.WebApi.Controllers
 {
-	[Route("api/v1/[controller]")]
+    [Authorize(Policy = Policy.MustBeAllAccessMode)]
+    [Route("api/v1/[controller]")]
 	[ApiController]
 	public class SigningController : ControllerBase
 	{
@@ -24,7 +25,6 @@ namespace EstateOwners.WebApi.Controllers
             _mapper = mapper;
         }
 
-        [Authorize(Policy = Policy.MustBeAllAccessMode)]
         [HttpGet("messages")]
 		public async Task<ActionResult<List<MessageToSign>>> GetList()
 		{
@@ -34,17 +34,6 @@ namespace EstateOwners.WebApi.Controllers
 		}
 
         [Authorize(Policy = Policy.MustBeAllOrExportAccessMode)]
-        [HttpGet("messages/{messageId}/users")]
-		public async Task<ActionResult<List<Dto.User>>> GetUsers(int messageId)
-		{
-			var userId = User.GetUserId();
-
-			var users =  await _service.GetUserListWhoLeftSignatureAsync(messageId);
-
-			return _mapper.Map<List<Dto.User>>(users);
-		}
-
-        [Authorize(Policy = Policy.MustBeAllAccessMode)]
         [HttpPost("signature")]
 		public async Task<ActionResult> AddUserSignature(IFormFile formData)
         {

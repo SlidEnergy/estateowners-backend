@@ -13,7 +13,5 @@ namespace EstateOwners.App.Signing
         Task SignAsync(string userId, int messageId);
 
         Task<int> GetUserSignatureCountAsync(int messageId);
-
-        Task<List<ApplicationUser>> GetUserListWhoLeftSignatureAsync(int messageId);
     }
 }
