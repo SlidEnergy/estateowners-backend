@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EstateOwners.Domain\EstateOwners.Domain.csproj" />
+    <ProjectReference Include="..\Slid.Utils\Slid.Utils.csproj" />
   </ItemGroup>
 
 </Project>

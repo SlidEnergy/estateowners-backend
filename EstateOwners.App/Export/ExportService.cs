@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Slid.Utils;
 
 namespace EstateOwners.App
 {
@@ -25,7 +26,7 @@ namespace EstateOwners.App
                     FirstName = x.User.FirstName,
                     LastName = x.User.LastName,
                     MiddleName = x.User.MiddleName,
-                    Type = x.Estate.Type.ToString(),
+                    Type = x.Estate.Type.GetDescription(),
                     Building = x.Building.ShortAddress,
                     Number = x.Estate.Number,
                     Area = x.Estate.Area
