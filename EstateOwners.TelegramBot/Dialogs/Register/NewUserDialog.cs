@@ -34,8 +34,6 @@ namespace EstateOwners.TelegramBot
 
         public async Task Step1(DialogContext<NewUserDialogStore> context, CancellationToken cancellationToken)
         {
-            var msg = context.GetMessage();
-
             //await _menuRenderer.ClearMenu(context);
 
             var myInlineKeyboard = new InlineKeyboardMarkup(new InlineKeyboardButton[][]
@@ -48,8 +46,8 @@ namespace EstateOwners.TelegramBot
             );
 
             await context.Bot.Client.SendTextMessageAsync(
-                msg.Chat.Id,
-                "Чтобы продолжить пользоваться, вы должны зарегестрироваться",
+                context.ChatId,
+                "Чтобы продолжить пользоваться сервисом, вы должны зарегестрироваться. Продолжая пользоваться сервисом, вы даете своё согласие на хранение и обработку ваших данных. Сейчас нам нужны ваши данные только для составления списка собственников, для распечатки подписавшихся под документом.",
                 replyMarkup: myInlineKeyboard);
 
             context.NextStep();

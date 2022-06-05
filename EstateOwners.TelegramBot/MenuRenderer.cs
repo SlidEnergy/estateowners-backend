@@ -13,20 +13,28 @@ namespace EstateOwners.TelegramBot
 
             var myReplyKeyboard = new ReplyKeyboardMarkup()
             {
+                //Keyboard = new KeyboardButton[][]
+                //{
+                //    new KeyboardButton[]
+                //    {
+                //        new KeyboardButton("Документы на подпись"),
+                //        new KeyboardButton("Опросы"),
+                //    },
+                //    new KeyboardButton[]
+                //    {
+                //        new KeyboardButton("Отчетность и аудит"),
+                //    },
+                //    new KeyboardButton[]
+                //    {
+                //        new KeyboardButton("Председатель и совет дома"),
+                //        new KeyboardButton("Профиль"),
+                //    }
+                //},
                 Keyboard = new KeyboardButton[][]
                 {
                     new KeyboardButton[]
                     {
                         new KeyboardButton("Документы на подпись"),
-                        new KeyboardButton("Опросы"),
-                    },
-                    new KeyboardButton[]
-                    {
-                        new KeyboardButton("Отчетность и аудит"),
-                    },
-                    new KeyboardButton[]
-                    {
-                        new KeyboardButton("Председатель и совет дома"),
                         new KeyboardButton("Профиль"),
                     }
                 },

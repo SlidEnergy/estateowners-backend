@@ -16,8 +16,8 @@ namespace EstateOwners.TelegramBot.Dialogs.Signing
         {
             var replyMarkup = ReplyMarkupBuilder.InlineKeyboard()
                 .ColumnWithCallbackData("Мои объекты недвижимости", "estates")
-                .RowWithCallbackData("Добавить подпись", "signature")
-                .ColumnWithCallbackData("Мои машины", "cars")
+                //.RowWithCallbackData("Добавить подпись", "signature")
+                //.ColumnWithCallbackData("Мои машины", "cars")
                 .ToMarkup();
 
             await context.Bot.Client.SendTextMessageAsync(context.ChatId, $"{context.Store.User}", replyMarkup: replyMarkup);
