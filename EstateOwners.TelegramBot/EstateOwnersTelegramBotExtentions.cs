@@ -56,8 +56,8 @@ namespace EstateOwners.TelegramBot
 
         public static void UseTelegramBot(this IApplicationBuilder app, bool isDevelopment)
         {
-            if (isDevelopment)
-            {
+            //if (isDevelopment)
+            //{
                 var botBuilder = new BotBuilder()
                     .Use<ExceptionHandler>()
                     .Use<StartCommand>()
@@ -68,14 +68,14 @@ namespace EstateOwners.TelegramBot
                 // get bot updates from Telegram via long-polling approach during development
                 // this will disable Telegram webhooks
                 app.UseTelegramBotLongPolling<EstateOwnersBot>(botBuilder, TimeSpan.FromSeconds(2));
-            }
-            else
-            {
-                // use Telegram bot webhook middleware in higher environments
-                app.UseTelegramBotWebhook<EstateOwnersBot>();
-                // and make sure webhook is enabled
-                app.EnsureWebhookSet<EstateOwnersBot>();
-            }
+            //}
+            //else
+            //{
+            //    // use Telegram bot webhook middleware in higher environments
+            //    app.UseTelegramBotWebhook<EstateOwnersBot>();
+            //    // and make sure webhook is enabled
+            //    app.EnsureWebhookSet<EstateOwnersBot>();
+            //}
         }
     }
 }
