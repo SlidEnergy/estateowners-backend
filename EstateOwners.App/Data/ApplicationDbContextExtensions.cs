@@ -32,5 +32,17 @@ namespace EstateOwners.App
 
 			return estates;
 		}
+
+		public static async Task<List<Car>> GetCarListWithAccessCheckAsync(this IApplicationDbContext context, string userId)
+		{
+			var user = await context.Users.FindAsync(userId);
+
+			var cars = await context.TrusteeCars
+				.Where(x => x.TrusteeId == user.TrusteeId)
+				.Join(context.Cars, t => t.CarId, e => e.Id, (t, e) => e)
+				.ToListAsync();
+
+			return cars;
+		}
 	}
 }

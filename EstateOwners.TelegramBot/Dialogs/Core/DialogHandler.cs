@@ -161,7 +161,7 @@ namespace EstateOwners.TelegramBot.Dialogs.Core
             State.Step++;
         }
 
-        public async Task ExecuteStep(DialogStep<TStore> dialogStep, CancellationToken cancellationToken)
+        public async Task ExecuteStepAsync(DialogStep<TStore> dialogStep, CancellationToken cancellationToken)
         {
             var step = _dialog.GetStep(dialogStep);
 

@@ -174,7 +174,7 @@ namespace EstateOwners.TelegramBot.Dialogs
 
             if (cb.Data == "add")
             {
-                await context.ExecuteStep(Step1, cancellationToken);
+                await context.ExecuteStepAsync(Step1, cancellationToken);
                 return;
             }
 

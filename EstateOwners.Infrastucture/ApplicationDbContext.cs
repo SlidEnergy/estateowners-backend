@@ -21,6 +21,10 @@ namespace EstateOwners.Infrastructure
             modelBuilder.Entity<TrusteeEstate>()
                 .HasKey(key => new { key.EstateId, key.TrusteeId });
 
+            modelBuilder.Entity<TrusteeCar>()
+                .HasKey(key => new { key.CarId, key.TrusteeId });
+
+
             modelBuilder.Entity<VoteForCandidate>()
                 .HasKey(key => new { key.UserId, key.CandidateId });
 
@@ -33,6 +37,7 @@ namespace EstateOwners.Infrastructure
         public DbSet<Trustee> Trustee { get; set; }
 
         public DbSet<TrusteeEstate> TrusteeEstates { get; set; }
+        public DbSet<TrusteeCar> TrusteeCars { get; set; }
 
         public DbSet<ApplicationUser> Users { get; set; }
 
@@ -52,5 +57,6 @@ namespace EstateOwners.Infrastructure
 
         public DbSet<VoteForCandidate> VotesForCandidates { get; set; }
         public DbSet<TelegramUser> TelegramUsers { get; set; }
+        public DbSet<Car> Cars { get; set; }
     }
 }

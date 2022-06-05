@@ -12,6 +12,7 @@ namespace EstateOwners.App
 	{
 		DbSet<Trustee> Trustee { get; set; }
 		DbSet<TrusteeEstate> TrusteeEstates { get; set; }
+		DbSet<TrusteeCar> TrusteeCars { get; set; }
 
 		DbSet<AuthToken> AuthTokens { get; set; }
 		DbSet<ApplicationUser> Users { get; set; }
@@ -37,6 +38,7 @@ namespace EstateOwners.App
 		DbSet<VoteForCandidate> VotesForCandidates { get; set; }
 
 		DbSet<TelegramUser> TelegramUsers { get; set; }
+		DbSet<Car> Cars { get; set; }
 
 		Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
 	}

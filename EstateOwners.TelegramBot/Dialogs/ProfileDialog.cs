@@ -15,8 +15,9 @@ namespace EstateOwners.TelegramBot.Dialogs.Signing
         public async Task Step1(DialogContext<AuthDialogStore> context, CancellationToken cancellationToken)
         {
             var replyMarkup = ReplyMarkupBuilder.InlineKeyboard()
-                .ColumnWithCallbackData("Добавить подпись", "signature")
                 .ColumnWithCallbackData("Мои объекты недвижимости", "estates")
+                .RowWithCallbackData("Добавить подпись", "signature")
+                .ColumnWithCallbackData("Мои машины", "cars")
                 .ToMarkup();
 
             await context.Bot.Client.SendTextMessageAsync(context.ChatId, $"{context.Store.User}", replyMarkup: replyMarkup);
@@ -37,6 +38,12 @@ namespace EstateOwners.TelegramBot.Dialogs.Signing
             if (cb.Data == "estates")
             {
                 await context.ReplaceDialogAsync<EstatesDialog, AuthDialogStore>(context.Store);
+                return;
+            }
+
+            if (cb.Data == "cars")
+            {
+                await context.ReplaceDialogAsync<CarsDialog, AuthDialogStore>(context.Store);
                 return;
             }
 
