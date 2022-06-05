@@ -62,6 +62,15 @@ namespace EstateOwners.TelegramBot.Dialogs.Signing
 
         public async Task Step2(DialogContext<AuthDialogStore> context, CancellationToken cancellationToken)
         {
+            if (context.Update.Type != Telegram.Bot.Types.Enums.UpdateType.CallbackQuery)
+            {
+                await context.Bot.Client.SendTextMessageAsync(
+                    context.ChatId,
+                    "Вы ввели некорректные данные. Начните диалог заного.");
+                context.EndDialog();
+                return;
+            }
+
             CallbackQuery cq = context.Update.CallbackQuery;
 
             if (cq.Data == "add")

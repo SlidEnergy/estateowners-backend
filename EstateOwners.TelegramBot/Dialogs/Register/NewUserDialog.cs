@@ -55,6 +55,15 @@ namespace EstateOwners.TelegramBot
 
         public async Task Step2(DialogContext<NewUserDialogStore> context, CancellationToken cancellationToken)
         {
+            if (context.Update.Type != Telegram.Bot.Types.Enums.UpdateType.CallbackQuery)
+            {
+                await context.Bot.Client.SendTextMessageAsync(
+                    context.ChatId,
+                    "Вы ввели некорректные данные. Начните диалог заного.");
+                context.EndDialog();
+                return;
+            }
+
             CallbackQuery cq = context.Update.CallbackQuery;
 
             await context.Bot.Client.SendTextMessageAsync(
@@ -66,6 +75,15 @@ namespace EstateOwners.TelegramBot
 
         public async Task Step3(DialogContext<NewUserDialogStore> context, CancellationToken cancellationToken)
         {
+            if (context.Update.Type != Telegram.Bot.Types.Enums.UpdateType.Message)
+            {
+                await context.Bot.Client.SendTextMessageAsync(
+                    context.ChatId,
+                    "Вы ввели некорректные данные. Начните диалог заного.");
+                context.EndDialog();
+                return;
+            }
+
             var msg = context.GetMessage();
 
             context.Store.Email = msg.Text;
@@ -79,6 +97,15 @@ namespace EstateOwners.TelegramBot
 
         public async Task Step4(DialogContext<NewUserDialogStore> context, CancellationToken cancellationToken)
         {
+            if (context.Update.Type != Telegram.Bot.Types.Enums.UpdateType.Message)
+            {
+                await context.Bot.Client.SendTextMessageAsync(
+                    context.ChatId,
+                    "Вы ввели некорректные данные. Начните диалог заного.");
+                context.EndDialog();
+                return;
+            }
+
             var msg = context.GetMessage();
 
             context.Store.Phone = msg.Text;
@@ -92,6 +119,15 @@ namespace EstateOwners.TelegramBot
 
         public async Task Step5(DialogContext<NewUserDialogStore> context, CancellationToken cancellationToken)
         {
+            if (context.Update.Type != Telegram.Bot.Types.Enums.UpdateType.Message)
+            {
+                await context.Bot.Client.SendTextMessageAsync(
+                    context.ChatId,
+                    "Вы ввели некорректные данные. Начните диалог заного.");
+                context.EndDialog();
+                return;
+            }
+
             var msg = context.GetMessage();
 
             context.Store.LastName = msg.Text;
@@ -105,6 +141,15 @@ namespace EstateOwners.TelegramBot
 
         public async Task Step6(DialogContext<NewUserDialogStore> context, CancellationToken cancellationToken)
         {
+            if (context.Update.Type != Telegram.Bot.Types.Enums.UpdateType.Message)
+            {
+                await context.Bot.Client.SendTextMessageAsync(
+                    context.ChatId,
+                    "Вы ввели некорректные данные. Начните диалог заного.");
+                context.EndDialog();
+                return;
+            }
+
             var msg = context.GetMessage();
 
             context.Store.FirstName = msg.Text;
@@ -118,6 +163,15 @@ namespace EstateOwners.TelegramBot
 
         public async Task Step7(DialogContext<NewUserDialogStore> context, CancellationToken cancellationToken)
         {
+            if (context.Update.Type != Telegram.Bot.Types.Enums.UpdateType.Message)
+            {
+                await context.Bot.Client.SendTextMessageAsync(
+                    context.ChatId,
+                    "Вы ввели некорректные данные. Начните диалог заного.");
+                context.EndDialog();
+                return;
+            }
+
             var msg = context.GetMessage();
 
             context.Store.MiddleName = msg.Text;
