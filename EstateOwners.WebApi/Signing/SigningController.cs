@@ -5,12 +5,12 @@ using EstateOwners.Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace EstateOwners.WebApi.Controllers
 {
-    [Authorize(Policy = Policy.MustBeAllAccessMode)]
 	[Route("api/v1/[controller]")]
 	[ApiController]
 	public class SigningController : ControllerBase
@@ -24,7 +24,8 @@ namespace EstateOwners.WebApi.Controllers
             _mapper = mapper;
         }
 
-		[HttpGet("messages")]
+        [Authorize(Policy = Policy.MustBeAllAccessMode)]
+        [HttpGet("messages")]
 		public async Task<ActionResult<List<MessageToSign>>> GetList()
 		{
 			var userId = User.GetUserId();
@@ -32,7 +33,8 @@ namespace EstateOwners.WebApi.Controllers
 			return await _service.GetListAsync();
 		}
 
-		[HttpGet("messages/{messageId}/users")]
+        [Authorize(Policy = Policy.MustBeAllOrExportAccessMode)]
+        [HttpGet("messages/{messageId}/users")]
 		public async Task<ActionResult<List<Dto.User>>> GetUsers(int messageId)
 		{
 			var userId = User.GetUserId();
@@ -42,6 +44,7 @@ namespace EstateOwners.WebApi.Controllers
 			return _mapper.Map<List<Dto.User>>(users);
 		}
 
+        [Authorize(Policy = Policy.MustBeAllAccessMode)]
         [HttpPost("signature")]
 		public async Task<ActionResult> AddUserSignature(IFormFile formData)
         {
