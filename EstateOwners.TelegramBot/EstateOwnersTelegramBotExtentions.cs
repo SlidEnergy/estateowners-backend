@@ -61,6 +61,7 @@ namespace EstateOwners.TelegramBot
                 var botBuilder = new BotBuilder()
                     .Use<ExceptionHandler>()
                     .Use<StartCommand>()
+                    .Use<MenuCommand>()
                     .Use<MenuHandler>()
                     .Use<DialogHandler>()
                     .Build();

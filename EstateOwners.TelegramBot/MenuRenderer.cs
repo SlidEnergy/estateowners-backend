@@ -1,53 +1,68 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstractions;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace EstateOwners.TelegramBot
 {
     public class MenuRenderer : IMenuRenderer
     {
-        public async Task RenderMenuAsync(IUpdateContext context)
+        public async Task RenderMenuAsync(IUpdateContext context, CancellationToken cancellationToken = default)
         {
             var msg = context.GetMessage();
 
-            var myReplyKeyboard = new ReplyKeyboardMarkup()
-            {
-                //Keyboard = new KeyboardButton[][]
-                //{
-                //    new KeyboardButton[]
-                //    {
-                //        new KeyboardButton("Документы на подпись"),
-                //        new KeyboardButton("Опросы"),
-                //    },
-                //    new KeyboardButton[]
-                //    {
-                //        new KeyboardButton("Отчетность и аудит"),
-                //    },
-                //    new KeyboardButton[]
-                //    {
-                //        new KeyboardButton("Председатель и совет дома"),
-                //        new KeyboardButton("Профиль"),
-                //    }
-                //},
-                Keyboard = new KeyboardButton[][]
-                {
-                    new KeyboardButton[]
-                    {
-                        new KeyboardButton("Документы на подпись"),
-                        new KeyboardButton("Профиль"),
-                    }
-                },
-                ResizeKeyboard = true
-            };
+            var markup = ReplyMarkupBuilder.Keyboard()
+                .ColumnKeyboardButton("Документы на подпись")
+                //.ColumnKeyboardButton("Опросы")
+                //.NewRow()
+                //.ColumnKeyboardButton("Отчетность и аудит")
+                //.NewRow()
+                //.ColumnKeyboardButton("Председатель и совет дома")
+                .ColumnKeyboardButton("Профиль")
+                .ToMarkup();
 
             await context.Bot.Client.SendTextMessageAsync(
                 msg.Chat.Id,
                 "Добро пожаловать " + msg.Chat.FirstName,
-                replyMarkup: myReplyKeyboard);
+                replyMarkup: markup);
         }
 
-        public async Task ClearMenu(IUpdateContext context)
+
+        public async Task RenderInlineMenuAsync(IUpdateContext context, bool renderInlineMenu = false, CancellationToken cancellationToken = default)
+        {
+            var msg = context.GetMessage();
+
+            var markup = ReplyMarkupBuilder.InlineKeyboard()
+                .ColumnWithCallbackData("Документы на подпись")
+                //.ColumnWithCallbackData("Опросы")
+                //.NewRow()
+                //.ColumnWithCallbackData("Отчетность и аудит")
+                //.NewRow()
+                //.ColumnWithCallbackData("Председатель и совет дома")
+                .ColumnWithCallbackData("Профиль")
+                .ToMarkup();
+
+            await context.Bot.Client.SendTextMessageAsync(
+                msg.Chat.Id,
+                "Главное меню",
+                replyMarkup: markup);
+        }
+
+        public async Task SetCommands(IUpdateContext context, CancellationToken cancellationToken = default)
+        {
+            await context.Bot.Client.SetMyCommandsAsync(new List<BotCommand>()
+            {
+                new BotCommand() { Command = "start", Description = "Начало работы"},
+                new BotCommand() { Command = "menu", Description = "Главное меню"},
+                new BotCommand() { Command = "documents", Description = "Документы на подпись"},
+                new BotCommand() { Command = "profile", Description = "Профиль"},
+            }, cancellationToken);
+        }
+
+        public async Task ClearMenuAsync(IUpdateContext context, CancellationToken cancellationToken = default)
         {
             var msg = context.GetMessage();
 
@@ -55,6 +70,14 @@ namespace EstateOwners.TelegramBot
                 msg.Chat.Id,
                 "Мы вас не знаем",
                 replyMarkup: new ReplyKeyboardRemove());
+        }
+
+        public async Task ClearCommandsAsync(IUpdateContext context, CancellationToken cancellationToken = default)
+        {
+            await context.Bot.Client.SetMyCommandsAsync(new List<BotCommand>()
+            {
+                new BotCommand() { Command = "start", Description = "Начало работы"},
+            }, cancellationToken);
         }
     }
 }

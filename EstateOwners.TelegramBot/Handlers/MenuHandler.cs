@@ -24,7 +24,7 @@ namespace EstateOwners.TelegramBot
 
         public override bool CanHandle(IUpdateContext context)
         {
-            if (context.IsMessageUpdate())
+            if (context.IsMessageUpdate() || context.IsCallbackQueryUpdate())
                 return true;
 
             return false;
@@ -32,10 +32,10 @@ namespace EstateOwners.TelegramBot
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next)
         {
-            var msg = context.GetMessage();
+            var msg = context.Update.Message?.Text ?? context.Update.CallbackQuery.Data;
             var chatId = context.GetChatId().Value;
 
-            var user = await _usersService.GetByAuthTokenAsync(msg.Chat.Id.ToString(), Domain.AuthTokenType.TelegramUserId);
+            var user = await _usersService.GetByAuthTokenAsync(chatId.ToString(), Domain.AuthTokenType.TelegramUserId);
 
             if (user == null)
             {
@@ -46,27 +46,27 @@ namespace EstateOwners.TelegramBot
 
             var store = new AuthDialogStore(user);
 
-            if (msg.Text == "Профиль")
+            if (msg == "Профиль" || msg == "/profile")
             {
                 _dialogManager.SetActiveDialog<ProfileDialog, AuthDialogStore>(chatId, store);
             }
 
-            if (msg.Text == "Документы на подпись")
+            if (msg == "Документы на подпись" || msg == "/documents")
             {
                 _dialogManager.SetActiveDialog<MessagesToSignDialog, AuthDialogStore>(chatId, store);
             }
 
-            if (msg.Text == "Опросы")
+            if (msg == "Опросы")
             {
                 _dialogManager.SetActiveDialog<PollsDialog, AuthDialogStore>(chatId, store);
             }
 
-            if (msg.Text == "Председатель и совет дома")
+            if (msg == "Председатель и совет дома")
             {
                 _dialogManager.SetActiveDialog<CandidatesDialog, AuthDialogStore>(chatId, store);
             }
 
-            if (msg.Text == "Отчетность и аудит")
+            if (msg == "Отчетность и аудит")
             {
                 _dialogManager.SetActiveDialog<EmptyDialog, DialogStore>(chatId);
             }

@@ -212,7 +212,8 @@ namespace EstateOwners.TelegramBot
                 msg.Chat.Id,
                 "Мы вас зарегистрировали");
 
-            await _menuRenderer.RenderMenuAsync(context);
+            await _menuRenderer.RenderMenuAsync(context, cancellationToken);
+            await _menuRenderer.SetCommands(context, cancellationToken);
 
             await context.Bot.Client.SendTextMessageAsync(
                 msg.Chat.Id,

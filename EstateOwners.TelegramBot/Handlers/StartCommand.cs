@@ -22,17 +22,18 @@ namespace EstateOwners.TelegramBot
 
         protected override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args)
         {
-            var msg = context.GetMessage();
+            var chatId = context.GetChatId().Value;
 
             await context.Bot.Client.SendTextMessageAsync(
-                msg.Chat.Id,
+                chatId,
                 "Приветствую. Описание бота.");
 
-            var user = await _usersService.GetByAuthTokenAsync(msg.From.Id.ToString(), Domain.AuthTokenType.TelegramUserId);
+            var user = await _usersService.GetByAuthTokenAsync(chatId.ToString(), Domain.AuthTokenType.TelegramUserId);
 
             if (user == null)
             {
-                await _menuRenderer.ClearMenu(context);
+                await _menuRenderer.ClearMenuAsync(context);
+                await _menuRenderer.ClearCommandsAsync(context);
 
                 _dialogManager.SetActiveDialog<NewUserDialog, NewUserDialogStore>(context.Update.Message.Chat.Id);
                 await next(context);
@@ -41,6 +42,7 @@ namespace EstateOwners.TelegramBot
             else
             {
                 await _menuRenderer.RenderMenuAsync(context);
+                await _menuRenderer.SetCommands(context);
             }
         }
     }

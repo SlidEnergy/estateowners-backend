@@ -47,6 +47,13 @@ namespace EstateOwners.TelegramBot
             return this;
         }
 
+        public ReplyMarkupBuilder ColumnKeyboardButton(string text)
+        {
+            _buttons[_rowIndex].Add(new KeyboardButton(text));
+
+            return this;
+        }
+
         public ReplyMarkupBuilder Column(IKeyboardButton button)
         {
             _buttons[_rowIndex].Add(button);
@@ -54,22 +61,12 @@ namespace EstateOwners.TelegramBot
             return this;
         }
 
-        public ReplyMarkupBuilder RowWithCallbackData(string textAndCallbackData)
-        {
-            return Row(InlineKeyboardButton.WithCallbackData(textAndCallbackData));
-        }
-
-        public ReplyMarkupBuilder RowWithCallbackData(string text, string callbackData)
-        {
-            return Row(InlineKeyboardButton.WithCallbackData(text, callbackData));
-        }
-
-        public ReplyMarkupBuilder Row(IKeyboardButton button)
+        public ReplyMarkupBuilder NewRow()
         {
             _rowIndex++;
             _buttons.Add(new List<IKeyboardButton>());
 
-            return Column(button);
+            return this;
         }
 
         public IReplyMarkup ToMarkup()
@@ -88,7 +85,7 @@ namespace EstateOwners.TelegramBot
                 for (var i = 0; i < _buttons.Count; i++)
                     array[i] = _buttons[i].Cast<KeyboardButton>().ToArray();
 
-                return new ReplyKeyboardMarkup(array);
+                return new ReplyKeyboardMarkup(array, true);
             }
         }
     }
