@@ -1,6 +1,7 @@
 ﻿using EstateOwners.App;
 using EstateOwners.Domain;
 using EstateOwners.TelegramBot.Dialogs.Core;
+using Lers.Utils;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -163,7 +164,7 @@ namespace EstateOwners.TelegramBot.Dialogs
 
             var msg = context.GetMessage();
 
-            context.Store.Area = Convert.ToSingle(msg.Text);
+            context.Store.Area = Convert.ToSingle(FormatUtils.ReplaceDecimalSeparator(msg.Text));
 
             var model = new Estate(context.Store.Type, context.Store.Building.Id, context.Store.Number)
             {

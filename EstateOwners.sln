@@ -19,8 +19,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EstateOwners.App", "EstateO
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EstateOwners.TelegramBot", "EstateOwners.TelegramBot\EstateOwners.TelegramBot.csproj", "{F4B9B078-1D93-497D-90A7-FCAAE013B756}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slid.Utils", "Slid.Utils\Slid.Utils.csproj", "{08E9D3C8-0C77-441C-83B7-D858B8CEAAAE}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,10 +53,6 @@ Global
 		{F4B9B078-1D93-497D-90A7-FCAAE013B756}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F4B9B078-1D93-497D-90A7-FCAAE013B756}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F4B9B078-1D93-497D-90A7-FCAAE013B756}.Release|Any CPU.Build.0 = Release|Any CPU
-		{08E9D3C8-0C77-441C-83B7-D858B8CEAAAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{08E9D3C8-0C77-441C-83B7-D858B8CEAAAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{08E9D3C8-0C77-441C-83B7-D858B8CEAAAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{08E9D3C8-0C77-441C-83B7-D858B8CEAAAE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
