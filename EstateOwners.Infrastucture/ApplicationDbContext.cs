@@ -30,6 +30,9 @@ namespace EstateOwners.Infrastructure
 
             modelBuilder.Entity<Candidate>()
                 .HasIndex(x => new { x.UserId, x.Type }).IsUnique();
+
+            modelBuilder.Entity<UserMessageSignature>()
+                .HasIndex(x => new { x.UserId, x.Messageid }).IsUnique();
         }
 
         public DbSet<AuthToken> AuthTokens { get; set; }
