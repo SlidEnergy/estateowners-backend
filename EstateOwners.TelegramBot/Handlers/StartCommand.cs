@@ -25,7 +25,9 @@ namespace EstateOwners.TelegramBot
 
             await context.Bot.Client.SendTextMessageAsync(
                 chatId,
-                "Приветствую. Описание бота.");
+                @"Приветствую, Это помощник ЖК Изумрудный город, который призван облегчить взаимодействие собственников апартаментов между собой для решения насущных задач. 
+Сейчас можно легко коллективно подписать документ, проголосовать или поддержать какой-либо вопрос, который дальше будет направлен в работу или в управляющую компанию.
+Новый функционал разрабатывается.");
 
             var user = await _usersService.GetByAuthTokenAsync(chatId.ToString(), Domain.AuthTokenType.TelegramUserId);
 

@@ -48,7 +48,8 @@ namespace EstateOwners.TelegramBot
 
             await context.Bot.Client.SendTextMessageAsync(
                 context.ChatId,
-                "Чтобы продолжить пользоваться сервисом, вы должны зарегистрироваться. Продолжая пользоваться сервисом, вы даете своё согласие на хранение и обработку ваших данных. Сейчас нам нужны ваши данные только для составления списка собственников, для распечатки подписавшихся под документом.",
+                "Чтобы продолжить пользоваться сервисом, вы должны зарегистрироваться. Нам нужны ваши данные только для деятельности в рамках ЖК Изумрудный город." + Environment.NewLine + Environment.NewLine +
+                "Продолжая пользоваться сервисом, вы даете своё согласие на хранение и обработку ваших данных.",
                 replyMarkup: myInlineKeyboard);
 
             context.NextStep();
@@ -130,7 +131,7 @@ namespace EstateOwners.TelegramBot
             context.Store.MiddleName = msg.Text;
 
             var input = $"{context.Store.LastName} {context.Store.FirstName} {context.Store.MiddleName}" + Environment.NewLine +
-                $"email: {context.Store.MiddleName}" + Environment.NewLine +
+                $"email: {context.Store.Email}" + Environment.NewLine +
                 $"телефон: {context.Store.Phone}";
 
             var myInlineKeyboard = new InlineKeyboardMarkup(new InlineKeyboardButton[][]
@@ -151,11 +152,10 @@ namespace EstateOwners.TelegramBot
             context.NextStep();
         }
 
-        [EndDialogStepFilter(UpdateType.Message, Messages.IncorrectInput, new string[] { "valid", "retry" } )]
+        [EndDialogStepFilter(UpdateType.CallbackQuery, Messages.IncorrectInput, new string[] { "valid", "retry" } )]
         public async Task Step8(DialogContext<NewUserDialogStore> context, CancellationToken cancellationToken)
         {
             var cb = context.Update.CallbackQuery;
-            var msg = cb.Message;
 
             if (cb.Data == "retry")
             {
@@ -171,7 +171,7 @@ namespace EstateOwners.TelegramBot
                 LastName = context.Store.LastName,
             };
 
-            var result = await _usersService.CreateUserAsync(user, msg.From.Id.ToString(), AuthTokenType.TelegramUserId);
+            var result = await _usersService.CreateUserAsync(user, cb.Message.Chat.Id.ToString(), AuthTokenType.TelegramUserId);
             if (!result.Succeeded)
             {
                 await context.Bot.Client.SendTextMessageAsync(
@@ -182,15 +182,16 @@ namespace EstateOwners.TelegramBot
                 return;
             }
 
+            // ! Don't use callbackQuery.Message.From (it's bot, use callbackQuery.From)
             var telegramUser = new TelegramUser()
             {
                 UserId = user.Id,
-                TelegramUserId = msg.From.Id,
-                FirstName = msg.From.FirstName,
-                LastName = msg.From.LastName,
-                Username = msg.From.Username,
-                LanguageCode = msg.From.LanguageCode,
-                IsBot = msg.From.IsBot
+                TelegramUserId = cb.From.Id,
+                FirstName = cb.From.FirstName,
+                LastName = cb.From.LastName,
+                Username = cb.From.Username,
+                LanguageCode = cb.From.LanguageCode,
+                IsBot = cb.From.IsBot
             };
 
             await _usersService.AddTelegramUserInfo(telegramUser);

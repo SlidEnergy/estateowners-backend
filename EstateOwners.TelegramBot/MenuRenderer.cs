@@ -12,7 +12,7 @@ namespace EstateOwners.TelegramBot
     {
         public async Task RenderMenuAsync(IUpdateContext context, CancellationToken cancellationToken = default)
         {
-            var msg = context.GetMessage();
+            var chat = context.Update.Message?.Chat ?? context.Update.CallbackQuery.Message.Chat;
 
             var markup = ReplyMarkupBuilder.Keyboard()
                 .ColumnKeyboardButton("Документы на подпись")
@@ -25,8 +25,8 @@ namespace EstateOwners.TelegramBot
                 .ToMarkup();
 
             await context.Bot.Client.SendTextMessageAsync(
-                msg.Chat.Id,
-                "Добро пожаловать " + msg.Chat.FirstName,
+                chat.Id,
+                "Добро пожаловать " + chat.FirstName,
                 replyMarkup: markup);
         }
 
