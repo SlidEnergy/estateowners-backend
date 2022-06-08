@@ -9,7 +9,7 @@ namespace Telegram.Bot.Framework.Dialogs
         public UpdateType Type { get; }
         public string Message { get; }
 
-        public EndDialogStepFilterAttribute(UpdateType type, string message)
+        public EndDialogStepFilterAttribute(UpdateType type, string message, string[] callbackQueryValues = null)
         {
             Type = type;
             Message = message;

@@ -2,6 +2,7 @@
 using EstateOwners.App;
 using EstateOwners.Domain;
 using EstateOwners.TelegramBot.Dialogs;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework;
@@ -16,13 +17,11 @@ namespace EstateOwners.TelegramBot
     {
         private readonly IUsersService _usersService;
         private readonly IMenuRenderer _menuRenderer;
-        private readonly IMapper _mapper;
 
-        public NewUserDialog(IUsersService usersService, IMenuRenderer menuRenderer, IMapper mapper)
+        public NewUserDialog(IUsersService usersService, IMenuRenderer menuRenderer)
         {
             _usersService = usersService;
             _menuRenderer = menuRenderer;
-            _mapper = mapper;
 
             AddStep(Step1);
             AddStep(Step2);
@@ -31,6 +30,7 @@ namespace EstateOwners.TelegramBot
             AddStep(Step5);
             AddStep(Step6);
             AddStep(Step7);
+            AddStep(Step8);
         }
 
         public async Task Step1(DialogContext<NewUserDialogStore> context, CancellationToken cancellationToken)
@@ -61,7 +61,7 @@ namespace EstateOwners.TelegramBot
 
             await context.Bot.Client.SendTextMessageAsync(
                 cq.Message.Chat.Id,
-                "Введите ваш email");
+                "Введите ваш email (будет использоваться для связи)");
 
             context.NextStep();
         }
@@ -75,7 +75,7 @@ namespace EstateOwners.TelegramBot
 
             await context.Bot.Client.SendTextMessageAsync(
                 msg.Chat.Id,
-                "Введите ваш номер телефона");
+                "Введите ваш номер телефона (будет использоваться для связи)");
 
             context.NextStep();
         }
@@ -129,6 +129,40 @@ namespace EstateOwners.TelegramBot
 
             context.Store.MiddleName = msg.Text;
 
+            var input = $"{context.Store.LastName} {context.Store.FirstName} {context.Store.MiddleName}" + Environment.NewLine +
+                $"email: {context.Store.MiddleName}" + Environment.NewLine +
+                $"телефон: {context.Store.Phone}";
+
+            var myInlineKeyboard = new InlineKeyboardMarkup(new InlineKeyboardButton[][]
+                {
+                    new InlineKeyboardButton[]
+                    {
+                        InlineKeyboardButton.WithCallbackData("Верно", "valid"),
+                        InlineKeyboardButton.WithCallbackData("Повторить ввод данных", "retry"),
+                    }
+                }
+            );
+
+            await context.Bot.Client.SendTextMessageAsync(
+                context.ChatId,
+                "Проверьте и подтвердите введенные данные:" + Environment.NewLine + input,
+                replyMarkup: myInlineKeyboard);
+
+            context.NextStep();
+        }
+
+        [EndDialogStepFilter(UpdateType.Message, Messages.IncorrectInput, new string[] { "valid", "retry" } )]
+        public async Task Step8(DialogContext<NewUserDialogStore> context, CancellationToken cancellationToken)
+        {
+            var cb = context.Update.CallbackQuery;
+            var msg = cb.Message;
+
+            if (cb.Data == "retry")
+            {
+                await context.ExecuteStepAsync(Step2, cancellationToken);
+                return;
+            }
+
             var user = new ApplicationUser(new Trustee(), context.Store.Email)
             {
                 PhoneNumber = context.Store.Phone,
@@ -141,7 +175,7 @@ namespace EstateOwners.TelegramBot
             if (!result.Succeeded)
             {
                 await context.Bot.Client.SendTextMessageAsync(
-                    msg.Chat.Id,
+                    context.ChatId,
                     "Не удалось вас зарегистрировать, попробуйте позже или свяжитесь с администратором.");
 
                 context.EndDialog();
@@ -162,14 +196,14 @@ namespace EstateOwners.TelegramBot
             await _usersService.AddTelegramUserInfo(telegramUser);
 
             await context.Bot.Client.SendTextMessageAsync(
-                msg.Chat.Id,
+                context.ChatId,
                 "Мы вас зарегистрировали");
 
             await _menuRenderer.RenderMenuAsync(context, cancellationToken);
             await _menuRenderer.SetCommands(context, cancellationToken);
 
             await context.Bot.Client.SendTextMessageAsync(
-                msg.Chat.Id,
+                context.ChatId,
                 "Добавьте свой объект недвижимости. Если у вас несколько объектов, добавьте их по очереди");
 
             var store = new EstateDialogStore(user);

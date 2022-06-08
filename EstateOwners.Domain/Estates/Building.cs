@@ -16,5 +16,10 @@
             ShortAddress = shortAddress;
             Address = address;
         }
+
+        public override string ToString()
+        {
+            return ShortAddress;
+        }
     }
 }

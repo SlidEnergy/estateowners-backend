@@ -29,6 +29,7 @@ namespace EstateOwners.TelegramBot.Dialogs
             AddStep(Step4);
             AddStep(Step5);
             AddStep(Step6);
+            AddStep(Step7);
         }
 
         public async Task Step1(DialogContext<EstateDialogStore> context, CancellationToken cancellationToken)
@@ -135,6 +136,38 @@ namespace EstateOwners.TelegramBot.Dialogs
 
             context.Store.Area = Convert.ToSingle(FormatUtils.ReplaceDecimalSeparator(msg.Text));
 
+            
+            var input = $"{context.Store.Building} {context.Store.Type.GetDescription().ToLower()} {context.Store.Number} площадью {context.Store.Area} м²";
+
+            var myInlineKeyboard = new InlineKeyboardMarkup(new InlineKeyboardButton[][]
+                {
+                    new InlineKeyboardButton[]
+                    {
+                        InlineKeyboardButton.WithCallbackData("Верно", "valid"),
+                        InlineKeyboardButton.WithCallbackData("Повторить ввод данных", "retry"),
+                    }
+                }
+            );
+
+            await context.Bot.Client.SendTextMessageAsync(
+                context.ChatId,
+                "Проверьте и подтвердите введенные данные:" + Environment.NewLine + input,
+                replyMarkup: myInlineKeyboard);
+
+            context.NextStep();
+        }
+
+        [EndDialogStepFilter(UpdateType.CallbackQuery, Messages.IncorrectInput, new string[] { "valid", "retry"})]
+        public async Task Step6(DialogContext<EstateDialogStore> context, CancellationToken cancellationToken)
+        {
+            var cb = context.Update.CallbackQuery;
+
+            if (cb.Data == "retry")
+            {
+                await context.ExecuteStepAsync(Step1, cancellationToken);
+                return;
+            }
+
             var model = new Estate(context.Store.Type, context.Store.Building.Id, context.Store.Number)
             {
                 Area = context.Store.Area
@@ -145,7 +178,7 @@ namespace EstateOwners.TelegramBot.Dialogs
             if (estate == null)
             {
                 await context.Bot.Client.SendTextMessageAsync(
-                    msg.Chat.Id,
+                    context.ChatId,
                     "Не удалось добавить объект недвижимости, попробуйте позже или обратитесь к администратору.");
 
                 context.EndDialog();
@@ -153,7 +186,7 @@ namespace EstateOwners.TelegramBot.Dialogs
             }
 
             await context.Bot.Client.SendTextMessageAsync(
-                msg.Chat.Id,
+                context.ChatId,
                 "Ваш объект недвижимости добавлен.");
 
             var myInlineKeyboard = new InlineKeyboardMarkup(new InlineKeyboardButton[][]
@@ -167,7 +200,7 @@ namespace EstateOwners.TelegramBot.Dialogs
             );
 
             await context.Bot.Client.SendTextMessageAsync(
-                msg.Chat.Id,
+                context.ChatId,
                 "Хотите добавить еще объект недвижимости?",
                 replyMarkup: myInlineKeyboard);
 
@@ -175,7 +208,7 @@ namespace EstateOwners.TelegramBot.Dialogs
         }
 
         [EndDialogStepFilter(UpdateType.CallbackQuery, Messages.IncorrectInput)]
-        public async Task Step6(DialogContext<EstateDialogStore> context, CancellationToken cancellationToken)
+        public async Task Step7(DialogContext<EstateDialogStore> context, CancellationToken cancellationToken)
         {
             var cb = context.Update.CallbackQuery;
 
