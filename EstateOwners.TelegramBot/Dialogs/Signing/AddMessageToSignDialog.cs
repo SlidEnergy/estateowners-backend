@@ -1,12 +1,13 @@
 ﻿using EstateOwners.App.Signing;
 using EstateOwners.Domain;
-using EstateOwners.TelegramBot.Dialogs.Core;
 using System.Threading;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Dialogs;
+using Telegram.Bot.Types.Enums;
 
 namespace EstateOwners.TelegramBot.Dialogs.Signing
 {
-    internal class AddMessageToSignDialog : DialogBase<AuthDialogStore>
+    internal class AddMessageToSignDialog : Dialog<AuthDialogStore>
     {
         private readonly ISigningService _messagesToSignService;
 
@@ -27,17 +28,9 @@ namespace EstateOwners.TelegramBot.Dialogs.Signing
             context.NextStep();
         }
 
+        [EndDialogStepFilter(UpdateType.Message, Messages.IncorrectInput)]
         public async Task Step2(DialogContext<AuthDialogStore> context, CancellationToken cancellationToken)
         {
-            if (context.Update.Type != Telegram.Bot.Types.Enums.UpdateType.Message)
-            {
-                await context.Bot.Client.SendTextMessageAsync(
-                    context.ChatId,
-                    "Вы ввели некорректные данные. Начните диалог заного.");
-                context.EndDialog();
-                return;
-            }
-
             await _messagesToSignService.AddAsync(new MessageToSign(context.Update.Message.Chat.Id, context.Update.Message.MessageId));
 
             await context.Bot.Client.SendTextMessageAsync(

@@ -1,5 +1,4 @@
 ﻿using EstateOwners.TelegramBot.Dialogs;
-using EstateOwners.TelegramBot.Dialogs.Core;
 using EstateOwners.TelegramBot.Dialogs.Polls;
 using EstateOwners.TelegramBot.Dialogs.Signing;
 using Microsoft.AspNetCore.Builder;
@@ -7,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using Telegram.Bot.Framework;
+using Telegram.Bot.Framework.Dialogs;
 
 namespace EstateOwners.TelegramBot
 {
@@ -33,7 +33,9 @@ namespace EstateOwners.TelegramBot
             }
 
             services.AddTransient<IMenuRenderer, MenuRenderer>();
-            services.AddSingleton<IDialogManager, DialogManager>();
+
+            services.AddTelegramDialogs();
+            
             services.AddScoped<ProfileDialog>();
             services.AddScoped<NewUserDialog>();
 
@@ -63,7 +65,7 @@ namespace EstateOwners.TelegramBot
                     .Use<StartCommand>()
                     .Use<MenuCommand>()
                     .Use<MenuHandler>()
-                    .Use<DialogHandler>()
+                    .UseDialogHandler()
                     .Build();
 
                 // get bot updates from Telegram via long-polling approach during development

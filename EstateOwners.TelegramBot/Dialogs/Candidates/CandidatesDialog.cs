@@ -1,16 +1,17 @@
 ﻿using EstateOwners.App.Signing;
 using EstateOwners.Domain;
-using EstateOwners.TelegramBot.Dialogs.Core;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Dialogs;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace EstateOwners.TelegramBot.Dialogs
 {
-    internal class CandidatesDialog : DialogBase<AuthDialogStore>
+    internal class CandidatesDialog : Dialog<AuthDialogStore>
     {
         private readonly ICandidatesService _candidatesService;
 
@@ -60,6 +61,7 @@ namespace EstateOwners.TelegramBot.Dialogs
             context.NextStep();
         }
 
+        [EndDialogStepFilter(UpdateType.CallbackQuery, Messages.IncorrectInput)]
         public async Task Step2(DialogContext<AuthDialogStore> context, CancellationToken cancellationToken)
         {
             CallbackQuery cq = context.Update.CallbackQuery;

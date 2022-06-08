@@ -1,9 +1,8 @@
 ﻿using EstateOwners.App;
 using EstateOwners.TelegramBot.Dialogs;
-using EstateOwners.TelegramBot.Dialogs.Core;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstractions;
+using Telegram.Bot.Framework.Dialogs;
 
 namespace EstateOwners.TelegramBot
 {

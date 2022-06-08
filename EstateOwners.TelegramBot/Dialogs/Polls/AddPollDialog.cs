@@ -1,12 +1,13 @@
 ﻿using EstateOwners.App.Polls;
 using EstateOwners.Domain;
-using EstateOwners.TelegramBot.Dialogs.Core;
 using System.Threading;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Dialogs;
+using Telegram.Bot.Types.Enums;
 
 namespace EstateOwners.TelegramBot.Dialogs.Polls
 {
-    internal class AddPollDialog : DialogBase<AuthDialogStore>
+    internal class AddPollDialog : Dialog<AuthDialogStore>
     {
         private readonly IPollsService _pollsService;
 
@@ -27,9 +28,10 @@ namespace EstateOwners.TelegramBot.Dialogs.Polls
             context.NextStep();
         }
 
+        [EndDialogStepFilter(UpdateType.Message, Messages.IncorrectInput)]
         public async Task Step2(DialogContext<AuthDialogStore> context, CancellationToken cancellationToken)
         {
-            await _pollsService.AddAsync(new Poll(context.Update.Message.Chat.Id, context.Update.Message.MessageId, context.Update.Message.Poll.Id));
+            await _pollsService.AddAsync(new Poll(context.ChatId, context.Update.Message.MessageId, context.Update.Message.Poll.Id));
 
             await context.Bot.Client.SendTextMessageAsync(
                     context.ChatId,

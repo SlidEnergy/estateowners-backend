@@ -1,14 +1,15 @@
 ﻿using EstateOwners.App;
 using EstateOwners.Domain;
-using EstateOwners.TelegramBot.Dialogs.Core;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework;
+using Telegram.Bot.Framework.Dialogs;
+using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace EstateOwners.TelegramBot.Dialogs
 {
-    internal class AddCarDialog : DialogBase<CarDialogStore>
+    internal class AddCarDialog : Dialog<CarDialogStore>
     {
         private readonly ICarsService _carsService;
 
@@ -32,6 +33,7 @@ namespace EstateOwners.TelegramBot.Dialogs
             context.NextStep();
         }
 
+        [EndDialogStepFilter(UpdateType.Message, Messages.IncorrectInput)]
         public async Task Step2(DialogContext<CarDialogStore> context, CancellationToken cancellationToken)
         {
             var msg = context.GetMessage();
@@ -45,6 +47,7 @@ namespace EstateOwners.TelegramBot.Dialogs
             context.NextStep();
         }
 
+        [EndDialogStepFilter(UpdateType.Message, Messages.IncorrectInput)]
         public async Task Step3(DialogContext<CarDialogStore> context, CancellationToken cancellationToken)
         {
             var msg = context.GetMessage();
@@ -58,6 +61,7 @@ namespace EstateOwners.TelegramBot.Dialogs
             context.NextStep();
         }
 
+        [EndDialogStepFilter(UpdateType.Message, Messages.IncorrectInput)]
         public async Task Step4(DialogContext<CarDialogStore> context, CancellationToken cancellationToken)
         {
             var msg = context.GetMessage();
@@ -104,6 +108,7 @@ namespace EstateOwners.TelegramBot.Dialogs
             context.NextStep();
         }
 
+        [EndDialogStepFilter(UpdateType.CallbackQuery, Messages.IncorrectInput)]
         public async Task Step5(DialogContext<CarDialogStore> context, CancellationToken cancellationToken)
         {
             var cb = context.Update.CallbackQuery;

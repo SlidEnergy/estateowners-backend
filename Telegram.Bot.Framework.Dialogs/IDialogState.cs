@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EstateOwners.TelegramBot.Dialogs.Core
+namespace Telegram.Bot.Framework.Dialogs
 {
     public interface IDialogState
     {

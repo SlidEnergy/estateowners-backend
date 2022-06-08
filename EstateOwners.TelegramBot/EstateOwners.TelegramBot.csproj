@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EstateOwners.App\EstateOwners.App.csproj" />
+    <ProjectReference Include="..\Telegram.Bot.Framework.Dialogs\Telegram.Bot.Framework.Dialogs.csproj" />
   </ItemGroup>
 
   <ItemGroup>

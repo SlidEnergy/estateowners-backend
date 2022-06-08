@@ -1,14 +1,12 @@
-﻿using EstateOwners.App;
-using EstateOwners.App.Signing;
-using EstateOwners.TelegramBot.Dialogs.Core;
-using System.IO;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Dialogs;
+using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace EstateOwners.TelegramBot.Dialogs.Signing
 {
-    internal class AddSignatureDialog : DialogBase<AuthDialogStore>
+    internal class AddSignatureDialog : Dialog<AuthDialogStore>
     {
         public AddSignatureDialog()
         {
@@ -47,11 +45,13 @@ namespace EstateOwners.TelegramBot.Dialogs.Signing
             context.NextStep();
         }
 
+        [EndDialogStepFilter(UpdateType.CallbackQuery, Messages.IncorrectInput)]
         public async Task OpenExternalGameUrl(DialogContext<AuthDialogStore> context, CancellationToken cancellationToken)
         {
             await context.Bot.Client.AnswerCallbackQueryAsync(context.Update.CallbackQuery.Id, "text", false, "https://7602-91-245-141-24.eu.ngrok.io/drawgram-static/");
         }
 
+        [EndDialogStepFilter(UpdateType.CallbackQuery, Messages.IncorrectInput)]
         public async Task Step3(DialogContext<AuthDialogStore> context, CancellationToken cancellationToken)
         {
             await context.Bot.Client.SendTextMessageAsync(context.ChatId, "Ваша подпись сохранена");

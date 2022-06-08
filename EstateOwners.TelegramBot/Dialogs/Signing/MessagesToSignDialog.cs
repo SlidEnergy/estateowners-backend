@@ -1,15 +1,16 @@
 ﻿using EstateOwners.App.Signing;
-using EstateOwners.TelegramBot.Dialogs.Core;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Dialogs;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace EstateOwners.TelegramBot.Dialogs.Signing
 {
-    internal class MessagesToSignDialog : DialogBase<AuthDialogStore>
+    internal class MessagesToSignDialog : Dialog<AuthDialogStore>
     {
         private readonly ISigningService _messagesToSignService;
 
@@ -60,17 +61,9 @@ namespace EstateOwners.TelegramBot.Dialogs.Signing
             context.NextStep();
         }
 
+        [EndDialogStepFilter(UpdateType.CallbackQuery, Messages.IncorrectInput)]
         public async Task Step2(DialogContext<AuthDialogStore> context, CancellationToken cancellationToken)
         {
-            if (context.Update.Type != Telegram.Bot.Types.Enums.UpdateType.CallbackQuery)
-            {
-                await context.Bot.Client.SendTextMessageAsync(
-                    context.ChatId,
-                    "Вы ввели некорректные данные. Начните диалог заного.");
-                context.EndDialog();
-                return;
-            }
-
             CallbackQuery cq = context.Update.CallbackQuery;
 
             if (cq.Data == "add")

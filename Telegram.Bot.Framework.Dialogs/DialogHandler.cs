@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstractions;
 
-namespace EstateOwners.TelegramBot.Dialogs.Core
+namespace Telegram.Bot.Framework.Dialogs
 {
     internal class DialogHandler : UpdateHandlerBase
     {
@@ -23,9 +22,12 @@ namespace EstateOwners.TelegramBot.Dialogs.Core
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next)
         {
-            var chatId = context.GetChatId().Value;
+            var chatId = context.Update.Message?.Chat.Id ?? context.Update.CallbackQuery?.Message.Chat.Id;
 
-            var state = _dialogManager.GetUserState(chatId);
+            if (chatId == null)
+                throw new Exception("Cannot get chatId from Update message.");
+
+            var state = _dialogManager.GetUserState(chatId.Value);
 
             if (state == null)
             {
@@ -60,7 +62,7 @@ namespace EstateOwners.TelegramBot.Dialogs.Core
     {
         private Dictionary<long, DialogState> _states = new Dictionary<long, DialogState>();
 
-        public DialogState SetActiveDialog<TDialog, TStore>(long userId, TStore store = null) where TDialog : DialogBase<TStore> where TStore : class
+        public DialogState SetActiveDialog<TDialog, TStore>(long userId, TStore store = null) where TDialog : Dialog<TStore> where TStore : class
         {
             return SetActiveDialog(userId, typeof(TDialog), store);
         }
@@ -70,7 +72,7 @@ namespace EstateOwners.TelegramBot.Dialogs.Core
             if (userId <= 0)
                 throw new ArgumentException("User is not defined", nameof(userId));
 
-            if (!typeof(DialogBase<TStore>).IsAssignableFrom(dialog))
+            if (!typeof(Dialog<TStore>).IsAssignableFrom(dialog))
                 throw new ArgumentException("Dialog type must be child of DialogBase", nameof(dialog));
 
             var state = new DialogState(dialog);
@@ -112,7 +114,7 @@ namespace EstateOwners.TelegramBot.Dialogs.Core
 
         public async Task RunDialogAsync<TStore>(Type dialog, DialogState state, IUpdateContext context) where TStore : class
         {
-            var instance = (DialogBase<TStore>)context.Services.GetService(dialog);
+            var instance = (Dialog<TStore>)context.Services.GetService(dialog);
 
             var dialogContext = new DialogContext<TStore>(instance, this, context, state);
 
@@ -122,7 +124,7 @@ namespace EstateOwners.TelegramBot.Dialogs.Core
 
     public class DialogContext<TStore> : UpdateContext where TStore : class
     {
-        private readonly DialogBase<TStore> _dialog;
+        private readonly Dialog<TStore> _dialog;
         private readonly IDialogManager _dialogManager;
         internal readonly DialogState State;
 
@@ -132,7 +134,7 @@ namespace EstateOwners.TelegramBot.Dialogs.Core
 
         public long ChatId => Update.Message?.Chat.Id ?? Update.CallbackQuery.Message.Chat.Id;
 
-        internal DialogContext(DialogBase<TStore> dialog, IDialogManager dialogManager, IUpdateContext context, DialogState state) : base(context.Bot, context.Update, context.Services)
+        internal DialogContext(Dialog<TStore> dialog, IDialogManager dialogManager, IUpdateContext context, DialogState state) : base(context.Bot, context.Update, context.Services)
         {
             _dialog = dialog;
             _dialogManager = dialogManager;
@@ -146,7 +148,7 @@ namespace EstateOwners.TelegramBot.Dialogs.Core
             await _dialogManager.RunDialogAsyncInternal(dialog, state, this);
         }
 
-        public async Task ReplaceDialogAsync<TDialog, TStore>(TStore store = null) where TDialog : DialogBase<TStore> where TStore : class
+        public async Task ReplaceDialogAsync<TDialog, TStore>(TStore store = null) where TDialog : Dialog<TStore> where TStore : class
         {
             await ReplaceDialogAsync(typeof(TDialog), store);
         }

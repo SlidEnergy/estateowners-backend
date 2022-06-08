@@ -1,10 +1,10 @@
-﻿using EstateOwners.TelegramBot.Dialogs.Core;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Dialogs;
 
 namespace EstateOwners.TelegramBot
 {
-    internal class EmptyDialog : DialogBase
+    internal class EmptyDialog : Dialog<DialogStore>
     {
         public EmptyDialog()
         {

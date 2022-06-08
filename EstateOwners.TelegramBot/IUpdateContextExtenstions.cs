@@ -1,5 +1,4 @@
 ﻿using EstateOwners.App;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types.ReplyMarkups;
