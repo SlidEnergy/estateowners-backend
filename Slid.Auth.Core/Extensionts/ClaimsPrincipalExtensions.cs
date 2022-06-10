@@ -2,7 +2,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace EstateOwners.App
+namespace Slid.Auth.Core
 {
 	/// <summary>
 	/// Класс расширений для ClaimsPrincipal, содержит методы получения данных из Claims.

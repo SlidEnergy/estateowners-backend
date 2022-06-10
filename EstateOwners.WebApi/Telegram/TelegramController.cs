@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using EstateOwners.App;
+using Slid.Auth.Core;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace EstateOwners.WebApi.Controllers
 {
-	[Authorize()]
+    [Authorize()]
 	[Route("api/v1/[controller]")]
 	[ApiController]
 	public class TelegramController : ControllerBase

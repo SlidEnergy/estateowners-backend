@@ -10,6 +10,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\EstateOwners.App\EstateOwners.App.csproj" />
+		<ProjectReference Include="..\Slid.Auth.Core\Slid.Auth.Core.csproj" />
 	</ItemGroup>
 
 </Project>

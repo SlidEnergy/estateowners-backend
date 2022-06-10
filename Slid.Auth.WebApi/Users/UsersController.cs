@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using Slid.Auth.Core;
 
 namespace Slid.Auth.WebApi
 {

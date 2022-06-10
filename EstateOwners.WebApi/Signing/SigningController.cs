@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
-using EstateOwners.App;
 using EstateOwners.App.Signing;
 using EstateOwners.Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
+using Slid.Auth.Core;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

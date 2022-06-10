@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Authentication;
 using System.Threading.Tasks;
+using Slid.Auth.Core;
 
 namespace EstateOwners.WebApi
 {

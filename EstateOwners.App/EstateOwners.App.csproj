@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EstateOwners.Domain\EstateOwners.Domain.csproj" />
+    <ProjectReference Include="..\Slid.Auth.Core\Slid.Auth.Core.csproj" />
   </ItemGroup>
 
 </Project>

@@ -7,6 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Authentication;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Slid.Auth.Core;
 
 namespace EstateOwners.WebApi
 {
