@@ -21,7 +21,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EstateOwners.TelegramBot", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Telegram", "Telegram", "{AD2039C1-93A4-4A5B-83B9-6288F2FA726B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Telegram.Bot.Framework.Dialogs", "Telegram.Bot.Framework.Dialogs\Telegram.Bot.Framework.Dialogs.csproj", "{5569224C-886F-4C07-A988-A710491DC025}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework.Dialogs", "Telegram.Bot.Framework.Dialogs\Telegram.Bot.Framework.Dialogs.csproj", "{5569224C-886F-4C07-A988-A710491DC025}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slid.Auth.WebApi", "Slid.Auth.WebApi\Slid.Auth.WebApi.csproj", "{AC5AC0E9-0CEA-4C75-843A-8148E190B4F5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Auth", "Auth", "{840413C6-6907-4510-9915-BE10E4D5B5AB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,6 +65,10 @@ Global
 		{5569224C-886F-4C07-A988-A710491DC025}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5569224C-886F-4C07-A988-A710491DC025}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5569224C-886F-4C07-A988-A710491DC025}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC5AC0E9-0CEA-4C75-843A-8148E190B4F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC5AC0E9-0CEA-4C75-843A-8148E190B4F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC5AC0E9-0CEA-4C75-843A-8148E190B4F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC5AC0E9-0CEA-4C75-843A-8148E190B4F5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

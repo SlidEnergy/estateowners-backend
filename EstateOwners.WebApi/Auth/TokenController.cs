@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using EstateOwners.App;
 using EstateOwners.WebApi.Dto;
 using System.Threading.Tasks;
+using System.Security.Authentication;
 
 namespace EstateOwners.WebApi
 {
@@ -15,6 +16,25 @@ namespace EstateOwners.WebApi
         public TokenController(ITokenService tokenService)
         {
             _tokenService = tokenService;
+        }
+
+        [HttpPost()]
+        [ProducesResponseType(200)]
+        public async Task<ActionResult<TokenInfo>> GetToken(LoginBindingModel userData)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            try
+            {
+                var tokens = await _tokenService.CheckCredentialsAndGetToken(userData.Email, userData.Password);
+
+                return new TokenInfo() { Token = tokens.Token, RefreshToken = tokens.RefreshToken, Email = userData.Email };
+            }
+            catch (AuthenticationException)
+            {
+                return BadRequest();
+            }
         }
 
         [HttpPost("refresh")]

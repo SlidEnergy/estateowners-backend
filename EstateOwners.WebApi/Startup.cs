@@ -14,10 +14,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Slid.Auth.WebApi;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Reflection;
 
 namespace EstateOwners.WebApi
 {
@@ -44,7 +46,8 @@ namespace EstateOwners.WebApi
 				.AddNewtonsoftJson(opts =>
 				{
 					opts.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
-				});
+				})
+				.AddSlidAuth();
 
 
 			ConfigureInfrastructure(services);

@@ -39,6 +39,7 @@
     <ProjectReference Include="..\EstateOwners.App\EstateOwners.App.csproj" />
     <ProjectReference Include="..\EstateOwners.Infrastucture\EstateOwners.Infrastucture.csproj" />
     <ProjectReference Include="..\EstateOwners.TelegramBot\EstateOwners.TelegramBot.csproj" />
+    <ProjectReference Include="..\Slid.Auth.WebApi\Slid.Auth.WebApi.csproj" />
   </ItemGroup>
   
   <ItemGroup>

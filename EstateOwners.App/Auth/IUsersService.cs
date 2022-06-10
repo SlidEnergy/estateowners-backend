@@ -20,5 +20,7 @@ namespace EstateOwners.App
 		Task<ApplicationUser> GetByAuthTokenAsync(string token, AuthTokenType type);
 
 		Task<TelegramUser> AddTelegramUserInfo(TelegramUser telegramUser);
+
+		Task<IdentityResult> ChangePassword(string userId, string currentPassword, string newPassword);
 	}
 }

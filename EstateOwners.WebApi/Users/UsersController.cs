@@ -1,28 +1,24 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using EstateOwners.App;
 using EstateOwners.Domain;
-using EstateOwners.WebApi.Dto;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Security.Authentication;
 using System.Threading.Tasks;
 
 namespace EstateOwners.WebApi
 {
-	[Route("api/v1/[controller]")]
+    [Route("api/v1/[controller]")]
 	[ApiController]
 	public class UsersController : ControllerBase
 	{
 		private readonly IMapper _mapper;
 		private readonly IUsersService _usersService;
-		private readonly ITokenService _tokenService;
 
-		public UsersController(IMapper mapper, IUsersService usersService, ITokenService tokenService)
+		public UsersController(IMapper mapper, IUsersService usersService)
 		{
 			_mapper = mapper;
 			_usersService = usersService;
-			_tokenService = tokenService;
 		}
 
 		[HttpGet]
@@ -75,25 +71,6 @@ namespace EstateOwners.WebApi
 			}
 
 			return Created("", _mapper.Map<Dto.User>(user));
-		}
-
-		[HttpPost("token")]
-		[ProducesResponseType(200)]
-		public async Task<ActionResult<TokenInfo>> GetToken(LoginBindingModel userData)
-		{
-			if (!ModelState.IsValid)
-				return BadRequest();
-
-			try
-			{
-				var tokens = await _tokenService.CheckCredentialsAndGetToken(userData.Email, userData.Password);
-
-				return new TokenInfo() { Token = tokens.Token, RefreshToken = tokens.RefreshToken, Email = userData.Email };
-			}
-			catch(AuthenticationException)
-			{
-				return BadRequest();
-			}
 		}
 	}
 }

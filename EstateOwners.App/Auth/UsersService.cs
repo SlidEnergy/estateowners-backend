@@ -69,5 +69,14 @@ namespace EstateOwners.App
 
 			return telegramUser;
         }
+
+		public async Task<IdentityResult> ChangePassword(string userId, string currentPassword, string newPassword)
+		{
+			var user = await _userManager.FindByIdAsync(userId);
+
+			var result = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+
+			return result;
+		}
 	}
 }
