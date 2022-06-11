@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace EstateOwners.Domain
+namespace EstateOwners.Domain.Telegram
 {
     public class Poll
     {

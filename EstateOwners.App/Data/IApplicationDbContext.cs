@@ -3,12 +3,14 @@ using Microsoft.EntityFrameworkCore;
 using EstateOwners.Domain;
 using System.Threading;
 using System.Threading.Tasks;
-using EstateOwners.Domain.Signing;
 using EstateOwners.Domain.Candidates;
+using EstateOwners.Domain.Telegram;
+using EstateOwners.Domain.Telegram.Voting;
+using EstateOwners.Domain.Telegram.Support;
 
 namespace EstateOwners.App
 {
-	public interface IApplicationDbContext
+    public interface IApplicationDbContext
 	{
 		DbSet<Trustee> Trustee { get; set; }
 		DbSet<TrusteeEstate> TrusteeEstates { get; set; }
@@ -27,9 +29,13 @@ namespace EstateOwners.App
 
 		DbSet<ResidentialComplex> ResidentialComplexes { get; set; }
 
-		DbSet<MessageToSign> MessagesToSign { get; set; }
+		DbSet<VoteTelegramMessage> VoteTelegramMessages { get; set; }
+		
+		DbSet<DocumentTelegramMessage> DocumentTelegramMessages { get; set; }
+		
+		DbSet<IssueTelegramMessage> IssueTelegramMessages { get; set; }
 
-		DbSet<UserMessageSignature> UserMessageSignatures { get; set; }
+		DbSet<TelegramMessageVote> UserMessageVotes { get; set; }
 
 		DbSet<UserSignature> UserSignatures { get; set; }
 

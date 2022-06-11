@@ -1,20 +1,15 @@
-﻿using EstateOwners.App;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Dialogs;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
-namespace EstateOwners.TelegramBot.Dialogs.Signing
+namespace EstateOwners.TelegramBot.Dialogs.Estates
 {
     internal class EstatesDialog : Dialog<AuthDialogStore>
     {
-        private readonly IUsersService _usersService;
-
-        public EstatesDialog(IUsersService usersService)
+        public EstatesDialog()
         {
-            _usersService = usersService;
-
             AddStep(Step1);
             AddStep(Step2);
         }

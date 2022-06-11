@@ -1,4 +1,4 @@
-﻿using EstateOwners.App.Signing;
+﻿using EstateOwners.App.Telegram.Voting;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -8,15 +8,15 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace EstateOwners.TelegramBot.Dialogs.Signing
+namespace EstateOwners.TelegramBot.Dialogs.Voting
 {
-    internal class MessagesToSignDialog : Dialog<AuthDialogStore>
+    internal class VoteMessagesDialog : Dialog<AuthDialogStore>
     {
-        private readonly ISigningService _messagesToSignService;
+        private readonly IVoteTelegramMessagesService _voteTelegramMessagesService;
 
-        public MessagesToSignDialog(ISigningService messagesToSignService)
+        public VoteMessagesDialog(IVoteTelegramMessagesService messagesToSignService)
         {
-            _messagesToSignService = messagesToSignService;
+            _voteTelegramMessagesService = messagesToSignService;
 
             AddStep(Step1);
             AddStep(Step2);
@@ -24,11 +24,11 @@ namespace EstateOwners.TelegramBot.Dialogs.Signing
 
         public async Task Step1(DialogContext<AuthDialogStore> context, CancellationToken cancellationToken)
         {
-            var messages = await _messagesToSignService.GetListAsync();
+            var messages = await _voteTelegramMessagesService.GetListAsync();
 
             foreach (var message in messages)
             {
-                var signaturesCount = await _messagesToSignService.GetUserSignatureCountAsync(message.Id);
+                var signaturesCount = await _voteTelegramMessagesService.GetUserMessageVoteCountAsync(message.Id);
 
                 await context.Bot.Client.ForwardMessageAsync(context.ChatId, message.FromChatId, message.MessageId);
 
@@ -68,11 +68,11 @@ namespace EstateOwners.TelegramBot.Dialogs.Signing
 
             if (cq.Data == "add")
             {
-                await context.ReplaceDialogAsync<AddMessageToSignDialog, AuthDialogStore>(context.Store);
+                await context.ReplaceDialogAsync<AddVoteMessageDialog, AuthDialogStore>(context.Store);
                 return;
             }
 
-            await _messagesToSignService.SignAsync(context.Store.User.Id, Convert.ToInt32(cq.Data));
+            await _voteTelegramMessagesService.VoteAsync(context.Store.User.Id, Convert.ToInt32(cq.Data));
 
             await context.Bot.Client.SendTextMessageAsync(
                     cq.Message.Chat.Id,

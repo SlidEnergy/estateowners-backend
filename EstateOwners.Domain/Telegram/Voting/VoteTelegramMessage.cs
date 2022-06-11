@@ -1,17 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace EstateOwners.Domain
+﻿namespace EstateOwners.Domain.Telegram.Voting
 {
-    public class MessageToSign
+    public class VoteTelegramMessage
     {
         public int Id { get; set; }
         public long FromChatId { get; set; }
 
         public int MessageId { get; set; }
-    
-        public MessageToSign(long fromChatId, int messageId)
+
+        public VoteTelegramMessage()
+        {
+
+        }
+        
+        public VoteTelegramMessage(long fromChatId, int messageId)
         {
             FromChatId = fromChatId;
             MessageId = messageId;

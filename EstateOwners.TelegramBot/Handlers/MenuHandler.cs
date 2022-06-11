@@ -1,7 +1,9 @@
 ﻿using EstateOwners.App;
 using EstateOwners.TelegramBot.Dialogs;
+using EstateOwners.TelegramBot.Dialogs.Documents;
 using EstateOwners.TelegramBot.Dialogs.Polls;
-using EstateOwners.TelegramBot.Dialogs.Signing;
+using EstateOwners.TelegramBot.Dialogs.Support;
+using EstateOwners.TelegramBot.Dialogs.Voting;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstractions;
@@ -53,7 +55,7 @@ namespace EstateOwners.TelegramBot
 
             if (msg == "Документы на подпись" || msg == "/documents")
             {
-                _dialogManager.SetActiveDialog<MessagesToSignDialog, AuthDialogStore>(chatId, store);
+                _dialogManager.SetActiveDialog<VoteMessagesDialog, AuthDialogStore>(chatId, store);
             }
 
             if (msg == "Опросы")
@@ -66,10 +68,16 @@ namespace EstateOwners.TelegramBot
                 _dialogManager.SetActiveDialog<CandidatesDialog, AuthDialogStore>(chatId, store);
             }
 
-            if (msg == "Отчетность и аудит")
+            if (msg == "Помощь")
             {
-                _dialogManager.SetActiveDialog<EmptyDialog, DialogStore>(chatId);
+                _dialogManager.SetActiveDialog<SupportDialog, AuthDialogStore>(chatId, store);
             }
+
+            if (msg == "Библиотека")
+            {
+                _dialogManager.SetActiveDialog<LibraryDialog, AuthDialogStore>(chatId, store);
+            }
+
             await next(context);
         }
     }

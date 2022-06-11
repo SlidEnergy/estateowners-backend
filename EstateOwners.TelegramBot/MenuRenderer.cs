@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework;
@@ -10,19 +11,34 @@ namespace EstateOwners.TelegramBot
 {
     public class MenuRenderer : IMenuRenderer
     {
+        private bool _isDevelopment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development";
+
         public async Task RenderMenuAsync(IUpdateContext context, CancellationToken cancellationToken = default)
         {
             var chat = context.Update.Message?.Chat ?? context.Update.CallbackQuery.Message.Chat;
 
-            var markup = ReplyMarkupBuilder.Keyboard()
-                .ColumnKeyboardButton("Документы на подпись")
-                //.ColumnKeyboardButton("Опросы")
-                //.NewRow()
-                //.ColumnKeyboardButton("Отчетность и аудит")
-                //.NewRow()
-                //.ColumnKeyboardButton("Председатель и совет дома")
-                .ColumnKeyboardButton("Профиль")
-                .ToMarkup();
+            IReplyMarkup markup;
+
+            if (_isDevelopment)
+            {
+                markup = ReplyMarkupBuilder.Keyboard()
+                   .ColumnKeyboardButton("Документы на подпись")
+                   .ColumnKeyboardButton("Опросы")
+                   .NewRow()
+                   .ColumnKeyboardButton("Председатель и совет дома")
+                   .ColumnKeyboardButton("Профиль")
+                   .NewRow()
+                   .ColumnKeyboardButton("Помощь")
+                   .ColumnKeyboardButton("Библиотека")
+                   .ToMarkup();
+            }
+            else
+            {
+                markup = ReplyMarkupBuilder.Keyboard()
+                    .ColumnKeyboardButton("Документы на подпись")
+                    .ColumnKeyboardButton("Профиль")
+                    .ToMarkup();
+            }
 
             await context.Bot.Client.SendTextMessageAsync(
                 chat.Id,
@@ -35,15 +51,28 @@ namespace EstateOwners.TelegramBot
         {
             var msg = context.GetMessage();
 
-            var markup = ReplyMarkupBuilder.InlineKeyboard()
+            IReplyMarkup markup;
+
+            if (_isDevelopment)
+            {
+                markup = ReplyMarkupBuilder.InlineKeyboard()
                 .ColumnWithCallbackData("Документы на подпись")
-                //.ColumnWithCallbackData("Опросы")
-                //.NewRow()
-                //.ColumnWithCallbackData("Отчетность и аудит")
-                //.NewRow()
-                //.ColumnWithCallbackData("Председатель и совет дома")
+                .ColumnWithCallbackData("Опросы")
+                .NewRow()
+                .ColumnWithCallbackData("Председатель и совет дома")
                 .ColumnWithCallbackData("Профиль")
+                .NewRow()
+                .ColumnKeyboardButton("Помощь")
+                .ColumnKeyboardButton("Библиотека")
                 .ToMarkup();
+            }
+            else
+            {
+                markup = ReplyMarkupBuilder.InlineKeyboard()
+              .ColumnWithCallbackData("Документы на подпись")
+              .ColumnWithCallbackData("Профиль")
+              .ToMarkup();
+            }
 
             await context.Bot.Client.SendTextMessageAsync(
                 msg.Chat.Id,
@@ -59,6 +88,8 @@ namespace EstateOwners.TelegramBot
                 new BotCommand() { Command = "menu", Description = "Главное меню"},
                 new BotCommand() { Command = "documents", Description = "Документы на подпись"},
                 new BotCommand() { Command = "profile", Description = "Профиль"},
+                //new BotCommand() { Command = "library", Description = "Библиотека"},
+                //new BotCommand() { Command = "support", Description = "Помощь"},
             }, cancellationToken);
         }
 

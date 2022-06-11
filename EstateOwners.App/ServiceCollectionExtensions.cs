@@ -1,10 +1,13 @@
 ﻿using EstateOwners.App.Polls;
 using EstateOwners.App.Signing;
+using EstateOwners.App.Telegram.Documents;
+using EstateOwners.App.Telegram.Support;
+using EstateOwners.App.Telegram.Voting;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace EstateOwners.App
 {
-    public static class EstateOwnersAppExtensions
+    public static class ServiceCollectionExtensions
 	{
 		public static IServiceCollection AddEstateOwnersCore(this IServiceCollection services)
 		{
@@ -13,10 +16,13 @@ namespace EstateOwners.App
 			services.AddScoped<IEstatesService, EstatesService>();
 			services.AddScoped<ICarsService, CarsService>();
 			services.AddScoped<IBuildingsService, BuildingsService>();
-			services.AddScoped<ISigningService, SigningService>();
+			services.AddScoped<IVoteTelegramMessagesService, VoteTelegramMessagesService>();
+			services.AddScoped<IDocumentTelegramMessagesService, DocumentTelegramMessagesService>();
 			services.AddScoped<IPollsService, PollsService>();
 			services.AddScoped<ICandidatesService, CandidatesService>();
 			services.AddScoped<IExportService, ExportService>();
+			services.AddScoped<IDocumentTelegramMessagesService, DocumentTelegramMessagesService>();
+			services.AddScoped<IIssueTelegramMessagesService, IssueTelegramMessagesService>();
 
 			return services;
 		}

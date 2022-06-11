@@ -1,19 +1,19 @@
-﻿using EstateOwners.App.Signing;
-using EstateOwners.Domain;
+﻿using EstateOwners.App.Telegram.Documents;
+using EstateOwners.Domain.Telegram;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Dialogs;
 using Telegram.Bot.Types.Enums;
 
-namespace EstateOwners.TelegramBot.Dialogs.Signing
+namespace EstateOwners.TelegramBot.Dialogs.Documents
 {
-    internal class AddMessageToSignDialog : Dialog<AuthDialogStore>
+    internal class AddDocumentMessageDialog : Dialog<AuthDialogStore>
     {
-        private readonly ISigningService _messagesToSignService;
+        private readonly IDocumentTelegramMessagesService _service;
 
-        public AddMessageToSignDialog(ISigningService messagesToSignService)
+        public AddDocumentMessageDialog(IDocumentTelegramMessagesService service)
         {
-            _messagesToSignService = messagesToSignService;
+            _service = service;
 
             AddStep(Step1);
             AddStep(Step2);
@@ -23,7 +23,7 @@ namespace EstateOwners.TelegramBot.Dialogs.Signing
         {
             await context.Bot.Client.SendTextMessageAsync(
                     context.ChatId,
-                    "Пришлите сообщение или перешлите уже существующее из другого чата, которое вы хотите подписать");
+                    "Пришлите сообщение с документом или перешлите уже существующее из другого чата");
 
             context.NextStep();
         }
@@ -31,11 +31,11 @@ namespace EstateOwners.TelegramBot.Dialogs.Signing
         [EndDialogStepFilter(UpdateType.Message, Messages.IncorrectInput)]
         public async Task Step2(DialogContext<AuthDialogStore> context, CancellationToken cancellationToken)
         {
-            await _messagesToSignService.AddAsync(new MessageToSign(context.Update.Message.Chat.Id, context.Update.Message.MessageId));
+            await _service.AddAsync(new DocumentTelegramMessage(context.Update.Message.Chat.Id, context.Update.Message.MessageId));
 
             await context.Bot.Client.SendTextMessageAsync(
                     context.ChatId,
-                    "Сообщение добавлено для подписи");
+                    "Документ добавлен");
 
             context.EndDialog();
         }

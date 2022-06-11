@@ -1,5 +1,5 @@
 ﻿using EstateOwners.Domain;
-using EstateOwners.Domain.Signing;
+using EstateOwners.Domain.Telegram;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;

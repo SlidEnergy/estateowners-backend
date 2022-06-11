@@ -23,11 +23,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Telegram", "Telegram", "{AD
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework.Dialogs", "Telegram.Bot.Framework.Dialogs\Telegram.Bot.Framework.Dialogs.csproj", "{5569224C-886F-4C07-A988-A710491DC025}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slid.Auth.WebApi", "Slid.Auth.WebApi\Slid.Auth.WebApi.csproj", "{AC5AC0E9-0CEA-4C75-843A-8148E190B4F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slid.Auth.WebApi", "Slid.Auth.WebApi\Slid.Auth.WebApi.csproj", "{AC5AC0E9-0CEA-4C75-843A-8148E190B4F5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Auth", "Auth", "{840413C6-6907-4510-9915-BE10E4D5B5AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slid.Auth.Core", "Slid.Auth.Core\Slid.Auth.Core.csproj", "{D6813B5F-F00F-432C-BB40-446BD50F2EAE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slid.Auth.Core", "Slid.Auth.Core\Slid.Auth.Core.csproj", "{D6813B5F-F00F-432C-BB40-446BD50F2EAE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

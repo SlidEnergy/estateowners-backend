@@ -2,8 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using EstateOwners.App;
 using EstateOwners.Domain;
-using EstateOwners.Domain.Signing;
 using EstateOwners.Domain.Candidates;
+using EstateOwners.Domain.Telegram;
+using EstateOwners.Domain.Telegram.Voting;
+using EstateOwners.Domain.Telegram.Support;
 
 namespace EstateOwners.Infrastructure
 {
@@ -31,8 +33,8 @@ namespace EstateOwners.Infrastructure
             modelBuilder.Entity<Candidate>()
                 .HasIndex(x => new { x.UserId, x.Type }).IsUnique();
 
-            modelBuilder.Entity<UserMessageSignature>()
-                .HasIndex(x => new { x.UserId, x.Messageid }).IsUnique();
+            modelBuilder.Entity<TelegramMessageVote>()
+                .HasKey(x => new { x.UserId, x.VoteTelegramMessageId });
         }
 
         public DbSet<AuthToken> AuthTokens { get; set; }
@@ -50,9 +52,13 @@ namespace EstateOwners.Infrastructure
 
         public DbSet<ResidentialComplex> ResidentialComplexes { get; set; }
 
-        public DbSet<MessageToSign> MessagesToSign { get; set; }
+        public DbSet<VoteTelegramMessage> VoteTelegramMessages { get; set; }
 
-        public DbSet<UserMessageSignature> UserMessageSignatures { get; set; }
+        public DbSet<DocumentTelegramMessage> DocumentTelegramMessages { get; set; }
+
+        public DbSet<IssueTelegramMessage> IssueTelegramMessages { get; set; }
+
+        public DbSet<TelegramMessageVote> UserMessageVotes { get; set; }
         public DbSet<UserSignature> UserSignatures { get; set; }
 
         public DbSet<Poll> Polls { get; set; }

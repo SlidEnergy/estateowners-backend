@@ -1,20 +1,19 @@
-﻿using EstateOwners.App.Polls;
-using EstateOwners.Domain;
-using EstateOwners.Domain.Telegram;
+﻿using EstateOwners.App.Telegram.Support;
+using EstateOwners.Domain.Telegram.Support;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Dialogs;
 using Telegram.Bot.Types.Enums;
 
-namespace EstateOwners.TelegramBot.Dialogs.Polls
+namespace EstateOwners.TelegramBot.Dialogs.Support
 {
-    internal class AddPollDialog : Dialog<AuthDialogStore>
+    internal class AddIssueMessageDialog : Dialog<AuthDialogStore>
     {
-        private readonly IPollsService _pollsService;
+        private readonly IIssueTelegramMessagesService _service;
 
-        public AddPollDialog(IPollsService pollsService)
+        public AddIssueMessageDialog(IIssueTelegramMessagesService service)
         {
-            _pollsService = pollsService;
+            _service = service;
 
             AddStep(Step1);
             AddStep(Step2);
@@ -24,7 +23,7 @@ namespace EstateOwners.TelegramBot.Dialogs.Polls
         {
             await context.Bot.Client.SendTextMessageAsync(
                     context.ChatId,
-                    "Добавьте новый опрос через меню сверху справа");
+                    "Пришлите сообщение с вопросом или перешлите уже существующее из другого чата");
 
             context.NextStep();
         }
@@ -32,11 +31,11 @@ namespace EstateOwners.TelegramBot.Dialogs.Polls
         [EndDialogStepFilter(UpdateType.Message, Messages.IncorrectInput)]
         public async Task Step2(DialogContext<AuthDialogStore> context, CancellationToken cancellationToken)
         {
-            await _pollsService.AddAsync(new Poll(context.ChatId, context.Update.Message.MessageId, context.Update.Message.Poll.Id));
+            await _service.AddAsync(new IssueTelegramMessage(context.Store.User.Id, context.Update.Message.Chat.Id, context.Update.Message.MessageId));
 
             await context.Bot.Client.SendTextMessageAsync(
                     context.ChatId,
-                    "Опрос добавлен");
+                    "Вопрос добавлен");
 
             context.EndDialog();
         }

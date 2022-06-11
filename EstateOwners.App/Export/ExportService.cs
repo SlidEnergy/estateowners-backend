@@ -17,8 +17,8 @@ namespace EstateOwners.App
 
         public async Task<List<Signer>> GetSignersAsync(int messageId)
         {
-            var signers = await _context.UserMessageSignatures
-                .Where(x => x.Messageid == messageId)
+            var signers = await _context.UserMessageVotes
+                .Where(x => x.VoteTelegramMessageId == messageId)
                 .Join(_context.Users, t => t.UserId, u => u.Id, (t, u) => u)
                 .Join(_context.TrusteeEstates, t => t.TrusteeId, u => u.TrusteeId, (u, t) => new { User = u, Estate = t.Estate, Building = t.Estate.Building })
                 .Select(x => new Signer

@@ -1,4 +1,4 @@
-﻿namespace EstateOwners.Domain.Signing
+﻿namespace EstateOwners.Domain.Telegram
 {
     public class UserSignature
     {

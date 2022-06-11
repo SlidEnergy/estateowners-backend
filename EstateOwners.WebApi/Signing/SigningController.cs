@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using EstateOwners.App.Signing;
-using EstateOwners.Domain;
+using EstateOwners.App.Telegram.Voting;
+using EstateOwners.Domain.Telegram.Voting;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,17 +16,17 @@ namespace EstateOwners.WebApi.Controllers
 	[ApiController]
 	public class SigningController : ControllerBase
 	{
-		private readonly ISigningService _service;
+		private readonly IVoteTelegramMessagesService _service;
         private readonly IMapper _mapper;
 
-        public SigningController(ISigningService service, IMapper mapper)
+        public SigningController(IVoteTelegramMessagesService service, IMapper mapper)
 		{
 			_service = service;
             _mapper = mapper;
         }
 
         [HttpGet("messages")]
-		public async Task<ActionResult<List<MessageToSign>>> GetList()
+		public async Task<ActionResult<List<VoteTelegramMessage>>> GetList()
 		{
 			var userId = User.GetUserId();
 
