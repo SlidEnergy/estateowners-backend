@@ -58,9 +58,9 @@ namespace EstateOwners.WebApi
 			if (!ModelState.IsValid)
 				return BadRequest(ModelState);
 
-			var user = _mapper.Map<ApplicationUser>(model);
+			var user = new ApplicationUser(new Trustee(), model.Email);
 
-			var result = await _usersService.CreateUserAsync(user, model.Password);
+            var result = await _usersService.CreateUserAsync(user, model.Password);
 
 			if (!result.Succeeded) {
 				foreach (var e in result.Errors)

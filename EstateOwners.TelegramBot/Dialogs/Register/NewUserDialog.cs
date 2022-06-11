@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using EstateOwners.App;
+﻿using EstateOwners.App;
 using EstateOwners.Domain;
 using EstateOwners.TelegramBot.Dialogs;
 using System;

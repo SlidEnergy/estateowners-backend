@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace EstateOwners.Infrastucture
@@ -141,16 +142,8 @@ namespace EstateOwners.Infrastucture
 			}
 		}
 
-		private static string GetIdentiryErrorsInCommaSeperatedList(IdentityResult result)
-		{
-			string errors = null;
-			foreach (var identityError in result.Errors)
-			{
-				errors += identityError.Description;
-				errors += ", ";
-			}
-			return errors;
-		}
+		private static string GetIdentiryErrorsInCommaSeperatedList(IdentityResult result) =>
+			Lers.Utils.ArrayUtils.JoinToString(result.Errors.Select(x => x.Description), ", ");
 
 		private async Task CreateResidentialComplexAsync()
         {

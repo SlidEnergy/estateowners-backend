@@ -68,7 +68,7 @@ namespace EstateOwners.WebApi.IntegrationTests
 			var result = await _manager.CreateAsync(user, password);
 
 			if (!result.Succeeded)
-				throw new Exception("Новый пользователь не создан. " + result.Errors.Select(x => x.Description).Join(". "));
+				throw new Exception("Новый пользователь не создан. " + Lers.Utils.ArrayUtils.JoinToString(result.Errors.Select(x => x.Description), ", "));
 
 			return user;
 		}
