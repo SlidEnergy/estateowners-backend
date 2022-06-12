@@ -38,9 +38,9 @@ namespace EstateOwners.WebApi.Auth
 
 				var claims = _claimsGenerator.CreateClaims(user, roles, AccessMode.Export);
 
-				var apiKey = new ApiKey("TESTAPIKEY=", user.Id, claims);
+				var apiKey = new ApiKey(key, user.Id, claims);
 
-				return await Task.FromResult(apiKey);
+				return apiKey;
 			}
 			catch (System.Exception exception)
 			{
