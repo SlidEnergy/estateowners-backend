@@ -1,4 +1,6 @@
 ﻿using EstateOwners.App;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -23,8 +25,15 @@ namespace EstateOwners.TelegramBot
 
             var buttons = new InlineKeyboardButton[estates.Count][];
 
-            for (int i = 0; i < buttons.Length; i++)
-                buttons[i] = new InlineKeyboardButton[] { InlineKeyboardButton.WithCallbackData(estates[i].ToString()) };
+            for (int i = 0; i < estates.Count; i++)
+            {
+                var text = estates[i].ToString();
+
+                if (text.Length > 35)
+                    text = text.Substring(0, 35);
+
+                buttons[i] = new InlineKeyboardButton[] { InlineKeyboardButton.WithCallbackData(text) };
+            }
 
             await context.Bot.Client.SendTextMessageAsync(chatId, "Ваш список помещений", replyMarkup: new InlineKeyboardMarkup(buttons));
         }

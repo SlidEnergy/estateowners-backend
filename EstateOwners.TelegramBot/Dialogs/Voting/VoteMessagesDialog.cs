@@ -28,7 +28,7 @@ namespace EstateOwners.TelegramBot.Dialogs.Voting
 
             foreach (var message in messages)
             {
-                var signaturesCount = await _voteTelegramMessagesService.GetUserMessageVoteCountAsync(message.Id);
+                var statistic = await _voteTelegramMessagesService.GetUserMessageVoteCountAsync(message.Id);
 
                 await context.Bot.Client.ForwardMessageAsync(context.ChatId, message.FromChatId, message.MessageId);
 
@@ -41,7 +41,7 @@ namespace EstateOwners.TelegramBot.Dialogs.Voting
 
                 await context.Bot.Client.SendTextMessageAsync(
                context.ChatId,
-               $"Подписалось уже {signaturesCount} человек, общая площадь ...",
+               $"Подписалось {statistic.UserCount} человек, {statistic.EstateCount} помещений, общая площадь {statistic.TotalArea}",
                replyMarkup: new InlineKeyboardMarkup(buttons));
             }
 

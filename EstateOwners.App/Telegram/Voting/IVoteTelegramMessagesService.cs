@@ -13,6 +13,6 @@ namespace EstateOwners.App.Telegram.Voting
 
         Task VoteAsync(string userId, int messageId);
 
-        Task<int> GetUserMessageVoteCountAsync(int messageId);
+        Task<VotingStatistic> GetUserMessageVoteCountAsync(int messageId);
     }
 }

@@ -38,9 +38,22 @@ namespace EstateOwners.App.Telegram.Voting
             await _context.SaveChangesAsync();
         }
 
-        public async Task<int> GetUserMessageVoteCountAsync(int messageId)
+        public async Task<VotingStatistic> GetUserMessageVoteCountAsync(int messageId)
         {
-            return await _context.UserMessageVotes.Where(x => x.VoteTelegramMessageId == messageId).CountAsync();
+            var query = await _context.UserMessageVotes
+                .Where(x => x.VoteTelegramMessageId == messageId)
+                .Join(_context.Users, v => v.UserId, u => u.Id, (v, u) => u)
+                .Join(_context.TrusteeEstates, u => u.TrusteeId, t => t.TrusteeId, (u, t) => new { User = u, Estate = t.Estate })
+                .ToListAsync();
+
+            var statistic = new VotingStatistic()
+            {
+                UserCount = query.Select(x => x.User).Distinct().Count(),
+                EstateCount = query.Select(x => x.Estate).Count(),
+                TotalArea = query.Sum(x => x.Estate.Area)
+            };
+
+            return statistic;
         }
     }
 }

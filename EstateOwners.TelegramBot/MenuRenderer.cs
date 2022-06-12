@@ -65,8 +65,8 @@ namespace EstateOwners.TelegramBot
                 .ColumnWithCallbackData("Председатель и совет дома")
                 .ColumnWithCallbackData("Профиль")
                 .NewRow()
-                .ColumnKeyboardButton("Библиотека")
-                .ColumnKeyboardButton("Помощь")
+                .ColumnWithCallbackData("Библиотека")
+                .ColumnWithCallbackData("Помощь")
                 .ToMarkup();
             }
             else
@@ -75,8 +75,8 @@ namespace EstateOwners.TelegramBot
                 .ColumnWithCallbackData("Документы на подпись")
                 .ColumnWithCallbackData("Профиль")
                 .NewRow()
-                .ColumnKeyboardButton("Библиотека")
-                .ColumnKeyboardButton("Помощь")
+                .ColumnWithCallbackData("Библиотека")
+                .ColumnWithCallbackData("Помощь")
               .ToMarkup();
             }
 
