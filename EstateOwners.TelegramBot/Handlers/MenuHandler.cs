@@ -34,7 +34,14 @@ namespace EstateOwners.TelegramBot
 
         public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next)
         {
-            var msg = context.Update.Message?.Text ?? context.Update.CallbackQuery.Data;
+            var msg = context.Update.Message?.Text ?? context.Update.CallbackQuery?.Data;
+
+            if (msg == null)
+            {
+                await next(context);
+                return;
+            }
+
             var chatId = context.GetChatId().Value;
 
             var user = await _usersService.GetByAuthTokenAsync(chatId.ToString(), Domain.AuthTokenType.TelegramUserId);
