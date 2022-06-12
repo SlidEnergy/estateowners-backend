@@ -32,7 +32,7 @@ namespace EstateOwners.Domain
 		{
 			DeviceId = deviceId;
 			Token = token;
-			ExpirationDate = DateTime.Today.AddYears(10);
+			ExpirationDate = DateTime.SpecifyKind(DateTime.Today.AddYears(10), DateTimeKind.Utc);
 			User = user;
 			Type = type;
 		}
@@ -41,7 +41,7 @@ namespace EstateOwners.Domain
 		{
 			DeviceId = deviceId;
 			Token = token;
-			ExpirationDate = DateTime.Today.AddYears(10);
+			ExpirationDate = DateTime.SpecifyKind(DateTime.Today.AddYears(10), DateTimeKind.Utc);
 		}
     }
 }
