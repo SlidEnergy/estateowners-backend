@@ -22,21 +22,24 @@ namespace EstateOwners.TelegramBot
             if (_isDevelopment)
             {
                 markup = ReplyMarkupBuilder.Keyboard()
-                   .ColumnKeyboardButton("Документы на подпись")
-                   .ColumnKeyboardButton("Опросы")
-                   .NewRow()
-                   .ColumnKeyboardButton("Председатель и совет дома")
-                   .ColumnKeyboardButton("Профиль")
-                   .NewRow()
-                   .ColumnKeyboardButton("Помощь")
-                   .ColumnKeyboardButton("Библиотека")
-                   .ToMarkup();
+                .ColumnKeyboardButton("Документы на подпись")
+                .ColumnKeyboardButton("Опросы")
+                .NewRow()
+                .ColumnKeyboardButton("Председатель и совет дома")
+                .ColumnKeyboardButton("Профиль")
+                .NewRow()
+                .ColumnKeyboardButton("Помощь")
+                .ColumnKeyboardButton("Библиотека")
+                .ToMarkup();
             }
             else
             {
                 markup = ReplyMarkupBuilder.Keyboard()
-                    .ColumnKeyboardButton("Документы на подпись")
-                    .ColumnKeyboardButton("Профиль")
+                .ColumnKeyboardButton("Документы на подпись")
+                .ColumnKeyboardButton("Профиль")
+                .NewRow()
+                .ColumnKeyboardButton("Библиотека")
+                .ColumnKeyboardButton("Помощь")
                     .ToMarkup();
             }
 
@@ -62,15 +65,18 @@ namespace EstateOwners.TelegramBot
                 .ColumnWithCallbackData("Председатель и совет дома")
                 .ColumnWithCallbackData("Профиль")
                 .NewRow()
-                .ColumnKeyboardButton("Помощь")
                 .ColumnKeyboardButton("Библиотека")
+                .ColumnKeyboardButton("Помощь")
                 .ToMarkup();
             }
             else
             {
                 markup = ReplyMarkupBuilder.InlineKeyboard()
-              .ColumnWithCallbackData("Документы на подпись")
-              .ColumnWithCallbackData("Профиль")
+                .ColumnWithCallbackData("Документы на подпись")
+                .ColumnWithCallbackData("Профиль")
+                .NewRow()
+                .ColumnKeyboardButton("Библиотека")
+                .ColumnKeyboardButton("Помощь")
               .ToMarkup();
             }
 
@@ -88,8 +94,8 @@ namespace EstateOwners.TelegramBot
                 new BotCommand() { Command = "menu", Description = "Главное меню"},
                 new BotCommand() { Command = "documents", Description = "Документы на подпись"},
                 new BotCommand() { Command = "profile", Description = "Профиль"},
-                //new BotCommand() { Command = "library", Description = "Библиотека"},
-                //new BotCommand() { Command = "support", Description = "Помощь"},
+                new BotCommand() { Command = "library", Description = "Библиотека"},
+                new BotCommand() { Command = "help", Description = "Помощь"},
             }, cancellationToken);
         }
 

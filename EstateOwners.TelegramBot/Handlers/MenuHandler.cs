@@ -68,12 +68,12 @@ namespace EstateOwners.TelegramBot
                 _dialogManager.SetActiveDialog<CandidatesDialog, AuthDialogStore>(chatId, store);
             }
 
-            if (msg == "Помощь")
+            if (msg == "Помощь" || msg == "/help")
             {
                 _dialogManager.SetActiveDialog<SupportDialog, AuthDialogStore>(chatId, store);
             }
 
-            if (msg == "Библиотека")
+            if (msg == "Библиотека" || msg == "/llibrary")
             {
                 _dialogManager.SetActiveDialog<LibraryDialog, AuthDialogStore>(chatId, store);
             }
