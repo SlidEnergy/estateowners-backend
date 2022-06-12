@@ -1,4 +1,5 @@
 ﻿using System;
+using Lers.Utils;
 
 namespace EstateOwners.Domain
 {
@@ -25,27 +26,7 @@ namespace EstateOwners.Domain
 
         public override string ToString()
         {
-            var type = "";
-
-            switch (Type)
-            {
-                case EstateType.Apartment:
-                    type = "Апартамент";
-                    break;
-                case EstateType.CommercialRoom:
-                    type = "Коммерческое помещение";
-                    break;
-                case EstateType.ParkingSpace:
-                    type = "Парковочное место";
-                    break;
-                case EstateType.Storeroom:
-                    type = "Кладовка";
-                    break;
-                default:
-                    throw new Exception("Данный тип недвижимости не поддерживается: " + Type);
-            }
-
-            return $"{Building.ShortAddress}, {type} {Number}";
+            return $"{Building.ShortAddress}, {Type.GetDescription().ToLower()} {Number}, площадью {Area}";
         }
     }
 }
