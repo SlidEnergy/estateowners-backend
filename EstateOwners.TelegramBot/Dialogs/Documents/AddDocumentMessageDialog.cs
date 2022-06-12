@@ -17,6 +17,7 @@ namespace EstateOwners.TelegramBot.Dialogs.Documents
 
             AddStep(Step1);
             AddStep(Step2);
+            AddStep(Step3);
         }
 
         public async Task Step1(DialogContext<AuthDialogStore> context, CancellationToken cancellationToken)
@@ -36,6 +37,34 @@ namespace EstateOwners.TelegramBot.Dialogs.Documents
             await context.Bot.Client.SendTextMessageAsync(
                     context.ChatId,
                     "Документ добавлен");
+
+            var replyMarkup = ReplyMarkupBuilder.InlineKeyboard()
+                .ColumnWithCallbackData("Добавить", "add")
+                .ColumnWithCallbackData("Нет", "no")
+                .ToMarkup();
+
+            await context.Bot.Client.SendTextMessageAsync(
+                context.ChatId,
+                "Хотите добавить еще документ?",
+                replyMarkup: replyMarkup);
+
+            context.NextStep();
+        }
+
+        [EndDialogStepFilter(UpdateType.CallbackQuery, Messages.IncorrectInput)]
+        public async Task Step3(DialogContext<AuthDialogStore> context, CancellationToken cancellationToken)
+        {
+            var cb = context.Update.CallbackQuery;
+
+            if (cb.Data == "add")
+            {
+                await context.ExecuteStepAsync(Step1, cancellationToken);
+                return;
+            }
+
+            await context.Bot.Client.SendTextMessageAsync(
+                cb.Message.Chat.Id,
+                "Добавление завершено");
 
             context.EndDialog();
         }

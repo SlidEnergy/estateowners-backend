@@ -189,20 +189,15 @@ namespace EstateOwners.TelegramBot.Dialogs
                 context.ChatId,
                 "Ваш объект недвижимости добавлен.");
 
-            var myInlineKeyboard = new InlineKeyboardMarkup(new InlineKeyboardButton[][]
-                {
-                    new InlineKeyboardButton[]
-                    {
-                        InlineKeyboardButton.WithCallbackData("Добавить", "add"),
-                        InlineKeyboardButton.WithCallbackData("Нет", "no"),
-                    }
-                }
-            );
+            var replyMarkup = ReplyMarkupBuilder.InlineKeyboard()
+                .ColumnWithCallbackData("Добавить", "add")
+                .ColumnWithCallbackData("Нет", "no")
+                .ToMarkup();
 
             await context.Bot.Client.SendTextMessageAsync(
                 context.ChatId,
                 "Хотите добавить еще объект недвижимости?",
-                replyMarkup: myInlineKeyboard);
+                replyMarkup: replyMarkup);
 
             context.NextStep();
         }
