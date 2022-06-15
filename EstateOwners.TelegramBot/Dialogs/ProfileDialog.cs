@@ -36,8 +36,8 @@ namespace EstateOwners.TelegramBot.Dialogs
             {
                 replyMarkup = ReplyMarkupBuilder.InlineKeyboard()
                 .ColumnWithCallbackData("Мои объекты недвижимости", "estates")
-                //.NewRow()
-                //.ColumnWithCallbackData("Добавить подпись", "signature")
+                .NewRow()
+                .ColumnWithCallbackData("Добавить подпись", "signature")
                 //.ColumnWithCallbackData("Мои машины", "cars")
                 .ToMarkup();
             }

@@ -314,7 +314,7 @@ namespace EstateOwners.WebApi
                     o.ApiToken = Environment.GetEnvironmentVariable("BOT_KEY");
                     o.Username = Environment.GetEnvironmentVariable("BOT_NAME");
                     o.Aes256Key = Environment.GetEnvironmentVariable("BOT_AES256KEY");
-                    o.DrawUserSignatureUrl = Environment.GetEnvironmentVariable("BOT_AES256KEY");
+                    o.DrawSignatureUrl = Environment.GetEnvironmentVariable("BOT_AES256KEY");
                 });
             }
 

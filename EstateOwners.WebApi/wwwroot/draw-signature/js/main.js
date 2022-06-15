@@ -59,7 +59,7 @@
         XHR.addEventListener('load', event => {
             if (event.target.status === 202) {
                 console.log("Request complete!");
-                document.getElementById('Подпись создана').style.visibility = 'visible';
+                document.getElementById('submitted').style.visibility = 'visible';
                 detachListeners();
             }
         });
@@ -97,10 +97,10 @@
     }
 
     function detachListeners() {
-        document.getElementById('small-dot').onclick = null;
-        document.getElementById('medium-dot').onclick = null;
-        document.getElementById('large-dot').onclick = null;
-        document.getElementById('color').onchange = null;
+        //document.getElementById('small-dot').onclick = null;
+        //document.getElementById('medium-dot').onclick = null;
+        //document.getElementById('large-dot').onclick = null;
+        //document.getElementById('color').onchange = null;
         document.getElementById('submit').onclick = null;
         canvas.removeEventListener('mousedown', onMouseDown, false);
         canvas.removeEventListener('mouseup', onMouseUp, false);
@@ -213,7 +213,7 @@
     }
 
     function init() {
-        color = document.getElementById('color').value;
+        //color = document.getElementById('color').value;
         resizeCanvas();
     }
 

@@ -39,7 +39,7 @@ namespace EstateOwners.TelegramBot.Dialogs.Signing
                 await context.Bot.Client.SendPhotoAsync(context.ChatId, new Telegram.Bot.Types.InputFiles.InputOnlineFile(ms));
             }
 
-            await context.Bot.Client.SendGameAsync(context.ChatId, _options.DrawUserSignatureGameShortName,
+            await context.Bot.Client.SendGameAsync(context.ChatId, _options.DrawSignatureGameShortName,
                 replyMarkup: (InlineKeyboardMarkup)ReplyMarkupBuilder.InlineKeyboard().ColumnWithCallBackGame("Создать новую подпись").ToMarkup());
 
             context.NextStep();
@@ -61,7 +61,7 @@ namespace EstateOwners.TelegramBot.Dialogs.Signing
             var encryptedPayload = Uri.EscapeUriString(Aes256.EncryptString(key, json));
 
             await context.Bot.Client.AnswerCallbackQueryAsync(context.Update.CallbackQuery.Id, null, false,
-                Uri.EscapeUriString($"{_options.DrawUserSignatureUrl}draw-user-signature/#salt={salt}&payload={encryptedPayload}"));
+                Uri.EscapeUriString($"{_options.DrawSignatureUrl}draw-signature/#salt={salt}&payload={encryptedPayload}"));
 
             context.EndDialog();
         }

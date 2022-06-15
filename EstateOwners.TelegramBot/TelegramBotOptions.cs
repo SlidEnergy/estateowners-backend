@@ -6,8 +6,8 @@ namespace EstateOwners.TelegramBot
     {
         public string Aes256Key { get; set; }
 
-        public string DrawUserSignatureUrl { get; set; }
+        public string DrawSignatureUrl { get; set; }
 
-        public string DrawUserSignatureGameShortName { get; set; }
+        public string DrawSignatureGameShortName { get; set; }
     }
 }

@@ -34,8 +34,8 @@ namespace EstateOwners.TelegramBot
                     ApiToken = Environment.GetEnvironmentVariable("BOT_KEY"),
                     Username = Environment.GetEnvironmentVariable("BOT_NAME"),
                     Aes256Key = Environment.GetEnvironmentVariable("BOT_AES256KEY"),
-                    DrawUserSignatureUrl = Environment.GetEnvironmentVariable("BOT_AES256KEY"),
-                    DrawUserSignatureGameShortName = Environment.GetEnvironmentVariable("BOT_DRAW_USER_SIGNATURE_GAME_SHORT_NAME")
+                    DrawSignatureUrl = Environment.GetEnvironmentVariable("BOT_AES256KEY"),
+                    DrawSignatureGameShortName = Environment.GetEnvironmentVariable("BOT_DRAW_SIGNATURE_GAME_SHORT_NAME")
                 };
             }
 
@@ -45,8 +45,8 @@ namespace EstateOwners.TelegramBot
                 o.Username = botOptions.Username;
                 o.WebhookPath = botOptions.WebhookPath;
                 o.Aes256Key = botOptions.Aes256Key;
-                o.DrawUserSignatureUrl = botOptions.DrawUserSignatureUrl;
-                o.DrawUserSignatureGameShortName = botOptions.DrawUserSignatureGameShortName;
+                o.DrawSignatureUrl = botOptions.DrawSignatureUrl;
+                o.DrawSignatureGameShortName = botOptions.DrawSignatureGameShortName;
             });
 
             services.AddTransient<IMenuRenderer, MenuRenderer>();

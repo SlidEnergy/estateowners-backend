@@ -5,6 +5,6 @@
         public string Username { get; set; }
         public string ApiToken { get; set; }
         public string Aes256Key { get; set; }
-        public string DrawUserSignatureUrl { get; set; }
+        public string DrawSignatureUrl { get; set; }
     }
 }
