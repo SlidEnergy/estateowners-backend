@@ -96,7 +96,7 @@
         window.addEventListener("load", init, false);
         //window.addEventListener("orientationchange", rotatePage, false);
 
-        document.getElementById('mobile-start').onclick = mobileInit;
+        document.getElementById('rotate').onclick = rotatePage;
     }
 
     function detachListeners() {
@@ -116,7 +116,7 @@
         window.removeEventListener("load", init, false);
         //window.removeEventListener("orientationchange", rotatePage, false);
 
-        document.getElementById('mobile-start').onclick = null;
+        document.getElementById('rotate').onclick = null;
     }
 
     function onMouseDown(e) {
@@ -222,27 +222,19 @@
         //color = document.getElementById('color').value;
 
         if (isMobile()) {
-            document.getElementById("mobile-start").style.visibility = 'visible';
-        } else {
-            show();
+            document.getElementById("rotate").style.display = 'inline';
         }
+
+        resizeCanvas();
     }
 
     function isMobile() {
         return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     }
 
-    function mobileInit() {
+    function rotatePage() {
         fullScreen();
         rotatePage();
-
-    }
-
-    function show() {
-        document.getElementById("paintarea").style.visibility = 'visible';
-        document.getElementById("buttonbar").style.visibility = 'visible';
-
-        resizeCanvas();
     }
 
     function rotatePage() {
@@ -260,6 +252,12 @@
     }
 
     function fullScreen() {
+        if (webview != undefined) {
+            webview.addEventListener('permissionrequest', function (e) {
+                if (e.permission == 'fullscreen') e.allow();
+            });
+        }
+
         // we still need prefixed methods for Chrome & Safari
         if (document.querySelector("#container").requestFullscreen)
             document.querySelector("#container").requestFullscreen();
