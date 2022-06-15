@@ -261,10 +261,10 @@
 
     function fullScreen() {
         // we still need prefixed methods for Chrome & Safari
-        if (document.querySelector("body").requestFullscreen)
-            document.querySelector("body").requestFullscreen();
-        else if (document.querySelector("body").webkitRequestFullScreen)
-            document.querySelector("body").webkitRequestFullScreen();
+        if (document.querySelector("#container").requestFullscreen)
+            document.querySelector("#container").requestFullscreen();
+        else if (document.querySelector("#container").webkitRequestFullScreen)
+            document.querySelector("#container").webkitRequestFullScreen();
     }
 
     function isPortrait() {
