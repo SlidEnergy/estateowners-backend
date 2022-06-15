@@ -34,7 +34,7 @@ namespace EstateOwners.TelegramBot
                     ApiToken = Environment.GetEnvironmentVariable("BOT_KEY"),
                     Username = Environment.GetEnvironmentVariable("BOT_NAME"),
                     Aes256Key = Environment.GetEnvironmentVariable("BOT_AES256KEY"),
-                    DrawSignatureUrl = Environment.GetEnvironmentVariable("BOT_AES256KEY"),
+                    DrawSignatureUrl = Environment.GetEnvironmentVariable("BOT_DRAW_SIGNATURE_URL"),
                     DrawSignatureGameShortName = Environment.GetEnvironmentVariable("BOT_DRAW_SIGNATURE_GAME_SHORT_NAME")
                 };
             }

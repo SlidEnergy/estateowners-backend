@@ -6,5 +6,6 @@
         public string ApiToken { get; set; }
         public string Aes256Key { get; set; }
         public string DrawSignatureUrl { get; set; }
+        public string DrawSignatureGameShortName { get; set; }
     }
 }
