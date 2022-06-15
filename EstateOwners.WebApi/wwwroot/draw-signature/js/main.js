@@ -94,6 +94,9 @@
         // Dynamic canvas size
         window.addEventListener('resize', resizeCanvas, false);
         window.addEventListener("load", init, false);
+        //window.addEventListener("orientationchange", rotatePage, false);
+
+        document.getElementById('mobile-start').onclick = mobileInit;
     }
 
     function detachListeners() {
@@ -111,6 +114,9 @@
         canvas.removeEventListener('touchmove', onTouchMove, false);
         window.removeEventListener('resize', resizeCanvas, false);
         window.removeEventListener("load", init, false);
+        //window.removeEventListener("orientationchange", rotatePage, false);
+
+        document.getElementById('mobile-start').onclick = null;
     }
 
     function onMouseDown(e) {
@@ -214,7 +220,69 @@
 
     function init() {
         //color = document.getElementById('color').value;
+
+        if (isMobile()) {
+            document.getElementById("mobile-start").style.visibility = 'visible';
+        } else {
+            show();
+        }
+    }
+
+    function isMobile() {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+
+    function mobileInit() {
+        fullScreen();
+        rotatePage();
+        show();
+        document.getElementById("mobile-start").style.visibility = 'hidden';
+    }
+
+    function show() {
+        document.getElementById("paintarea").style.visibility = 'visible';
+        document.getElementById("buttonbar").style.visibility = 'visible';
+
         resizeCanvas();
+    }
+
+    function rotatePage() {
+        if (isPortrait()) {
+            screen.orientation.lock("landscape")
+                .then(function () {
+                    alert('Locked');
+                })
+                .catch(function (error) {
+                    alert(error);
+                });
+            //document.body.style.transform = 'rotate(-90deg)';
+        }
+        else {
+            screen.orientation.lock("portrait")
+                .then(function () {
+                    alert('Locked');
+                })
+                .catch(function (error) {
+                    alert(error);
+                });
+            //document.body.style.transform = 'rotate(0deg)';
+        }
+    }
+
+    function fullScreen() {
+        // we still need prefixed methods for Chrome & Safari
+        if (document.querySelector("body").requestFullscreen)
+            document.querySelector("body").requestFullscreen();
+        else if (document.querySelector("body").webkitRequestFullScreen)
+            document.querySelector("body").webkitRequestFullScreen();
+    }
+
+    function isPortrait() {
+        if (screen != undefined) {
+            return screen.availHeight > screen.availWidth;
+        }
+
+        return window.innerHeight > window.innerWidth;
     }
 
     function resizeCanvas() {

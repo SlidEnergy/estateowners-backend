@@ -13,6 +13,11 @@ html, body {
     top: 0;
 }
 
+#submit {
+    display: block;
+    margin: 0 auto;
+}
+
 #submitted {
     position: absolute;
     left: 50%;
@@ -38,13 +43,18 @@ html, body {
     top: 0;
     margin: 5px;
     z-index: 1;
+    width: 100%;
 }
 
-.button {
-    border-radius: 7px;
-    background: #aaa;
-    display: inline-block;
-    height: 45px;
-    width: 45px;
+#mobile-start {
+    width: 150px;
     margin: 0 auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#paintarea, #buttonbar, #mobile-start {
+    visibility: hidden;
 }
