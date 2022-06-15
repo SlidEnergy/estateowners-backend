@@ -15,12 +15,6 @@
 
         }
 
-        public UserSignature(string userId, byte[] signature)
-        {
-            UserId = userId;
-            Signature = signature;
-        }
-
         public UserSignature(string userId, string signature)
         {
             UserId = userId;

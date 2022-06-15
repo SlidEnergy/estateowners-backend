@@ -1,7 +1,9 @@
-﻿using Microsoft.Extensions.Options;
+﻿using EstateOwners.App.Telegram;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Slid.Security;
 using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Dialogs;
@@ -13,19 +15,32 @@ namespace EstateOwners.TelegramBot.Dialogs.Signing
     internal class AddSignatureDialog : Dialog<AuthDialogStore>
     {
         private readonly TelegramBotOptions _options;
+        private readonly IUserSignaturesService _service;
 
-        public AddSignatureDialog(IOptions<TelegramBotOptions> options)
+        public AddSignatureDialog(IOptions<TelegramBotOptions> options, IUserSignaturesService service)
         {
             _options = options.Value;
 
             AddStep(SendGameWidget);
             AddStep(OpenExternalGameUrl);
+            _service = service;
         }
 
         public async Task SendGameWidget(DialogContext<AuthDialogStore> context, CancellationToken cancellationToken)
         {
+            var userSignature = await _service.GetByUserAsync(context.Store.User.Id);
+
+            if (userSignature != null)
+            {
+                var image = Convert.FromBase64String(userSignature.Base64Image.Replace("data:image/webp;base64,", ""));
+
+                using var ms = new MemoryStream(image);
+
+                await context.Bot.Client.SendPhotoAsync(context.ChatId, new Telegram.Bot.Types.InputFiles.InputOnlineFile(ms));
+            }
+
             await context.Bot.Client.SendGameAsync(context.ChatId, _options.DrawUserSignatureGameShortName,
-                replyMarkup: (InlineKeyboardMarkup)ReplyMarkupBuilder.InlineKeyboard().ColumnWithCallBackGame("Создать подпись").ToMarkup());
+                replyMarkup: (InlineKeyboardMarkup)ReplyMarkupBuilder.InlineKeyboard().ColumnWithCallBackGame("Создать новую подпись").ToMarkup());
 
             context.NextStep();
         }
@@ -43,10 +58,10 @@ namespace EstateOwners.TelegramBot.Dialogs.Signing
 
             var salt = ((int)DateTime.Now.TimeOfDay.TotalSeconds).ToString();
             var key = _options.Aes256Key.Substring(0, _options.Aes256Key.Length - salt.Length) + salt;
-            var encryptedPayload = Uri.EscapeDataString(Aes256.EncryptString(key, json));
+            var encryptedPayload = Uri.EscapeUriString(Aes256.EncryptString(key, json));
 
             await context.Bot.Client.AnswerCallbackQueryAsync(context.Update.CallbackQuery.Id, null, false,
-                Uri.EscapeDataString($"{_options.DrawUserSignatureUrl}draw-user-signature/#salt={salt}&payload={encryptedPayload}"));
+                Uri.EscapeUriString($"{_options.DrawUserSignatureUrl}draw-user-signature/#salt={salt}&payload={encryptedPayload}"));
 
             context.EndDialog();
         }

@@ -1,6 +1,6 @@
 (function () {
 
-    const url = '/api/v1/usersignatures/json',
+    const url = '/api/v1/usersignatures',
         canvas = document.getElementById('paintarea'),
         vcanvas = document.createElement('canvas'),
         ctx = canvas.getContext('2d'),
@@ -9,7 +9,7 @@
 
     let brushPath = []
     drawing = false,
-        dotSize = 3,
+        dotSize = 10,
         color = '#000000',
         maxP = null,
         minP = null;
@@ -59,7 +59,7 @@
         XHR.addEventListener('load', event => {
             if (event.target.status === 202) {
                 console.log("Request complete!");
-                document.getElementById('submitted').style.visibility = 'visible';
+                document.getElementById('Подпись создана').style.visibility = 'visible';
                 detachListeners();
             }
         });
@@ -74,10 +74,10 @@
 
     function attachListeners() {
         // Drawing buttons
-        document.getElementById('small-dot').onclick = () => { dotSize = 3 };
-        document.getElementById('medium-dot').onclick = () => { dotSize = 6 };
-        document.getElementById('large-dot').onclick = () => { dotSize = 10 };
-        document.getElementById('color').onchange = (e) => { color = e.target.value };
+        //document.getElementById('small-dot').onclick = () => { dotSize = 3 };
+        //document.getElementById('medium-dot').onclick = () => { dotSize = 6 };
+        //document.getElementById('large-dot').onclick = () => { dotSize = 10 };
+        //document.getElementById('color').onchange = (e) => { color = e.target.value };
         document.getElementById('submit').onclick = submitButton;
 
         // Drawing event handlers (bound to mouse, redirected from touch)

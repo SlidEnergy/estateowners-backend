@@ -7,8 +7,8 @@ namespace EstateOwners.App.Telegram
     {
         Task<UserSignature> AddAsync(UserSignature userSignature);
 
-        Task<UserSignature> GetByUser(string userId);
+        Task<UserSignature> GetByUserAsync(string userId);
 
-        Task<UserSignature> UpdateAsync(UserSignature userSignature)
+        Task<UserSignature> UpdateAsync(UserSignature userSignature);
     }
 }

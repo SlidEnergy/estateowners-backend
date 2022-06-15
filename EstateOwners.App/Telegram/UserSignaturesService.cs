@@ -29,7 +29,7 @@ namespace EstateOwners.App.Telegram
             return userSignature;
         }
 
-        public async Task<UserSignature> GetByUser(string userId)
+        public async Task<UserSignature> GetByUserAsync(string userId)
         {
             return await _context.UserSignatures.FirstOrDefaultAsync(x => x.UserId == userId);
         }
