@@ -15,5 +15,7 @@
         public string Number { get; set; }
 
         public float Area { get; set; }
+
+        public string Base64Signature { get; set; }
     }
 }

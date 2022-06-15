@@ -29,6 +29,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Auth", "Auth", "{840413C6-6
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slid.Auth.Core", "Slid.Auth.Core\Slid.Auth.Core.csproj", "{D6813B5F-F00F-432C-BB40-446BD50F2EAE}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Slid.Utils", "Slid.Utils", "{B6556782-9D59-440B-ABCF-D415743366FD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slid.Utils", "Slid.Utils\Slid.Utils.csproj", "{80A291A4-DCEA-40C4-89CD-ED708487A109}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +79,10 @@ Global
 		{D6813B5F-F00F-432C-BB40-446BD50F2EAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6813B5F-F00F-432C-BB40-446BD50F2EAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D6813B5F-F00F-432C-BB40-446BD50F2EAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80A291A4-DCEA-40C4-89CD-ED708487A109}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80A291A4-DCEA-40C4-89CD-ED708487A109}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80A291A4-DCEA-40C4-89CD-ED708487A109}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80A291A4-DCEA-40C4-89CD-ED708487A109}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -85,6 +93,7 @@ Global
 		{5569224C-886F-4C07-A988-A710491DC025} = {AD2039C1-93A4-4A5B-83B9-6288F2FA726B}
 		{AC5AC0E9-0CEA-4C75-843A-8148E190B4F5} = {840413C6-6907-4510-9915-BE10E4D5B5AB}
 		{D6813B5F-F00F-432C-BB40-446BD50F2EAE} = {840413C6-6907-4510-9915-BE10E4D5B5AB}
+		{80A291A4-DCEA-40C4-89CD-ED708487A109} = {B6556782-9D59-440B-ABCF-D415743366FD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D3376287-CFC8-45FA-991A-574C494815C9}

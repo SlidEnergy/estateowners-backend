@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace EstateOwners.TelegramBot
@@ -43,6 +44,12 @@ namespace EstateOwners.TelegramBot
         public ReplyMarkupBuilder ColumnWithCallbackData(string text, string callbackData)
         {
             _buttons[_rowIndex].Add(InlineKeyboardButton.WithCallbackData(text, callbackData));
+
+            return this;
+        }
+        public ReplyMarkupBuilder ColumnWithCallBackGame(string text, CallbackGame callbackGame = null)
+        {
+            _buttons[_rowIndex].Add(InlineKeyboardButton.WithCallBackGame(text, callbackGame));
 
             return this;
         }

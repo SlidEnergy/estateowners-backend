@@ -3,11 +3,12 @@ using NUnit.Framework;
 using EstateOwners.App;
 using EstateOwners.Domain;
 using System.Threading.Tasks;
-using EstateOwners.WebApi;
+using EstateOwners.WebApi.Telegram.Connect;
+using Microsoft.Extensions.Options;
 
 namespace EstateOwners.UnitTests
 {
-	public class TelegramServiceTests : TestsBase
+    public class TelegramServiceTests : TestsBase
 	{
 		private TelegramService _service;
 		private Mock<IAuthTokenService> _tokenService;
@@ -18,7 +19,7 @@ namespace EstateOwners.UnitTests
 			var botSettings = SettingsFactory.CreateTelegramBot();
 			_tokenService = new Mock<IAuthTokenService>();
 
-			_service = new TelegramService(_tokenService.Object, botSettings);
+			_service = new TelegramService(_tokenService.Object, Options.Create<TelegramBotSettings>(botSettings));
 
 		}
 
@@ -27,7 +28,7 @@ namespace EstateOwners.UnitTests
 		{
 			_tokenService.Setup(x => x.AddToken(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<AuthTokenType>())).Returns(Task.CompletedTask);
 
-			var telegramUser = new WebApi.TelegramUser()
+			var telegramUser = new WebApi.Telegram.TelegramUser()
 			{
 				Auth_date = 1575256110,
 				First_name = "FirstName",

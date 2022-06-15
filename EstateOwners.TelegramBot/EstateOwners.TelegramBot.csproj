@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EstateOwners.App\EstateOwners.App.csproj" />
+    <ProjectReference Include="..\Slid.Utils\Slid.Utils.csproj" />
     <ProjectReference Include="..\Telegram.Bot.Framework.Dialogs\Telegram.Bot.Framework.Dialogs.csproj" />
   </ItemGroup>
 

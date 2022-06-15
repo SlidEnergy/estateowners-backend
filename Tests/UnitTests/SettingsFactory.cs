@@ -1,12 +1,13 @@
 ﻿using EstateOwners.App;
 using EstateOwners.WebApi;
+using EstateOwners.WebApi.Telegram.Connect;
 
 namespace EstateOwners.UnitTests
 {
-	/// <summary>
-	/// Создает объекты с настройками приложения.
-	/// </summary>
-	public class SettingsFactory
+    /// <summary>
+    /// Создает объекты с настройками приложения.
+    /// </summary>
+    public class SettingsFactory
 	{
 		public static AuthSettings CreateAuth()
 		{

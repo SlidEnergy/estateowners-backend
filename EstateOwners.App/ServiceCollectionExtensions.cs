@@ -1,5 +1,6 @@
 ﻿using EstateOwners.App.Polls;
 using EstateOwners.App.Signing;
+using EstateOwners.App.Telegram;
 using EstateOwners.App.Telegram.Documents;
 using EstateOwners.App.Telegram.Support;
 using EstateOwners.App.Telegram.Voting;
@@ -23,6 +24,7 @@ namespace EstateOwners.App
 			services.AddScoped<IExportService, ExportService>();
 			services.AddScoped<IDocumentTelegramMessagesService, DocumentTelegramMessagesService>();
 			services.AddScoped<IIssueTelegramMessagesService, IssueTelegramMessagesService>();
+			services.AddScoped<IUserSignaturesService, UserSignaturesService>();
 
 			return services;
 		}

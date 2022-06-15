@@ -18,23 +18,36 @@ namespace EstateOwners.TelegramBot
     {
         public static void AddTelegramBot(this IServiceCollection services, IConfiguration configuration, bool isDevelopment)
         {
-            BotOptions botOptions;
+            TelegramBotOptions botOptions;
 
             if (isDevelopment)
             {
                 botOptions = configuration
                     .GetSection("Telegram")
                     .GetSection("SlidTestBot")
-                    .Get<BotOptions>();
+                    .Get<TelegramBotOptions>();
             }
             else
             {
-                botOptions = new BotOptions()
+                botOptions = new TelegramBotOptions()
                 {
                     ApiToken = Environment.GetEnvironmentVariable("BOT_KEY"),
                     Username = Environment.GetEnvironmentVariable("BOT_NAME"),
+                    Aes256Key = Environment.GetEnvironmentVariable("BOT_AES256KEY"),
+                    DrawUserSignatureUrl = Environment.GetEnvironmentVariable("BOT_AES256KEY"),
+                    DrawUserSignatureGameShortName = Environment.GetEnvironmentVariable("BOT_DRAW_USER_SIGNATURE_GAME_SHORT_NAME")
                 };
             }
+
+            services.Configure<TelegramBotOptions>(o =>
+            {
+                o.ApiToken = botOptions.ApiToken;
+                o.Username = botOptions.Username;
+                o.WebhookPath = botOptions.WebhookPath;
+                o.Aes256Key = botOptions.Aes256Key;
+                o.DrawUserSignatureUrl = botOptions.DrawUserSignatureUrl;
+                o.DrawUserSignatureGameShortName = botOptions.DrawUserSignatureGameShortName;
+            });
 
             services.AddTransient<IMenuRenderer, MenuRenderer>();
 

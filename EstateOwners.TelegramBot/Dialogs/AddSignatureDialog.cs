@@ -1,4 +1,8 @@
-﻿using System.Threading;
+﻿using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using Slid.Security;
+using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Dialogs;
 using Telegram.Bot.Types.Enums;
@@ -8,39 +12,20 @@ namespace EstateOwners.TelegramBot.Dialogs.Signing
 {
     internal class AddSignatureDialog : Dialog<AuthDialogStore>
     {
-        public AddSignatureDialog()
+        private readonly TelegramBotOptions _options;
+
+        public AddSignatureDialog(IOptions<TelegramBotOptions> options)
         {
-            //AddStep(Step1);
-            // AddStep(Step2);
+            _options = options.Value;
+
             AddStep(SendGameWidget);
             AddStep(OpenExternalGameUrl);
-            AddStep(Step3);
         }
-
-        //public async Task Step1(DialogContext<AuthDialogStore> context, CancellationToken cancellationToken)
-        //{
-        //    await context.Bot.Client.SendTextMessageAsync(context.ChatId, "Загрузите изображение");
-
-        //    context.NextStep();
-        //}
-        //public async Task Step2(DialogContext<AuthDialogStore> context, CancellationToken cancellationToken)
-        //{
-        //    var info = await context.Bot.Client.GetFileAsync("AgACAgIAAxkBAAIGDGKcZvT3LX3xn15qwXek9miR0MgkAAKkwTEbpR7hSCLYMJwZznQzAQADAgADbQADJAQ");
-
-        //    using (var stream = new MemoryStream())
-        //    {
-        //        await context.Bot.Client.DownloadFileAsync(info.FilePath, stream);
-
-        //    }
-
-        //    context.EndDialog();
-        //}
-
 
         public async Task SendGameWidget(DialogContext<AuthDialogStore> context, CancellationToken cancellationToken)
         {
-            await context.Bot.Client.SendGameAsync(context.ChatId, "testgame",
-                replyMarkup: (InlineKeyboardMarkup)ReplyMarkupBuilder.InlineKeyboard().ColumnWithCallbackData("Создать подпись").ToMarkup());
+            await context.Bot.Client.SendGameAsync(context.ChatId, _options.DrawUserSignatureGameShortName,
+                replyMarkup: (InlineKeyboardMarkup)ReplyMarkupBuilder.InlineKeyboard().ColumnWithCallBackGame("Создать подпись").ToMarkup());
 
             context.NextStep();
         }
@@ -48,13 +33,20 @@ namespace EstateOwners.TelegramBot.Dialogs.Signing
         [EndDialogStepFilter(UpdateType.CallbackQuery, Messages.IncorrectInput)]
         public async Task OpenExternalGameUrl(DialogContext<AuthDialogStore> context, CancellationToken cancellationToken)
         {
-            await context.Bot.Client.AnswerCallbackQueryAsync(context.Update.CallbackQuery.Id, "text", false, "https://7602-91-245-141-24.eu.ngrok.io/drawgram-static/");
-        }
+            var payload = new TelegramGamePayload
+            {
+                MessageId = context.Update.CallbackQuery.Message.MessageId,
+                ChatId = context.ChatId,
+            };
 
-        [EndDialogStepFilter(UpdateType.CallbackQuery, Messages.IncorrectInput)]
-        public async Task Step3(DialogContext<AuthDialogStore> context, CancellationToken cancellationToken)
-        {
-            await context.Bot.Client.SendTextMessageAsync(context.ChatId, "Ваша подпись сохранена");
+            var json = JsonConvert.SerializeObject(payload);
+
+            var salt = ((int)DateTime.Now.TimeOfDay.TotalSeconds).ToString();
+            var key = _options.Aes256Key.Substring(0, _options.Aes256Key.Length - salt.Length) + salt;
+            var encryptedPayload = Uri.EscapeDataString(Aes256.EncryptString(key, json));
+
+            await context.Bot.Client.AnswerCallbackQueryAsync(context.Update.CallbackQuery.Id, null, false,
+                Uri.EscapeDataString($"{_options.DrawUserSignatureUrl}draw-user-signature/#salt={salt}&payload={encryptedPayload}"));
 
             context.EndDialog();
         }

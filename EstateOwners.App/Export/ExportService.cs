@@ -20,8 +20,9 @@ namespace EstateOwners.App
             var signers = await _context.UserMessageVotes
                 .Where(x => x.VoteTelegramMessageId == messageId)
                 .Join(_context.Users, t => t.UserId, u => u.Id, (t, u) => u)
-                .Join(_context.TrusteeEstates, t => t.TrusteeId, u => u.TrusteeId, (u, t) => new { User = u, Estate = t.Estate, Building = t.Estate.Building })
-                .Select(x => new Signer
+                .Join(_context.TrusteeEstates, u => u.TrusteeId, t => t.TrusteeId, (u, t) => new { User = u, Estate = t.Estate, Building = t.Estate.Building })
+                .GroupJoin(_context.UserSignatures, x => x.User.Id, s => s.UserId, (x, s) => new { User = x.User, Estate = x.Estate, Building = x.Building, Signature = s})
+                .SelectMany(x => x.Signature.DefaultIfEmpty(), (x, s) => new Signer
                 {
                     FirstName = x.User.FirstName,
                     LastName = x.User.LastName,
@@ -29,7 +30,8 @@ namespace EstateOwners.App
                     Type = x.Estate.Type.GetDescription(),
                     Building = x.Building.ShortAddress,
                     Number = x.Estate.Number,
-                    Area = x.Estate.Area
+                    Area = x.Estate.Area,
+                    Base64Signature = s == null ? null : s.Base64Image
                 })
                 .ToListAsync();
 

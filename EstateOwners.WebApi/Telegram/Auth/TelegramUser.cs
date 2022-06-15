@@ -1,4 +1,4 @@
-﻿namespace EstateOwners.WebApi
+﻿namespace EstateOwners.WebApi.Telegram
 {
     public class TelegramUser
     {
@@ -10,8 +10,8 @@
 
         public string Last_name { get; set; }
 
-		public long Auth_date { get; set; }
+        public long Auth_date { get; set; }
 
-		public string Hash { get; set; }
-	}
+        public string Hash { get; set; }
+    }
 }

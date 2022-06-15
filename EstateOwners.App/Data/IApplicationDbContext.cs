@@ -7,6 +7,7 @@ using EstateOwners.Domain.Candidates;
 using EstateOwners.Domain.Telegram;
 using EstateOwners.Domain.Telegram.Voting;
 using EstateOwners.Domain.Telegram.Support;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace EstateOwners.App
 {
@@ -49,5 +50,9 @@ namespace EstateOwners.App
 		DbSet<Car> Cars { get; set; }
 
 		Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
+
+		EntityEntry Entry(object entity);
+
+		EntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class;
 	}
 }

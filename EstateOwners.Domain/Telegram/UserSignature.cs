@@ -8,6 +8,8 @@
 
         public byte[] Signature { get; set; }
 
+        public string Base64Image { get; set; }
+
         public UserSignature()
         {
 
@@ -17,6 +19,12 @@
         {
             UserId = userId;
             Signature = signature;
+        }
+
+        public UserSignature(string userId, string signature)
+        {
+            UserId = userId;
+            Base64Image = signature;
         }
     }
 }
