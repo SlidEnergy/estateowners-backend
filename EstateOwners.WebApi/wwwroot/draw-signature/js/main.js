@@ -235,8 +235,7 @@
     function mobileInit() {
         fullScreen();
         rotatePage();
-        show();
-        document.getElementById("mobile-start").style.visibility = 'hidden';
+
     }
 
     function show() {
@@ -248,24 +247,15 @@
 
     function rotatePage() {
         if (isPortrait()) {
-            screen.orientation.lock("landscape")
+            screen.orientation.lock("landscape-primary")
                 .then(function () {
-                    alert('Locked');
+                    show();
+                    document.getElementById("mobile-start").style.visibility = 'hidden';
                 })
                 .catch(function (error) {
                     alert(error);
                 });
             //document.body.style.transform = 'rotate(-90deg)';
-        }
-        else {
-            screen.orientation.lock("portrait")
-                .then(function () {
-                    alert('Locked');
-                })
-                .catch(function (error) {
-                    alert(error);
-                });
-            //document.body.style.transform = 'rotate(0deg)';
         }
     }
 
