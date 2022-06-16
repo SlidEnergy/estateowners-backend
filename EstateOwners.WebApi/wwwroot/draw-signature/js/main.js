@@ -94,9 +94,6 @@
         // Dynamic canvas size
         window.addEventListener('resize', resizeCanvas, false);
         window.addEventListener("load", init, false);
-        //window.addEventListener("orientationchange", rotatePage, false);
-
-        document.getElementById('rotate').onclick = rotatePage;
     }
 
     function detachListeners() {
@@ -114,9 +111,6 @@
         canvas.removeEventListener('touchmove', onTouchMove, false);
         window.removeEventListener('resize', resizeCanvas, false);
         window.removeEventListener("load", init, false);
-        //window.removeEventListener("orientationchange", rotatePage, false);
-
-        document.getElementById('rotate').onclick = null;
     }
 
     function onMouseDown(e) {
@@ -219,60 +213,11 @@
     }
 
     function init() {
-        //color = document.getElementById('color').value;
-
-        if (isMobile()) {
-            document.getElementById("rotate").style.display = 'inline';
-        }
-
         resizeCanvas();
     }
 
     function isMobile() {
         return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    }
-
-    function rotatePage() {
-        fullScreen();
-        setLandscape();
-    }
-
-    function setLandscape() {
-        if (isPortrait()) {
-            screen.orientation.lock("landscape-primary")
-                .then(function () {
-                    show();
-                    document.getElementById("mobile-start").style.visibility = 'hidden';
-                })
-                .catch(function (error) {
-                    alert(error);
-                });
-            //document.body.style.transform = 'rotate(-90deg)';
-        }
-    }
-
-    function fullScreen() {
-        alert(window['webview']);
-
-        if (window.webview != undefined) {
-            window.webview.addEventListener('permissionrequest', function (e) {
-                if (e.permission == 'fullscreen') e.allow();
-            });
-        }
-
-        // we still need prefixed methods for Chrome & Safari
-        if (document.querySelector("#container").requestFullscreen)
-            document.querySelector("#container").requestFullscreen();
-        else if (document.querySelector("#container").webkitRequestFullScreen)
-            document.querySelector("#container").webkitRequestFullScreen();
-    }
-
-    function isPortrait() {
-        if (screen != undefined) {
-            return screen.availHeight > screen.availWidth;
-        }
-
-        return window.innerHeight > window.innerWidth;
     }
 
     function resizeCanvas() {

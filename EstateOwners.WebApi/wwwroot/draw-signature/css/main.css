@@ -7,22 +7,6 @@ html, body {
     display: block; /* No floating content on sides */
 }
 
-#container {
-}
-
-    #container:fullscreen {
-        width: 100%;
-        height: 100%;
-        background-color: white;
-    }
-
-    /* prefix for Chrome & Safari */
-    #container:-webkit-full-screen {
-        width: 100%;
-        height: 100%;
-        background-color: white;
-    }
-
 #paintarea {
     position: absolute;
     left: 0;
@@ -31,15 +15,11 @@ html, body {
 
 .button-container {
     display: block;
-    margin: 0 auto;
-    width: 350px;
+    margin: 10px auto;
+    width: 170px;
 }
 
-#rotate {
-    display: none;
-}
-
-.button-container button{
+.button-container button {
     margin-right: 20px;
 }
 
