@@ -234,10 +234,10 @@
 
     function rotatePage() {
         fullScreen();
-        rotatePage();
+        setLandscape();
     }
 
-    function rotatePage() {
+    function setLandscape() {
         if (isPortrait()) {
             screen.orientation.lock("landscape-primary")
                 .then(function () {
@@ -252,8 +252,10 @@
     }
 
     function fullScreen() {
-        if (webview != undefined) {
-            webview.addEventListener('permissionrequest', function (e) {
+        alert(window['webview']);
+
+        if (window.webview != undefined) {
+            window.webview.addEventListener('permissionrequest', function (e) {
                 if (e.permission == 'fullscreen') e.allow();
             });
         }
