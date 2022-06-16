@@ -61,6 +61,7 @@
                 console.log("Request complete!");
                 document.getElementById('submitted').style.visibility = 'visible';
                 detachListeners();
+                finish();
             }
         });
         XHR.addEventListener('error', event => {
@@ -71,6 +72,9 @@
         XHR.send(JSON.stringify(model));
     }
 
+    function finish() {
+        setTimeout(() => history.back(), 3000);
+    }
 
     function attachListeners() {
         // Drawing buttons

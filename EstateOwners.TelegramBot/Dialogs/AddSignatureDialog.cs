@@ -63,7 +63,8 @@ namespace EstateOwners.TelegramBot.Dialogs.Signing
             await context.Bot.Client.AnswerCallbackQueryAsync(context.Update.CallbackQuery.Id, null, false,
                 Uri.EscapeUriString($"{_options.DrawSignatureUrl}draw-signature/#salt={salt}&payload={encryptedPayload}"));
 
-            context.EndDialog();
+            // не завершаем диалог, чтобы можно было повторно нажать на кнопку
+            //context.EndDialog();
         }
     }
 }
