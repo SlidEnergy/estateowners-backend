@@ -2,7 +2,6 @@
 using EstateOwners.TelegramBot.Dialogs.Documents;
 using EstateOwners.TelegramBot.Dialogs.Estates;
 using EstateOwners.TelegramBot.Dialogs.Polls;
-using EstateOwners.TelegramBot.Dialogs.Signing;
 using EstateOwners.TelegramBot.Dialogs.Support;
 using EstateOwners.TelegramBot.Dialogs.Voting;
 using Microsoft.AspNetCore.Builder;

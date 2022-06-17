@@ -10,7 +10,7 @@ using Telegram.Bot.Framework.Dialogs;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace EstateOwners.TelegramBot.Dialogs.Signing
+namespace EstateOwners.TelegramBot.Dialogs
 {
     internal class AddSignatureDialog : Dialog<AuthDialogStore>
     {

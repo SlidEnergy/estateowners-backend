@@ -1,5 +1,4 @@
 ﻿using EstateOwners.TelegramBot.Dialogs.Estates;
-using EstateOwners.TelegramBot.Dialogs.Signing;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
