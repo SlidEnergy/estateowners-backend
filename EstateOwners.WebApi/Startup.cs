@@ -112,8 +112,6 @@ namespace EstateOwners.WebApi
                 endpoints.MapControllers();
                 endpoints.MapFallbackToFile("index.html");
             });
-
-
         }
 
         private void ConfigureAuthorization(IServiceCollection services)
