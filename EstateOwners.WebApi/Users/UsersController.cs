@@ -32,6 +32,16 @@ namespace EstateOwners.WebApi
 			return _mapper.Map<Dto.User[]>(users);
 		}
 
+        [HttpGet("{id}")]
+        [ProducesResponseType(200)]
+        [Authorize(Policy = Policy.MustBeAdmin)]
+        public async Task<ActionResult<Dto.User>> GetById(string id)
+        {
+            var user = await _usersService.GetByIdAsync(id);
+
+			return _mapper.Map<Dto.User>(user);
+        }
+
 		[HttpGet("current")]
 		[ProducesResponseType(200)]
 		[ProducesResponseType(404)]
