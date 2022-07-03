@@ -1,18 +1,18 @@
-import {Counter} from "./pages/Counter";
-import {FetchData} from "./pages/FetchData";
-import {Home} from "./pages/Home";
-import AdminLogin from "./pages/admin/AdminLogin";
-import Login from "./pages/Login";
-import Users from "./pages/admin/Users";
-import User from "./pages/admin/User";
+import {Counter} from "../pages/Counter";
+import {FetchData} from "../pages/FetchData";
+import {Home} from "../pages/Home";
+import AdminLogin from "../pages/admin/AdminLogin";
+import Login from "../pages/Login";
+import Users from "../pages/admin/Users";
+import User from "../pages/admin/User";
 
-import React, {useContext} from 'react';
+import React from 'react';
 import {Route, Routes} from "react-router-dom";
-import {ProtectedRoute} from "./routing/ProtectedRoute";
-import {AuthContext} from "./context/AuthContext";
+import {ProtectedRoute} from "./ProtectedRoute";
+import {useAuth} from "../hooks/useAuth";
 
 const AppRoutes = () => {
-    const {isAuth, setIsAuth} = useContext(AuthContext);
+    const {isAuth} = useAuth();
 
     return (
         <Routes>
@@ -26,9 +26,9 @@ const AppRoutes = () => {
                     <Route path='/admin/login' element={<AdminLogin />}></Route>
                 </Route>
                 <Route element={<ProtectedRoute isAllowed={isAuth} redirectPath='/admin/login' />}>
-                    <Route path='/admin/users' element={<Users />}>
-                        <Route path=':id' element={<User />}></Route>
+                    <Route path='/admin/users'>
                         <Route index element={<Users />}></Route>
+                        <Route path=':id' element={<User />}></Route>
                     </Route>
                 </Route>
             </Route>

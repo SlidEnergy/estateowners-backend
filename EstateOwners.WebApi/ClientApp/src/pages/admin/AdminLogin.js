@@ -1,9 +1,9 @@
-import React, {useContext, useState} from 'react';
+import React, {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import AuthService from "../../core/auth/AuthService";
 import Loader from "../../components/loader/loader";
 import {useFetching} from "../../hooks/useFetching";
-import {AuthContext} from "../../context/AuthContext";
+import {useAuth} from "../../hooks/useAuth";
 
 const AdminLogin = () => {
     const [login, setLogin] = useState('');
@@ -11,7 +11,7 @@ const AdminLogin = () => {
     const [logInFetching, isLoading, error] = useFetching(async () => {
         return await AuthService.login(login, password);
     });
-    const {isAuth, setIsAuth} = useContext(AuthContext);
+    const {setAuth} = useAuth();
 
     const navigate = useNavigate();
 
@@ -20,15 +20,13 @@ const AdminLogin = () => {
 
         const result = await logInFetching();
 
-        console.log(result);
-
         if (!result) {
             // show error
             console.log("Не удалось войти в систему");
             return;
         }
 
-        setIsAuth(true);
+        setAuth(result);
         navigate('/admin/users');
     }
 

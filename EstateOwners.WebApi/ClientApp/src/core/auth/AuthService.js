@@ -1,26 +1,32 @@
-import TokenService from "../../api/TokenService";
+import TokenService from "../api/TokenService";
 
 export default class AuthService {
     static async login(email, password) {
         const auth = await TokenService.get(email, password);
 
-        console.log(auth);
-
-        if(!auth)
+        if (!auth)
             return false;
 
         localStorage.setItem('auth', JSON.stringify(auth));
 
-        return true;
+        return auth;
     }
 
     static logout() {
         localStorage.removeItem('auth');
     }
 
-    static isAuth() {
-        const auth = localStorage.getItem('auth')
+    static getAuth() {
+        const item = localStorage.getItem('auth')
 
-        return !!auth;
+        try {
+            const auth = item && JSON.parse(item);
+            if (auth && auth.token)
+                return auth;
+            else
+                return undefined;
+        } catch {
+            return undefined;
+        }
     }
 }

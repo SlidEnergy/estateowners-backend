@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useParams} from "react-router-dom";
 import {useFetching} from "../../hooks/useFetching";
-import {UsersService} from "../../api/UsersService";
+import {UsersService} from "../../core/api/UsersService";
 import Loader from "../../components/loader/loader";
 
 const User = () => {
@@ -15,7 +15,7 @@ const User = () => {
 
     useEffect(() => {
         fetchUserById();
-    })
+    }, [])
 
     return (
         <div>
@@ -23,7 +23,7 @@ const User = () => {
                 <div style={{display: 'flex', justifyContent: 'center', marginTop: '50px'}}><Loader></Loader></div>
             }
             {user &&
-                <h1>Пользователь {user.name}</h1>
+                <h1>Пользователь {user.email}</h1>
             }
             {error &&
                 <div style={{marginTop: '20px'}}>

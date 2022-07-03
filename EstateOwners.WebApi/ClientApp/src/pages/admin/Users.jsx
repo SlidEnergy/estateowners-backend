@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {useFetching} from "../../hooks/useFetching";
-import {UsersService} from "../../api/UsersService";
+import {UsersService} from "../../core/api/UsersService";
 import Loader from "../../components/loader/loader";
+import {Link} from "react-router-dom";
 
 const Users = () => {
     const [users, setUsers] = useState();
@@ -28,7 +29,9 @@ const Users = () => {
             }
 
             {users && users.map((user, index) =>
-                <div key={user.id}>{user.email}</div>
+                <div key={user.id}>
+                    {user.email}&nbsp;<Link to={'/admin/users/' + user.id}>Перейти</Link>
+                </div>
             )}
         </div>
     );

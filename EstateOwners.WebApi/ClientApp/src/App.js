@@ -1,5 +1,5 @@
 import React from 'react';
-import AppRoutes from './AppRoutes';
+import AppRoutes from './routing/AppRoutes';
 import Layout from './pages/layout/Layout';
 import './custom.css';
 import AuthProvider from "./core/auth/AuthProvider";

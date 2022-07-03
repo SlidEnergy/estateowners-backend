@@ -5,14 +5,23 @@ import Loader from "../../components/loader/loader";
 
 const AuthProvider = ({children}) => {
     const [isAuth, setIsAuth] = useState(undefined);
+    const [auth, setAuth] = useState(undefined);
 
     useEffect(() => {
-        const result = AuthService.isAuth();
-        setIsAuth(result);
+        const auth = AuthService.getAuth();
+        setIsAuthAndAuth(auth);
     }, []);
 
+    function setIsAuthAndAuth(auth) {
+        const value = !!(auth && auth.token);
+        setIsAuth(value);
+
+        if(value)
+            setAuth(auth);
+    }
+
     return (
-        <AuthContext.Provider value={{isAuth, setIsAuth}}>
+        <AuthContext.Provider value={{isAuth, auth, setAuth: setIsAuthAndAuth}}>
             {isAuth === undefined
                 ? <Loader/>
                 : <div>{children}</div>
