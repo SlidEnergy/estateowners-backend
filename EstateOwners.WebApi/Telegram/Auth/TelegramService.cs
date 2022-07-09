@@ -1,12 +1,13 @@
-﻿using EstateOwners.App;
-using EstateOwners.Domain;
-using Microsoft.Extensions.Options;
-using System;
+﻿using System;
+using System.Security.Authentication;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using EstateOwners.App;
+using EstateOwners.Domain;
 using EstateOwners.WebApi.Dto;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
 
 namespace EstateOwners.WebApi.Telegram.Connect
 {
@@ -44,6 +45,9 @@ namespace EstateOwners.WebApi.Telegram.Connect
 
             var user = await _usersService.GetByAuthTokenAsync(telegramUser.Id.ToString(), AuthTokenType.TelegramUserId);
 
+            if (user == null)
+                throw new AuthenticationException();
+
             var tokens = await _tokenService.GenerateAccessAndRefreshTokens(user, AccessMode.All);
 
             return new TokenInfo() { Token = tokens.Token, RefreshToken = tokens.RefreshToken, Email = user.Email };
@@ -51,8 +55,20 @@ namespace EstateOwners.WebApi.Telegram.Connect
 
         private bool ValidateTelegramInput(TelegramUser telegramUser)
         {
-            var dataCheckString = string.Format("auth_date={0}\nfirst_name={1}\nid={2}\nlast_name={3}\nusername={4}",
-                telegramUser.Auth_date, telegramUser.First_name, telegramUser.Id, telegramUser.Last_name, telegramUser.Username);
+            var dataCheckString = new StringBuilder();
+
+            dataCheckString.AppendFormat("auth_date={0}\n", telegramUser.Auth_date);
+
+            if (telegramUser.First_name != null)
+                dataCheckString.AppendFormat("first_name={0}\n", telegramUser.First_name);
+
+            dataCheckString.AppendFormat("id={0}\n", telegramUser.Id);
+
+            if (telegramUser.Last_name != null)
+                dataCheckString.AppendFormat("last_name={0}\n", telegramUser.Last_name);
+
+            if (telegramUser.Username != null)
+                dataCheckString.AppendFormat("username={0}", telegramUser.Username);
 
             using (var sha256 = SHA256.Create())
             {
@@ -60,7 +76,7 @@ namespace EstateOwners.WebApi.Telegram.Connect
 
                 using (var hmac = new HMACSHA256(secretKey))
                 {
-                    byte[] hashValue = hmac.ComputeHash(Encoding.UTF8.GetBytes(dataCheckString));
+                    byte[] hashValue = hmac.ComputeHash(Encoding.UTF8.GetBytes(dataCheckString.ToString()));
 
                     if (BitConverter.ToString(hashValue).Replace("-", "").ToLower() == telegramUser.Hash)
                         return true;
