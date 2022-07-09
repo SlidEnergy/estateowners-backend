@@ -5,17 +5,23 @@ using System;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using EstateOwners.WebApi.Dto;
+using Microsoft.IdentityModel.Tokens;
 
 namespace EstateOwners.WebApi.Telegram.Connect
 {
     public class TelegramService : ITelegramService
     {
         private IAuthTokenService _authTokenService;
+        private readonly IUsersService _usersService;
+        private readonly ITokenService _tokenService;
         private TelegramBotSettings _telegramSettings;
 
-        public TelegramService(IAuthTokenService tokenService, IOptions<TelegramBotSettings> options)
+        public TelegramService(IAuthTokenService authTokenService, IOptions<TelegramBotSettings> options, IUsersService usersService, ITokenService tokenService)
         {
-            _authTokenService = tokenService;
+            _authTokenService = authTokenService;
+            _usersService = usersService;
+            _tokenService = tokenService;
             _telegramSettings = options.Value;
         }
 
@@ -27,6 +33,20 @@ namespace EstateOwners.WebApi.Telegram.Connect
             }
 
             await _authTokenService.AddToken(userId, telegramUser.Id.ToString(), AuthTokenType.TelegramUserId);
+        }
+
+        public async Task<TokenInfo> GetTokenAsync(TelegramUser telegramUser)
+        {
+            if (!ValidateTelegramInput(telegramUser))
+            {
+                throw new ArgumentException("Данные телеграм пользователя не прошли проверку.", nameof(telegramUser));
+            }
+
+            var user = await _usersService.GetByAuthTokenAsync(telegramUser.Id.ToString(), AuthTokenType.TelegramUserId);
+
+            var tokens = await _tokenService.GenerateAccessAndRefreshTokens(user, AccessMode.All);
+
+            return new TokenInfo() { Token = tokens.Token, RefreshToken = tokens.RefreshToken, Email = user.Email };
         }
 
         private bool ValidateTelegramInput(TelegramUser telegramUser)

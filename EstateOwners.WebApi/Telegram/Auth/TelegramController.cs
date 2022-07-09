@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Slid.Auth.Core;
 using System;
+using System.Security.Authentication;
 using System.Threading.Tasks;
+using EstateOwners.WebApi.Dto;
 
 namespace EstateOwners.WebApi.Telegram.Connect
 {
@@ -33,6 +35,25 @@ namespace EstateOwners.WebApi.Telegram.Connect
             }
 
             return Ok();
+        }
+
+        [HttpPost("token")]
+        [AllowAnonymous]
+        public async Task<ActionResult<TokenInfo>> GetToken(TelegramUser user)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            try
+            {
+                var tokenInfo = await _service.GetTokenAsync(user);
+
+                return tokenInfo;
+            }
+            catch (AuthenticationException)
+            {
+                return BadRequest();
+            }
         }
     }
 }
