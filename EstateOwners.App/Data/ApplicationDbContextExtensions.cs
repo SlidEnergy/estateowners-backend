@@ -9,7 +9,7 @@ namespace EstateOwners.App
 {
     public static class ApplicationDbContextExtensions
 	{
-		public static async Task<bool> IsAdmin(this IApplicationDbContext context, string userId)
+		public static async Task<bool> IsAdminAsync(this IApplicationDbContext context, string userId)
 		{
 			var role = await context.Roles.FirstOrDefaultAsync(x => x.Name == Role.Admin);
 
@@ -21,19 +21,54 @@ namespace EstateOwners.App
 			return userRole == null ? false : true;
 		}
 
-		public static async Task<List<Estate>> GetEstateListWithAccessCheckAsync(this IApplicationDbContext context, string userId)
-		{
-			var user = await context.Users.FindAsync(userId);
+        public static async Task<Estate> GetEstateByIdWithAccessCheckAsync(this IApplicationDbContext context, string userId, int id)
+        {
+			var isAdmin = await context.IsAdminAsync(userId);
 
-			var estates = await context.TrusteeEstates
-				.Where(x => x.TrusteeId == user.TrusteeId)
-				.Join(context.Estates, t => t.EstateId, e => e.Id, (t, e) => e)
-				.ToListAsync();
+            if (isAdmin)
+                return await context.Estates.FindAsync(id);
 
-			return estates;
-		}
+            var user = await context.Users.FindAsync(userId);
 
-		public static async Task<List<Car>> GetCarListWithAccessCheckAsync(this IApplicationDbContext context, string userId)
+            var estate = await context.TrusteeEstates
+                .Where(x => x.TrusteeId == user.TrusteeId)
+                .Join(context.Estates, t => t.EstateId, e => e.Id, (t, e) => e)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            return estate;
+        }
+
+        public static async Task<List<Estate>> GetEstateListWithAccessCheckAsync(this IApplicationDbContext context,
+            string userId, string filterUserId = null)
+        {
+            var isAdmin = await context.IsAdminAsync(userId);
+
+            if (isAdmin)
+            {
+                if (filterUserId != null)
+                {
+                    var filterUser = await context.Users.FindAsync(filterUserId);
+
+                    return await context.TrusteeEstates
+                        .Where(x => x.TrusteeId == filterUser.TrusteeId)
+                        .Join(context.Estates, t => t.EstateId, e => e.Id, (t, e) => e)
+                        .ToListAsync(); 
+                }
+
+                return await context.Estates.ToListAsync();
+            }
+
+            var user = await context.Users.FindAsync(userId);
+
+            var estates = await context.TrusteeEstates
+                .Where(x => x.TrusteeId == user.TrusteeId)
+                .Join(context.Estates, t => t.EstateId, e => e.Id, (t, e) => e)
+                .ToListAsync();
+
+            return estates;
+        }
+
+        public static async Task<List<Car>> GetCarListWithAccessCheckAsync(this IApplicationDbContext context, string userId)
 		{
 			var user = await context.Users.FindAsync(userId);
 

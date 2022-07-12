@@ -35,10 +35,14 @@ namespace EstateOwners.App
             return estate;
         }
 
-        public async Task<List<Estate>> GetListWithAccessCheckAsync(string userId, CancellationToken cancellationToken = default)
+        public async Task<List<Estate>> GetListWithAccessCheckAsync(string userId, string filterByUserId = null, CancellationToken cancellationToken = default)
         {
-            return await _context.GetEstateListWithAccessCheckAsync(userId);
+            return await _context.GetEstateListWithAccessCheckAsync(userId, filterByUserId);
+        }
 
+        public async Task<Estate> GetByIdWithAccessCheckAsync(string userId, int id, CancellationToken cancellationToken = default)
+        {
+            return await _context.GetEstateByIdWithAccessCheckAsync(userId, id);
         }
     }
 }

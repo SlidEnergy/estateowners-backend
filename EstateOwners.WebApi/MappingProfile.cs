@@ -13,6 +13,9 @@ namespace EstateOwners.WebApi
 				.ForMember(dest => dest.IsAdmin,
 					opt => opt.Ignore());
 
+            CreateMap<Estate, Dto.Estate>()
+                .ForMember(x=> x.Building, opt => opt.MapFrom(b => b.Building.ToString()));
+
 			CreateMap<Dto.User, ApplicationUser>();
 		}
 	}
