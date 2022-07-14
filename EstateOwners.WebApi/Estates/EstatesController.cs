@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using EstateOwners.WebApi.Dto;
 using Slid.Auth.Core;
+using Estate = EstateOwners.Domain.Estate;
 
 namespace EstateOwners.WebApi
 {
@@ -44,6 +46,22 @@ namespace EstateOwners.WebApi
             var model = await _estatesService.GetByIdWithAccessCheckAsync(userId, id);
 
             return _mapper.Map<Dto.Estate>(model);
+        }
+
+        [HttpPut]
+        [ProducesResponseType(200)]
+        [Authorize]
+        public async Task<ActionResult<Dto.Estate>> Add([FromBody]EstateBindingModel model, string? userId)
+        {
+            var currentUserId = User.GetUserId();
+
+            var newEstate = _mapper.Map<Estate>(model);
+
+            var isAdmin = User.IsInRole(Role.Admin);
+
+            var addedModel = await _estatesService.AddEstateAsync(userId != null && isAdmin ? userId : currentUserId, newEstate);
+
+            return _mapper.Map<Dto.Estate>(addedModel);
         }
     }
 }
