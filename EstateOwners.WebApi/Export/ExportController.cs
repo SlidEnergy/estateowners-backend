@@ -34,7 +34,7 @@ namespace EstateOwners.WebApi.Controllers
 		}
 
         [HttpGet]
-        public async Task<ActionResult<List<Signer>>> GetUsersWithEstates()
+        public async Task<ActionResult<List<UserWithEstate>>> GetUsersWithEstates()
         {
             var userId = User.GetUserId();
 
