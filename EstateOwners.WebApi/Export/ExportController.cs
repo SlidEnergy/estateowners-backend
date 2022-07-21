@@ -32,5 +32,15 @@ namespace EstateOwners.WebApi.Controllers
 
 			return signers;
 		}
+
+        [HttpGet]
+        public async Task<ActionResult<List<Signer>>> GetUsersWithEstates()
+        {
+            var userId = User.GetUserId();
+
+            var export = await _service.GetUsersWithEstatesAsync();
+
+            return export;
+        }
 	}
 }

@@ -37,5 +37,24 @@ namespace EstateOwners.App
 
             return signers;
         }
+
+        public async Task<List<Signer>> GetUsersWithEstatesAsync()
+        {
+            var signers = await _context.Users
+                .Join(_context.TrusteeEstates, u => u.TrusteeId, t => t.TrusteeId, (u, t) => new { User = u, Estate = t.Estate, Building = t.Estate.Building })
+                .Select(x => new Signer()
+                {
+                    FirstName = x.User.FirstName,
+                    LastName = x.User.LastName,
+                    MiddleName = x.User.MiddleName,
+                    Type = x.Estate.Type.GetDescription(),
+                    Building = x.Building.ShortAddress,
+                    Number = x.Estate.Number,
+                    Area = x.Estate.Area,
+                })
+                .ToListAsync();
+
+            return signers;
+        }
     }
 }
