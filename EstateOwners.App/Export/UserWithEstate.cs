@@ -14,7 +14,7 @@
 
         public string Number { get; set; }
 
-        public float Area { get; set; }
+        public float? Area { get; set; }
 
         public string PhoneNumber { get; set; }
     }

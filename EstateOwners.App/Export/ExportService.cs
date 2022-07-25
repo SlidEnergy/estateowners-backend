@@ -41,16 +41,16 @@ namespace EstateOwners.App
         public async Task<List<UserWithEstate>> GetUsersWithEstatesAsync()
         {
             var signers = await _context.Users
-                .Join(_context.TrusteeEstates, u => u.TrusteeId, t => t.TrusteeId, (u, t) => new { User = u, Estate = t.Estate, Building = t.Estate.Building })
-                .Select(x => new UserWithEstate()
+                .GroupJoin(_context.TrusteeEstates, u => u.TrusteeId, t => t.TrusteeId, (u, t) => new { User = u, TrusteeEstate = t })
+                .SelectMany(x => x.TrusteeEstate.DefaultIfEmpty(), (x, t) => new UserWithEstate()
                 {
                     FirstName = x.User.FirstName,
                     LastName = x.User.LastName,
                     MiddleName = x.User.MiddleName,
-                    Type = x.Estate.Type.GetDescription(),
-                    Building = x.Building.ShortAddress,
-                    Number = x.Estate.Number,
-                    Area = x.Estate.Area,
+                    Type = t == null ? null : t.Estate.Type.GetDescription(),
+                    Building = t == null ? null : t.Estate.Building.ShortAddress,
+                    Number = t == null ? null : t.Estate.Number,
+                    Area = t == null ? null : t.Estate.Area,
                     PhoneNumber = x.User.PhoneNumber
                 })
                 .ToListAsync();
